@@ -48,3 +48,10 @@ Thumbs.db
 *.mov
 *.wmv
 
+Dark Maze/UserSettings/
+Dark Maze/.vs/
+Dark Maze/Library/
+Dark Maze/obj/
+*.sln
+*.vsconfig
+*.csproj
