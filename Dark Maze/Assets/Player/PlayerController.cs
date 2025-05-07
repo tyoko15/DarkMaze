@@ -37,6 +37,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject sword;
     [SerializeField] float attackTime;
     float attackTimer;
+    [Header("プレイヤーのアイテム情報")]
+    [SerializeField] GameObject[] itemSlots;
+    [SerializeField] GameObject itemSelect;
+    [SerializeField] int itemSelectNum;
+    bool itemSelectFlag;
+    bool startSelectFlag;
+    bool endSelectFlag;
+    [SerializeField] float itemTime;
+    float[] itemTimer = new float[3];
+    bool itemUseFlag;
+    bool endUseFlag;
+    Vector3 itemUseDirection;
     void Start()
     {
         
@@ -50,7 +62,8 @@ public class PlayerController : MonoBehaviour
             break;
             case 1: // play
                 PlayerControl();
-                PlayerLightControl();                
+                PlayerLightControl();
+                PlayerItemUseControl();
             break;
             case 2: // stop
                 break;
@@ -59,6 +72,7 @@ public class PlayerController : MonoBehaviour
             case 4: // clear
                 break;
         }
+        PlayerItemSelectControl(); 
         PlayerAttackControl(); 
         CameraControl();
     }
@@ -66,13 +80,17 @@ public class PlayerController : MonoBehaviour
     // Player行動管理関数
     void PlayerControl()
     {
-        // 行動
-        Vector3 playerPosition = playerObject.transform.position;
-        if (onLight == 1) playerPosition += new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime) * 0.1f;
-        else playerPosition += new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime);
-        playerObject.transform.position = playerPosition;
-        //進む方向に滑らかに向く。
-        transform.forward = Vector3.Slerp(transform.forward, new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime), Time.deltaTime * 10f);
+        if (!itemSelectFlag && !itemUseFlag)
+        {
+            // 行動
+            Vector3 playerPosition = playerObject.transform.position;
+            if (onLight == 1) playerPosition += new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime) * 0.1f;
+            else playerPosition += new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime);
+            playerObject.transform.position = playerPosition;
+            //進む方向に滑らかに向く。
+            transform.forward = Vector3.Slerp(transform.forward, new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime), Time.deltaTime * 10f);
+        }
+
     }
 
     void CameraControl()
@@ -153,6 +171,74 @@ public class PlayerController : MonoBehaviour
         }
         else sword.SetActive(false);
     }
+
+    void PlayerItemSelectControl()
+    {
+        // 選択
+        if (itemSelectFlag)
+        {
+            if (!startSelectFlag)
+            {
+                for(int i = 0; i < itemSlots.Length; i++)
+                {
+                    if (itemTimer[i] > itemTime)
+                    {
+                        itemTimer[i] = 0;
+                        itemSlots[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(i * -175f - 350f, itemSlots[i].GetComponent<RectTransform>().anchoredPosition.y);
+                        startSelectFlag = true;
+                    }
+                    else if (itemTimer[i] < itemTime)
+                    {
+                        itemTimer[i] += Time.deltaTime;
+                        float x = Mathf.Lerp(-150f, i * -175f -350f, itemTimer[i] / itemTime);
+                        itemSlots[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(x, itemSlots[i].GetComponent<RectTransform>().anchoredPosition.y);
+                    }
+                }
+            }            
+            for (int i = 0; i < itemSlots.Length; i++)
+            {
+                if (i == itemSelectNum) itemSlots[i].GetComponent<RectTransform>().sizeDelta = new Vector2(165f, 165f);
+                else itemSlots[i].GetComponent<RectTransform>().sizeDelta = new Vector2(150f, 150f);
+            }
+        }
+        else
+        {
+            if (!endSelectFlag)
+            {
+                for (int i = 0; i < itemSlots.Length; i++)
+                {
+                    if (itemTimer[i] > itemTime)
+                    {
+                        itemTimer[i] = 0;
+                        itemSlots[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(-150f, itemSlots[i].GetComponent<RectTransform>().anchoredPosition.y);
+                        endSelectFlag = true;
+                        itemSlots[i].GetComponent<RectTransform>().sizeDelta = new Vector2(150f, 150f);
+                    }
+                    else if (itemTimer[i] < itemTime)
+                    {
+                        itemTimer[i] += Time.deltaTime;
+                        float x = Mathf.Lerp(i * -175f - 350f, -150f, itemTimer[i] / itemTime);
+                        itemSlots[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(x, itemSlots[i].GetComponent<RectTransform>().anchoredPosition.y);
+                    }
+                }
+            }
+        }
+    }
+    void PlayerItemUseControl()
+    {
+        // 使用
+        if(itemUseFlag)
+        {
+            Quaternion rotation = Quaternion.LookRotation(itemUseDirection);
+            //進む方向に滑らかに向く。
+            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 10f);            
+        }
+        if(endUseFlag)
+        {
+            itemUseFlag = false;
+            endUseFlag = false;
+        }
+    }
     private void OnCollisionStay(Collision collision)
     {
         if(collision.gameObject.tag == "Wall")
@@ -173,19 +259,26 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
-    private void OnCollisionExit(Collision collision)
-    {
-        
-    }
 
     public void InputPlayerControl(InputAction.CallbackContext context)
     {
-        if(context.ReadValue<Vector2>().x == 0) playerHorizontal = 0;
-        if(context.ReadValue<Vector2>().x > 0) playerHorizontal = context.ReadValue<Vector2>().x;
-        else if(context.ReadValue<Vector2>().x < 0) playerHorizontal = context.ReadValue<Vector2>().x;
-        if (context.ReadValue<Vector2>().y == 0) playerVertical = 0;
-        if (context.ReadValue<Vector2>().y > 0) playerVertical = context.ReadValue<Vector2>().y;
-        else if (context.ReadValue<Vector2>().y < 0) playerVertical = context.ReadValue<Vector2>().y;
+        if(!itemSelectFlag)
+        {
+            if (context.ReadValue<Vector2>().x == 0) playerHorizontal = 0;
+            if (context.ReadValue<Vector2>().x > 0) playerHorizontal = context.ReadValue<Vector2>().x;
+            else if (context.ReadValue<Vector2>().x < 0) playerHorizontal = context.ReadValue<Vector2>().x;
+            if (context.ReadValue<Vector2>().y == 0) playerVertical = 0;
+            if (context.ReadValue<Vector2>().y > 0) playerVertical = context.ReadValue<Vector2>().y;
+            else if (context.ReadValue<Vector2>().y < 0) playerVertical = context.ReadValue<Vector2>().y;
+        }
+        else
+        {
+            if (context.ReadValue<Vector2>().x == 0) playerHorizontal = 0;
+            if (context.started && context.ReadValue<Vector2>().x > 0) itemSelectNum--;
+            else if (context.started && context.ReadValue<Vector2>().x < 0) itemSelectNum++;
+            if (itemSelectNum > 2) itemSelectNum = 0;
+            if (itemSelectNum < 0) itemSelectNum = 2;
+        }
     }
 
     public void InputPlayerLightButton(InputAction.CallbackContext context)
@@ -201,5 +294,35 @@ public class PlayerController : MonoBehaviour
     public void InputPlayerAttackButton(InputAction.CallbackContext context)
     {
         if(context.started && !attackFlag) attackFlag = true;
+    }
+
+    public void InputPlayerSelectItemButton(InputAction.CallbackContext context)
+    {
+        if (context.started && status == 1)
+        {
+            itemSelectFlag = true;
+            endSelectFlag = false;
+        }
+        if (context.canceled) 
+        {
+            itemSelectFlag = false; 
+            startSelectFlag = false;
+        }
+    }
+    public void InputPlayerUseItemButton(InputAction.CallbackContext context)
+    {
+        if(context.started && status == 1) itemUseFlag = true;
+        if (context.canceled) endUseFlag = true;
+    }
+    public void InputPlayerUseItemControl(InputAction.CallbackContext context)
+    {
+        itemUseDirection = new Vector3(context.ReadValue<Vector2>().x, 0f, context.ReadValue<Vector2>().y);
+    }
+    public void InputPlayerMenuButton(InputAction.CallbackContext context)
+    {
+        if (context.started)
+        {
+
+        }
     }
 }
