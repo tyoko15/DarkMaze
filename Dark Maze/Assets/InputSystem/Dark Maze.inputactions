@@ -78,18 +78,18 @@
                     "initialStateCheck": false
                 },
                 {
+                    "name": "ItemSelectControl",
+                    "type": "Value",
+                    "id": "80c8a7b3-79fa-4451-8173-97b3a2ce4567",
+                    "expectedControlType": "Vector2",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": true
+                },
+                {
                     "name": "UseItemButton",
                     "type": "Button",
                     "id": "0d989a33-0562-46bd-b03a-d6d5c970d0c8",
-                    "expectedControlType": "Button",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "MenuButton",
-                    "type": "Button",
-                    "id": "a4ec2c0f-9a3c-4438-9bfc-c61fe6f5a150",
                     "expectedControlType": "Button",
                     "processors": "",
                     "interactions": "",
@@ -103,6 +103,15 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": true
+                },
+                {
+                    "name": "MenuButton",
+                    "type": "Button",
+                    "id": "a4ec2c0f-9a3c-4438-9bfc-c61fe6f5a150",
+                    "expectedControlType": "Button",
+                    "processors": "",
+                    "interactions": "",
+                    "initialStateCheck": false
                 }
             ],
             "bindings": [
@@ -602,6 +611,61 @@
                     "isPartOfComposite": false
                 },
                 {
+                    "name": "R&L Shoulder",
+                    "id": "d7b2a1e0-2a7d-4ff0-96e4-519afa711064",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ItemSelectControl",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "left",
+                    "id": "c1685a02-ea56-4ace-bd76-6768f417cdd7",
+                    "path": "<Gamepad>/leftShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ItemSelectControl",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "d8b0a7ed-2661-4ff9-91ea-737556ecaad6",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ItemSelectControl",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "3980d288-a8ad-480b-bad8-4be16dcef3ad",
+                    "path": "<Gamepad>/rightShoulder",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ItemSelectControl",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "f18f44df-ccc1-4f1d-9830-b813dc08a781",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "ItemSelectControl",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
                     "name": "",
                     "id": "b93f4e9a-e82a-48fd-99e7-b3f49c86ea95",
                     "path": "<Gamepad>/rightStick",
@@ -611,6 +675,61 @@
                     "action": "UseItemControl",
                     "isComposite": false,
                     "isPartOfComposite": false
+                },
+                {
+                    "name": "WASD",
+                    "id": "2574ab4d-c0da-4acc-bf8b-131df2005bc1",
+                    "path": "2DVector",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UseItemControl",
+                    "isComposite": true,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "up",
+                    "id": "738f5277-f94a-46a4-9bd9-15d0b709826a",
+                    "path": "<Keyboard>/w",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UseItemControl",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "down",
+                    "id": "c10ee888-b423-4935-8f23-a85688d0a105",
+                    "path": "<Keyboard>/s",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UseItemControl",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "left",
+                    "id": "672f3071-e54b-44a7-b8bb-7c7651541770",
+                    "path": "<Keyboard>/a",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UseItemControl",
+                    "isComposite": false,
+                    "isPartOfComposite": true
+                },
+                {
+                    "name": "right",
+                    "id": "9b1eed64-5e5b-45fa-a762-d62890b5bfb6",
+                    "path": "<Keyboard>/d",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "UseItemControl",
+                    "isComposite": false,
+                    "isPartOfComposite": true
                 }
             ]
         },

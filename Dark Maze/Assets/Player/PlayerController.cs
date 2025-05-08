@@ -43,9 +43,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField] int itemSelectNum;
     bool itemSelectFlag;
     bool startSelectFlag;
-    bool endSelectFlag;
+    bool endSelectFlag = true;
     [SerializeField] float itemTime;
     float[] itemTimer = new float[3];
+    [SerializeField] GameObject arrowObject;
     bool itemUseFlag;
     bool endUseFlag;
     Vector3 itemUseDirection;
@@ -90,7 +91,6 @@ public class PlayerController : MonoBehaviour
             //êiÇﬁï˚å¸Ç…ääÇÁÇ©Ç…å¸Ç≠ÅB
             transform.forward = Vector3.Slerp(transform.forward, new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime), Time.deltaTime * 10f);
         }
-
     }
 
     void CameraControl()
@@ -235,6 +235,7 @@ public class PlayerController : MonoBehaviour
         }
         if(endUseFlag)
         {
+            Instantiate(arrowObject, playerObject.transform.forward, Quaternion.identity);
             itemUseFlag = false;
             endUseFlag = false;
         }
@@ -271,14 +272,6 @@ public class PlayerController : MonoBehaviour
             if (context.ReadValue<Vector2>().y > 0) playerVertical = context.ReadValue<Vector2>().y;
             else if (context.ReadValue<Vector2>().y < 0) playerVertical = context.ReadValue<Vector2>().y;
         }
-        else
-        {
-            if (context.ReadValue<Vector2>().x == 0) playerHorizontal = 0;
-            if (context.started && context.ReadValue<Vector2>().x > 0) itemSelectNum--;
-            else if (context.started && context.ReadValue<Vector2>().x < 0) itemSelectNum++;
-            if (itemSelectNum > 2) itemSelectNum = 0;
-            if (itemSelectNum < 0) itemSelectNum = 2;
-        }
     }
 
     public void InputPlayerLightButton(InputAction.CallbackContext context)
@@ -307,6 +300,18 @@ public class PlayerController : MonoBehaviour
         {
             itemSelectFlag = false; 
             startSelectFlag = false;
+        }
+    }
+
+    public void InputPlayerSelectItemControl(InputAction.CallbackContext context)
+    {
+        if (itemSelectFlag)
+        {
+            if (context.ReadValue<Vector2>().x == 0) playerHorizontal = 0;
+            if (context.started && context.ReadValue<Vector2>().x > 0) itemSelectNum--;
+            else if (context.started && context.ReadValue<Vector2>().x < 0) itemSelectNum++;
+            if (itemSelectNum > 2) itemSelectNum = 0;
+            if (itemSelectNum < 0) itemSelectNum = 2;
         }
     }
     public void InputPlayerUseItemButton(InputAction.CallbackContext context)
