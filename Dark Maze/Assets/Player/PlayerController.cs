@@ -15,6 +15,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float playerVertical;
     [SerializeField] float playerSpeed;
     bool[] controlFlag = new bool[4];
+    [SerializeField] int clearStageNum;
     [Header("Camera情報")]
     [SerializeField] GameObject mainCamera;
     [Header("プレイヤーのライト情報")]
@@ -52,7 +53,7 @@ public class PlayerController : MonoBehaviour
     Vector3 itemUseDirection;
     void Start()
     {
-        
+        //clearStageNum = GameObject.Find("DataManager").GetComponent<DataManager>().Date;
     }
 
     void Update()
@@ -235,7 +236,10 @@ public class PlayerController : MonoBehaviour
         }
         if(endUseFlag)
         {
-            Instantiate(arrowObject, playerObject.transform.forward, Quaternion.identity);
+            if(itemSelectNum == 1)
+            {
+                Instantiate(arrowObject, playerObject.transform.forward, Quaternion.identity);
+            }
             itemUseFlag = false;
             endUseFlag = false;
         }
@@ -250,13 +254,11 @@ public class PlayerController : MonoBehaviour
             {
                 if (x > 0 && playerHorizontal < 0) playerHorizontal = 0f; 
                 else if (x < 0 && playerHorizontal > 0) playerHorizontal = 0f;
-                Debug.Log("左右");
             }
             else if(Mathf.Abs(x) < Mathf.Abs(z))
             {
                 if(z > 0 && playerVertical < 0) playerVertical = 0f;
                 else if(z < 0 && playerVertical > 0) playerVertical = 0f;
-                Debug.Log("前後");
             }
         }
     }

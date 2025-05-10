@@ -16,7 +16,7 @@ GameObject:
   - component: {fileID: 4085097032471677790}
   m_Layer: 0
   m_Name: ArrowObject
-  m_TagString: Untagged
+  m_TagString: Arrow
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -148,6 +148,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   arrowObject: {fileID: 4029604668275548159}
   playerObject: {fileID: 0}
-  speed: 10
+  rb: {fileID: 909408433132849564}
+  speed: 50
   position: {x: 0, y: 0, z: 0}
+  rotate: {x: 0, y: 0, z: 0}
   lostTime: 1

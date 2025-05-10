@@ -147,6 +147,30 @@ public class TitleButtonManager : MonoBehaviour
                 EnterFlag = false;
             }
         }
+        else if(titleManager.progressNum == 2)
+        {
+            if (oneFlag)
+            {
+                if (selectNum == 0)
+                {
+                    EnterSelectDataDecisionButton();
+                    if (oldSelectNum == 1) ExitSelectDataDecisionButton();
+                }
+                else if (selectNum == 1)
+                {
+                    EnterSelectDataReturnButton();
+                    if (oldSelectNum == 0) ExitSelectDataReturnButton();
+                }
+                oldSelectNum = selectNum;
+                oneFlag = false;
+            }
+
+            if (EnterFlag)
+            {
+                if (selectNum == 0) ClickSelectDataDecisionButton();
+                else if (selectNum == 1) ClickSelectDataReturnButton();
+            }
+        }
     }
 
     // TitleUI
@@ -477,7 +501,7 @@ public class TitleButtonManager : MonoBehaviour
             }
         }
         // SelectDataUI
-        if (titleManager.progressNum == 1)
+        else if (titleManager.progressNum == 1)
         {
             if (context.started && context.ReadValue<Vector2>().x > 0)
             {
@@ -489,6 +513,21 @@ public class TitleButtonManager : MonoBehaviour
             {
                 selectNum--;
                 if (selectNum < 0) selectNum = 3;
+                oneFlag = true;
+            }
+        }
+        else if(titleManager.progressNum == 2)
+        {
+            if (context.started && context.ReadValue<Vector2>().x > 0)
+            {
+                selectNum++;
+                if (selectNum > 1) selectNum = 0;
+                oneFlag = true;
+            }
+            else if (context.started && context.ReadValue<Vector2>().x < 0)
+            {
+                selectNum--;
+                if (selectNum < 0) selectNum = 1;
                 oneFlag = true;
             }
         }
