@@ -1,8 +1,11 @@
 using Unity.AI.Navigation;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class GameManagerStage1to1 : MonoBehaviour
 {
+    [SerializeField] GameObject fadeManagerObject;
+    FadeManager fadeManager;
     public enum GameStatus
     {
         start,
@@ -38,10 +41,24 @@ public class GameManagerStage1to1 : MonoBehaviour
     [SerializeField] bool[] defeatGateFlag;
     void Start()
     {
-        for(int i = 0; i < defeatGateFlag.Length; i++)
+        GameObject fade = GameObject.Find("FadeManager");
+        if (fade == null)
+        {
+            fade = Instantiate(fadeManagerObject);
+            fadeManager = fade.GetComponent<FadeManager>();
+        }
+        else if (fade != null) fadeManager = fade.GetComponent<FadeManager>();
+
+        for (int i = 0; i < defeatGateFlag.Length; i++)
         {
             defeatGateFlag[i] = true;
         }
+        if (GameObject.Find("DataManager") != null)
+        {
+            int dataNum = GameObject.Find("DataManager").GetComponent<DataManager>().useDataNum;
+            player.GetComponent<PlayerController>().clearStageNum = GameObject.Find("DataManager").GetComponent<DataManager>().data[dataNum].clearStageNum;
+        }
+        else if (GameObject.Find("DataManager") == null) player.GetComponent<PlayerController>().clearStageNum = 0;
     }
 
     void Update()
@@ -71,6 +88,7 @@ public class GameManagerStage1to1 : MonoBehaviour
                 break;
             case GameStatus.clear:
                 playerController.status = 4;
+                SceneManager.LoadScene("StageSelect");
                 break;
         }
     }

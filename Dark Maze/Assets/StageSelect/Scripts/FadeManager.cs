@@ -35,6 +35,7 @@ public class FadeManager : MonoBehaviour
     float[] moveX;
     void Start()
     {
+        DontDestroyOnLoad(this.gameObject);
         fadeObjectWidth = fadeObjects[0].GetComponent<RectTransform>().sizeDelta.x;
         fadeBannerObject.enabled = false;
         timer = new float[fadeObjects.Length];

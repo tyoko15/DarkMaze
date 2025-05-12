@@ -8,6 +8,8 @@ public class BoxManager : MonoBehaviour
     float moveTimer;
     int directionNum;
     bool lockFlag;
+    bool wallFlag;
+    int[] wallDirectionNum = new int[4];
     Vector3 originPosition;
     void Start()
     {
@@ -32,6 +34,41 @@ public class BoxManager : MonoBehaviour
             Direction();
         }
     }
+    private void OnTriggerStay(Collider other)
+    {
+        if (other.gameObject.tag == "Wall")
+        {
+            float x = box.transform.position.x - other.transform.position.x;
+            float z = box.transform.position.z - other.transform.position.z;
+            if(Mathf.Abs(x) > Mathf.Abs(z))
+            {
+                if(x > 0)
+                {
+                    wallDirectionNum[1] = 1;
+                    wallDirectionNum[0] = 0;
+                }
+                else if(x < 0)
+                {
+                    wallDirectionNum[0] = 1;
+                    wallDirectionNum[1] = 0;
+                }
+            }
+            else if (Mathf.Abs(x) < Mathf.Abs(z))
+            {
+                if(z > 0)
+                {
+                    wallDirectionNum[3] = 1;
+                    wallDirectionNum[2] = 0;
+                }
+                else if(z < 0)
+                {
+                    wallDirectionNum[2] = 1;
+                    wallDirectionNum[3] = 0;
+                }
+            }
+            wallFlag = true;
+        }
+    }
     void Direction()
     {
         float x = box.transform.position.x - player.transform.position.x;
@@ -48,7 +85,15 @@ public class BoxManager : MonoBehaviour
             if(z > 0) directionNum = 2; // ‘O            
             else if(z < 0) directionNum = 3; // Œã
         }
-        lockFlag = true;
+        if(wallFlag)
+        {
+            for(int i = 0; i < wallDirectionNum.Length; i++)
+            {
+                if (directionNum == i && wallDirectionNum[i] == 0) lockFlag = true;
+                else if (directionNum == i && wallDirectionNum[i] == 1) lockFlag = false;
+            }
+        }
+        else lockFlag = true;
     }
 
     void MoveBox(int direction)

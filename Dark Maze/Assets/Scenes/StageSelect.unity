@@ -4065,7 +4065,7 @@ MonoBehaviour:
   - {fileID: 1401599888}
   - {fileID: 1622329608}
   - {fileID: 1484808147}
-  fadeManager: {fileID: 16651234}
+  fadeManagerObject: {fileID: 8267548131005766601, guid: 4640189f3bb3f43458f839336d723fa6, type: 3}
   FieldObject:
   - {fileID: 1290458304}
   - {fileID: 1743967469}
@@ -4185,6 +4185,38 @@ MonoBehaviour:
         m_CallState: 2
     m_ActionId: 45c37a98-9026-44d4-bdeb-34d173862c5e
     m_ActionName: Player/Enter[/Keyboard/enter,/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: e9cfae88-34c5-478d-b243-1cab5c23e0b1
+    m_ActionName: Player/PlayerControl[/Keyboard/w,/Keyboard/upArrow,/Keyboard/s,/Keyboard/downArrow,/Keyboard/a,/Keyboard/leftArrow,/Keyboard/d,/Keyboard/rightArrow]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 9495de29-4d3c-49a5-b351-4750f6c3957d
+    m_ActionName: Player/LightButton[/Keyboard/space]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: ddb5c055-611e-4396-8acf-ca7c9adf1455
+    m_ActionName: Player/AttackButton[/Mouse/rightButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 65f54ca5-53c9-4055-b117-35647ecd0248
+    m_ActionName: Player/ItemSelectButton[/Keyboard/e]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 80c8a7b3-79fa-4451-8173-97b3a2ce4567
+    m_ActionName: Player/ItemSelectControl[/Keyboard/a,/Keyboard/d]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 0d989a33-0562-46bd-b03a-d6d5c970d0c8
+    m_ActionName: Player/UseItemButton[/Keyboard/shift]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: f6f232ac-e445-487a-a30e-1766042c6264
+    m_ActionName: Player/UseItemControl[/Keyboard/w,/Keyboard/s,/Keyboard/a,/Keyboard/d]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: a4ec2c0f-9a3c-4438-9bfc-c61fe6f5a150
+    m_ActionName: Player/MenuButton[/Keyboard/p]
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player

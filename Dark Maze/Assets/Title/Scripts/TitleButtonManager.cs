@@ -1,5 +1,6 @@
 using TMPro;
 using Unity.VisualScripting;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
@@ -21,6 +22,7 @@ public class TitleButtonManager : MonoBehaviour
     [SerializeField] GameObject[] createDataDecisionUIButtons;
     [Header("Anime情報")]
     int animeFlag;
+    bool decisionFlag;
     [SerializeField] float fadeInDecisionUITime;
     [SerializeField] float fadeInDecisionUITimer;
     [SerializeField] float fadeOutDecisionUITime;
@@ -30,42 +32,42 @@ public class TitleButtonManager : MonoBehaviour
     [SerializeField] bool controllerFlag;
     [SerializeField] int selectNum;
     int oldSelectNum;
-    [SerializeField] int progressNum;
+    //[SerializeField] int progressNum;
 
     bool oneFlag;
     bool EnterFlag;
     void Start()
     {
         var controllers = Input.GetJoystickNames();
-        if (controllers.Length > 0)
-        {
-            controllerFlag = true;
-            oneFlag = true;
-            InputSystem.onDeviceChange += (device, change) =>
-            {
-                if (Cursor.lockState != CursorLockMode.Locked)
-                {
-                    Cursor.lockState = CursorLockMode.Locked;
-                    Cursor.visible = false;
-                }
-            };
-        }
-    }
-    void Update()
-    {
-        var controllers = Input.GetJoystickNames();
-        if (controllers.Length > 0)
+        if (controllers[0] != "")
         {
             controllerFlag = true;
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
             ControllerSelect();
         }
-        else
+        else if (controllers[0] == "")
+        {
+            controllerFlag = false;
+            Cursor.visible = true;
+        }
+    }
+    void Update()
+    {
+        var controllers = Input.GetJoystickNames();
+        if (controllers[0] != "")
+        {
+            controllerFlag = true;
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+            ControllerSelect();
+        }
+        else if (controllers[0] == "")
         {
             controllerFlag = false; 
             Cursor.visible = true;
-        } 
+            Cursor.lockState = CursorLockMode.None;
+        }
 
         if (animeFlag == 1) SelectDataDecisionUIAnime(selectDataDecisionUI, true);
         else if(animeFlag == 2) SelectDataDecisionUIAnime(selectDataDecisionUI, false);
@@ -106,69 +108,141 @@ public class TitleButtonManager : MonoBehaviour
         }
         else if (titleManager.progressNum == 1)
         {
-            if (oneFlag)
+            if (!decisionFlag)
             {
-                if (selectNum == 0)
+                if (oneFlag)
                 {
-                    EnterData1();
-                    if(oldSelectNum == 1) ExitData2();
-                    else if (oldSelectNum == 3) ExitSelectDataUIReturnButton();
+                    if (selectNum == 0)
+                    {
+                        EnterData1();
+                        if (oldSelectNum == 1) ExitData2();
+                        else if (oldSelectNum == 3) ExitSelectDataUIReturnButton();
+                    }
+                    else if (selectNum == 1)
+                    {
+                        EnterData2();
+                        if (oldSelectNum == 0) ExitData1();
+                        else if (oldSelectNum == 2) ExitData3();
+                    }
+                    else if (selectNum == 2)
+                    {
+                        EnterData3();
+                        if (oldSelectNum == 1) ExitData2();
+                        else if (oldSelectNum == 3) ExitSelectDataUIReturnButton();
+                    }
+                    else if (selectNum == 3)
+                    {
+                        EnterSelectDataUIReturnButton();
+                        if (oldSelectNum == 0) ExitData1();
+                        else if (oldSelectNum == 2) ExitData3();
+                    }
+                    oldSelectNum = selectNum;
+                    oneFlag = false;
                 }
-                else if(selectNum == 1)
+                if (EnterFlag)
                 {
-                    EnterData2();
-                    if (oldSelectNum == 0) ExitData1();
-                    else if (oldSelectNum == 2) ExitData3();
+                    if (selectNum == 0) ClickData1();
+                    else if (selectNum == 1) ClickData2();
+                    else if (selectNum == 2) ClickData3();
+                    else if (selectNum == 3) ClickSelectDataUIReturnButton();
+                    selectNum = 0;
+                    oldSelectNum = 1;
+                    EnterFlag = false;
+                    oneFlag = true;
                 }
-                else if(selectNum == 2)
-                {
-                    EnterData3();
-                    if (oldSelectNum == 1) ExitData2();
-                    else if (oldSelectNum == 3) ExitSelectDataUIReturnButton();
-                }
-                else if(selectNum == 3)
-                {
-                    EnterSelectDataUIReturnButton();
-                    if (oldSelectNum == 0) ExitData1();
-                    else if (oldSelectNum == 2) ExitData3();
-                }
-                oldSelectNum = selectNum;
-                oneFlag = false;
             }
-
-            if (EnterFlag)
+            else
             {
-                if (selectNum == 0) ClickData1();
-                else if (selectNum == 1) ClickData2();
-                else if (selectNum == 2) ClickData3();
-                else if (selectNum == 3) ClickSelectDataUIReturnButton();
-                selectNum = 0;
-                oldSelectNum = 1; 
-                EnterFlag = false;
+                if (oneFlag)
+                {
+                    if (selectNum == 0)
+                    {
+                        EnterSelectDataDecisionButton();
+                        if (oldSelectNum == 1) ExitSelectDataReturnButton();
+                    }
+                    else if (selectNum == 1)
+                    {
+                        EnterSelectDataReturnButton();
+                        if (oldSelectNum == 0) ExitSelectDataDecisionButton();
+                    }
+                    oldSelectNum = selectNum;
+                    oneFlag = false;
+                }
+                if (EnterFlag)
+                {
+                    if (selectNum == 0) ClickSelectDataDecisionButton();
+                    else if (selectNum == 1) ClickSelectDataReturnButton();
+                    selectNum = 0;
+                    oldSelectNum = 1;
+                    EnterFlag = false;
+                    oneFlag = true;
+                }
             }
         }
         else if(titleManager.progressNum == 2)
         {
-            if (oneFlag)
+            if (!decisionFlag)
             {
-                if (selectNum == 0)
+                if (oneFlag)
                 {
-                    EnterSelectDataDecisionButton();
-                    if (oldSelectNum == 1) ExitSelectDataDecisionButton();
+                    if (selectNum == 0)
+                    {
+                        EnterCreateDataReturnButton();
+                        if (oldSelectNum == 1) titleManager.nameInputField.DeactivateInputField();
+                        else if (oldSelectNum == 2) ExitCreateDataDecisionButton();
+                    }
+                    else if (selectNum == 1)
+                    {
+                        titleManager.nameInputField.ActivateInputField();
+                        if (oldSelectNum == 0) ExitCreateDataReturnButton();
+                        else if (oldSelectNum == 2) ExitCreateDataDecisionButton();
+                    }
+                    else if (selectNum == 2)
+                    {
+                        EnterCreateDataDecisionButton();
+                        if (oldSelectNum == 0) ExitCreateDataReturnButton();
+                        else if (oldSelectNum == 1) titleManager.nameInputField.DeactivateInputField();
+                    }
+                    oldSelectNum = selectNum;
+                    oneFlag = false;
                 }
-                else if (selectNum == 1)
-                {
-                    EnterSelectDataReturnButton();
-                    if (oldSelectNum == 0) ExitSelectDataReturnButton();
-                }
-                oldSelectNum = selectNum;
-                oneFlag = false;
-            }
 
-            if (EnterFlag)
+                if (EnterFlag)
+                {
+                    if (selectNum == 0) ClickCreateDataReturnButton();
+                    else if (selectNum == 2) ClickCreateDataDecisionButton();
+                    selectNum = 0;
+                    oldSelectNum = 1;
+                    EnterFlag = false;
+                    oneFlag = true;
+                }
+            }
+            else
             {
-                if (selectNum == 0) ClickSelectDataDecisionButton();
-                else if (selectNum == 1) ClickSelectDataReturnButton();
+                if(oneFlag)
+                {
+                    if (selectNum == 0)
+                    {
+                        EnterCreateDataDecisionUIReturnButton();
+                        if (oldSelectNum == 1) ExitCreateDataDecisionUIDecisionButton();
+                    }
+                    else if (selectNum == 1)
+                    {
+                        EnterCreateDataDecisionUIDecisionButton();
+                        if (oldSelectNum == 0) ExitCreateDataDecisionUIReturnButton();
+                    }
+                    oldSelectNum = selectNum;
+                    oneFlag = false;
+                }
+                if(EnterFlag)
+                {
+                    if (selectNum == 0) ClickCreateDataDecisionUIReturnButton();
+                    else if (selectNum == 1) ClickCreateDataDecisionUIDecisionButton();
+                    selectNum = 0;
+                    oldSelectNum = 1;
+                    EnterFlag = false;
+                    oneFlag = true;
+                }
             }
         }
     }
@@ -176,14 +250,15 @@ public class TitleButtonManager : MonoBehaviour
     // TitleUI
     void TextAnime(ref GameObject[] buttons, int i, bool flag)
     {
-        if(flag) buttons[i].GetComponent<TextMeshProUGUI>().fontSize *= 1.2f;
-        if(!flag) buttons[i].GetComponent<TextMeshProUGUI>().fontSize /= 1.2f;
+        if(flag) buttons[i].GetComponent<TextMeshProUGUI>().fontSize = 120f;
+        if(!flag) buttons[i].GetComponent<TextMeshProUGUI>().fontSize = 100f;
 
     }
     void ButtonAnime(ref GameObject[] buttons, int i, bool flag)
     {
-        if(flag) buttons[i].GetComponent<RectTransform>().sizeDelta *= 1.1f;
-        if(!flag) buttons[i].GetComponent<RectTransform>().sizeDelta /= 1.1f;
+
+        if (flag) buttons[i].GetComponent<RectTransform>().localScale = new Vector2(1.1f, 1.1f);
+        if(!flag) buttons[i].GetComponent<RectTransform>().localScale = new Vector2(1f, 1f);
 
     }
     public void EnterStartButton()
@@ -236,6 +311,7 @@ public class TitleButtonManager : MonoBehaviour
                 UI.transform.localScale = new Vector3(1f, 1f, 1f);
                 fadeInDecisionUITimer = 0f;
                 animeFlag = 0;
+                decisionFlag = true;
             }
             else if (fadeInDecisionUITimer < fadeInDecisionUITime)
             {
@@ -360,12 +436,13 @@ public class TitleButtonManager : MonoBehaviour
             titleManager.fadeFlag = true;     // ステージ選択
         }
         dataManager.GetuseDataNum(titleManager.selectDataNum);
+        decisionFlag = false;
     }
     public void ClickSelectDataReturnButton()
     {
         animeFlag = 2;
         for (int i = 0; i < selectDataUIButtons.Length; i++) selectDataUIButtons[i].GetComponent<EventTrigger>().enabled = true;
-
+        decisionFlag = false;
         //TextAnime(ref selectDataDecisionUIButtons, 1, false);
     }
     public void ExitSelectDataDecisionButton()
@@ -392,6 +469,7 @@ public class TitleButtonManager : MonoBehaviour
                 UI.transform.localScale = new Vector3(1f, 1f, 1f);
                 fadeInDecisionUITimer = 0f;
                 animeFlag = 0;
+                decisionFlag = true;
             }
             else if (fadeInDecisionUITimer < fadeInDecisionUITime)
             {
@@ -465,17 +543,20 @@ public class TitleButtonManager : MonoBehaviour
         //titleManager.CreateDataUIActive(false);
         titleManager.fadeFlag = true;
         titleManager.progressNum = 3;
+        decisionFlag = false;
         // ステージ選択
         SceneManager.LoadScene("StageSelect");
     }
     public void ClickCreateDataDecisionUIReturnButton()
     {
         animeFlag = 4;
+        decisionFlag = false;
         //TextAnime(ref createDataDecisionUIButtons, 1, false);
     }
     public void ExitCreateDataDecisionUIDecisionButton()
     {
         TextAnime(ref createDataDecisionUIButtons, 0, false);
+        Debug.Log("a");
     }
     public void ExitCreateDataDecisionUIReturnButton()
     {
@@ -503,32 +584,69 @@ public class TitleButtonManager : MonoBehaviour
         // SelectDataUI
         else if (titleManager.progressNum == 1)
         {
-            if (context.started && context.ReadValue<Vector2>().x > 0)
+            if (!decisionFlag)
             {
-                selectNum++;
-                if (selectNum > 3) selectNum = 0;
-                oneFlag = true;
+                if (context.started && context.ReadValue<Vector2>().x > 0)
+                {
+                    selectNum++;
+                    if (selectNum > 3) selectNum = 0;
+                    oneFlag = true;
+                }
+                else if (context.started && context.ReadValue<Vector2>().x < 0)
+                {
+                    selectNum--;
+                    if (selectNum < 0) selectNum = 3;
+                    oneFlag = true;
+                }
             }
-            else if (context.started && context.ReadValue<Vector2>().x < 0)
+            else if(decisionFlag)
             {
-                selectNum--;
-                if (selectNum < 0) selectNum = 3;
-                oneFlag = true;
+                if (context.started && context.ReadValue<Vector2>().x > 0)
+                {
+                    selectNum++;
+                    if (selectNum > 1) selectNum = 0;
+                    oneFlag = true;
+                }
+                else if (context.started && context.ReadValue<Vector2>().x < 0)
+                {
+                    selectNum--;
+                    if (selectNum < 0) selectNum = 1;
+                    oneFlag = true;
+                }
             }
         }
+        // CreateDataUI
         else if(titleManager.progressNum == 2)
         {
-            if (context.started && context.ReadValue<Vector2>().x > 0)
+            if(!decisionFlag)
             {
-                selectNum++;
-                if (selectNum > 1) selectNum = 0;
-                oneFlag = true;
+                if (context.started && context.ReadValue<Vector2>().x > 0)
+                {
+                    selectNum++;
+                    if (selectNum > 2) selectNum = 0;
+                    oneFlag = true;
+                }
+                else if (context.started && context.ReadValue<Vector2>().x < 0)
+                {
+                    selectNum--;
+                    if (selectNum < 0) selectNum = 2;
+                    oneFlag = true;
+                }
             }
-            else if (context.started && context.ReadValue<Vector2>().x < 0)
+            else
             {
-                selectNum--;
-                if (selectNum < 0) selectNum = 1;
-                oneFlag = true;
+                if (context.started && context.ReadValue<Vector2>().x > 0)
+                {
+                    selectNum++;
+                    if (selectNum > 1) selectNum = 0;
+                    oneFlag = true;
+                }
+                else if (context.started && context.ReadValue<Vector2>().x < 0)
+                {
+                    selectNum--;
+                    if (selectNum < 0) selectNum = 1;
+                    oneFlag = true;
+                }
             }
         }
     }

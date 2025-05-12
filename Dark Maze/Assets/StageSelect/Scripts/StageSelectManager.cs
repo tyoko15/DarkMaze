@@ -19,9 +19,10 @@ public class StageSelectManager : MonoBehaviour
     public int movePointsNum;
 
     [SerializeField] float moveSecond;
+
     void Start()
     {
-        
+
     }
 
     void Update()

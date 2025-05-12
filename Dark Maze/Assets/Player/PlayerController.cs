@@ -15,7 +15,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float playerVertical;
     [SerializeField] float playerSpeed;
     bool[] controlFlag = new bool[4];
-    [SerializeField] int clearStageNum;
+    [SerializeField] public int clearStageNum;
     [Header("Camera情報")]
     [SerializeField] GameObject mainCamera;
     [Header("プレイヤーのライト情報")]
@@ -39,8 +39,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float attackTime;
     float attackTimer;
     [Header("プレイヤーのアイテム情報")]
+    bool getItemFlag;
+    [SerializeField] public bool[] canItemFlag;
+    // 0.弓、1.縄、2.
     [SerializeField] GameObject[] itemSlots;
+    [SerializeField] Sprite[] itemImageSprites;
     [SerializeField] GameObject itemSelect;
+    [SerializeField] GameObject selectObject;
     [SerializeField] int itemSelectNum;
     bool itemSelectFlag;
     bool startSelectFlag;
@@ -53,7 +58,7 @@ public class PlayerController : MonoBehaviour
     Vector3 itemUseDirection;
     void Start()
     {
-        //clearStageNum = GameObject.Find("DataManager").GetComponent<DataManager>().Date;
+
     }
 
     void Update()
@@ -227,22 +232,79 @@ public class PlayerController : MonoBehaviour
     }
     void PlayerItemUseControl()
     {
-        // 使用
-        if(itemUseFlag)
+        if(getItemFlag)
         {
-            Quaternion rotation = Quaternion.LookRotation(itemUseDirection);
-            //進む方向に滑らかに向く。
-            transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 10f);            
+            if(clearStageNum == 1) canItemFlag[0] = true;
+            else if(clearStageNum == 6) canItemFlag[1] = true;
         }
-        if(endUseFlag)
+        // 弓の使用可
+        if (clearStageNum > 6)
         {
-            if(itemSelectNum == 1)
+            for (int i = 0; i < 2; i++) canItemFlag[i] = true;
+        }
+        else if (clearStageNum > 1)
+        {
+            canItemFlag[0] = true;
+        }
+        // 投げ縄の使用可
+        for (int i = 0; i < itemSlots.Length; i++)
+        {
+            if (canItemFlag[i])
             {
-                Instantiate(arrowObject, playerObject.transform.forward, Quaternion.identity);
+                itemSlots[i].transform.GetChild(1).GetComponent<Image>().sprite = itemImageSprites[i];
             }
-            itemUseFlag = false;
-            endUseFlag = false;
+            else if (!canItemFlag[i])
+            {
+                itemSlots[i].transform.GetChild(1).GetComponent<Image>().sprite = itemImageSprites[3];
+            }
+            if (itemSelectNum == i) selectObject.GetComponent<RectTransform>().anchoredPosition = itemSlots[i].GetComponent<RectTransform>().anchoredPosition;
         }
+        // 使用
+        // 弓
+        if (canItemFlag[itemSelectNum] && itemSelectNum == 0)
+        {
+            itemSelect.GetComponent<Image>().sprite = itemImageSprites[0];
+            if (itemUseFlag)
+            {
+                Quaternion rotation = Quaternion.LookRotation(itemUseDirection);
+                //進む方向に滑らかに向く。
+                transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 10f);
+            }
+            if (endUseFlag)
+            {
+                Instantiate(arrowObject, playerObject.transform.forward, Quaternion.identity);                
+                itemUseFlag = false;
+                endUseFlag = false;
+            }
+        }
+        // 縄
+        else if (canItemFlag[itemSelectNum] &&itemSelectNum == 1)
+        {
+            itemSelect.GetComponent<Image>().sprite = itemImageSprites[1];
+            if(itemUseFlag)
+            {
+
+            }
+            if(endUseFlag)
+            {
+                itemUseFlag = false;
+                endUseFlag = false;
+            }
+        }
+        else if (canItemFlag[itemSelectNum] && itemSelectNum == 2)
+        {
+            itemSelect.GetComponent<Image>().sprite = itemImageSprites[2];
+            if (itemUseFlag)
+            {
+
+            }
+            if (endUseFlag)
+            {
+                itemUseFlag = false;
+                endUseFlag = false;
+            }
+        }
+        else itemSelect.GetComponent<Image>().sprite = itemImageSprites[3];
     }
     private void OnCollisionStay(Collision collision)
     {

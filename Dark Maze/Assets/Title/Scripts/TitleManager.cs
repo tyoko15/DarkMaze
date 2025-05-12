@@ -113,7 +113,6 @@ public class TitleManager : MonoBehaviour
             fadeManager.fadeInFlag = true;
         }
     }
-
     public void CreateName()
     {
         dataManager.SaveData(selectDataNum, nameInputField.text, 0);

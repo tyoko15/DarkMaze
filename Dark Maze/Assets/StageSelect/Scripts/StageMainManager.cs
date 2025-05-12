@@ -7,7 +7,8 @@ public class StageMainManager : MonoBehaviour
     // スクリプトの取得
     [SerializeField] DataManager dataManager;
     [SerializeField] StageSelectManager[] stageSelectManagers;
-    [SerializeField] FadeManager fadeManager;
+    [SerializeField] GameObject fadeManagerObject;
+    FadeManager fadeManager;
 
     // 各Stageの取得
     [SerializeField] GameObject[] FieldObject;
@@ -25,8 +26,17 @@ public class StageMainManager : MonoBehaviour
     bool enterFlag;
 
     bool firstFadeFlag;
+
     void Start()
     {
+        GameObject fade = GameObject.Find("FadeManager");
+        if (fade == null)
+        {
+            fade = Instantiate(fadeManagerObject);
+            fadeManager = fade.GetComponent<FadeManager>();
+        }
+        else if(fade != null) fadeManager = fade.GetComponent<FadeManager>();
+
         fadeManager.AfterFade();
         fadeManager.fadeIntervalFlag = true;
         GameObject DataMana = GameObject.Find("DataManager");
@@ -68,7 +78,7 @@ public class StageMainManager : MonoBehaviour
 
         if (stageSelectManagers[FieldNum].moveFlag == 0 && !fadeFlag && enterFlag)
         {
-            //SceneManager.LoadScene($"{FieldNum + 1}-{stageSelectManager[FieldNum].selectNum + 1}");
+            SceneManager.LoadScene($"{FieldNum + 1}-{stageSelectManagers[FieldNum].selectNum + 1}");
             //Debug.Log($"{FieldNum + 1}-{stageSelectManager[FieldNum].selectNum + 1}");
             enterFlag = false;
         }
