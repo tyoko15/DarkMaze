@@ -39,14 +39,14 @@ public class TitleButtonManager : MonoBehaviour
     void Start()
     {
         var controllers = Input.GetJoystickNames();
-        if (controllers[0] != "")
+        if (controllers != null)
         {
             controllerFlag = true;
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
             ControllerSelect();
         }
-        else if (controllers[0] == "")
+        else if (controllers == null)
         {
             controllerFlag = false;
             Cursor.visible = true;
@@ -55,14 +55,14 @@ public class TitleButtonManager : MonoBehaviour
     void Update()
     {
         var controllers = Input.GetJoystickNames();
-        if (controllers[0] != "")
+        if (controllers != null)
         {
             controllerFlag = true;
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
             ControllerSelect();
         }
-        else if (controllers[0] == "")
+        else if (controllers == null)
         {
             controllerFlag = false; 
             Cursor.visible = true;

@@ -9,6 +9,8 @@ public class StageMainManager : MonoBehaviour
     [SerializeField] StageSelectManager[] stageSelectManagers;
     [SerializeField] GameObject fadeManagerObject;
     FadeManager fadeManager;
+    bool startFadeFlag;
+    bool endFadeFlag;
 
     // 各Stageの取得
     [SerializeField] GameObject[] FieldObject;
@@ -25,7 +27,7 @@ public class StageMainManager : MonoBehaviour
 
     bool enterFlag;
 
-    bool firstFadeFlag;
+
 
     void Start()
     {
@@ -35,10 +37,11 @@ public class StageMainManager : MonoBehaviour
             fade = Instantiate(fadeManagerObject);
             fadeManager = fade.GetComponent<FadeManager>();
         }
-        else if(fade != null) fadeManager = fade.GetComponent<FadeManager>();
-
+        else if (fade != null) fadeManager = fade.GetComponent<FadeManager>();
         fadeManager.AfterFade();
-        fadeManager.fadeIntervalFlag = true;
+        fadeManager.fadeOutFlag = true;
+        startFadeFlag = true;
+
         GameObject DataMana = GameObject.Find("DataManager");
         if(DataMana != null)
         {
@@ -60,8 +63,10 @@ public class StageMainManager : MonoBehaviour
     void Update()
     {
         // 画面切り替え後のFade
-        if (!firstFadeFlag) FirstFade();
-
+        //if (!firstFadeFlag) FirstFade();
+        if (startFadeFlag && fadeManager.fadeOutFlag && fadeManager.endFlag) startFadeFlag = false;
+        else if (endFadeFlag && fadeManager.fadeOutFlag && fadeManager.endFlag) endFadeFlag = false;
+        if (startFadeFlag || endFadeFlag) fadeManager.FadeControl();
         // フィールド移動
         if (stageSelectManagers[FieldNum].changeNextFlag)
         {
@@ -78,9 +83,17 @@ public class StageMainManager : MonoBehaviour
 
         if (stageSelectManagers[FieldNum].moveFlag == 0 && !fadeFlag && enterFlag)
         {
-            SceneManager.LoadScene($"{FieldNum + 1}-{stageSelectManagers[FieldNum].selectNum + 1}");
-            //Debug.Log($"{FieldNum + 1}-{stageSelectManager[FieldNum].selectNum + 1}");
-            enterFlag = false;
+            if (fadeManager.fadeIntervalFlag && fadeManager.endFlag)
+            {
+                SceneManager.LoadScene($"{FieldNum + 1}-{stageSelectManagers[FieldNum].selectNum + 1}");
+                //Debug.Log($"{FieldNum + 1}-{stageSelectManager[FieldNum].selectNum + 1}");
+                enterFlag = false;
+            }
+            else
+            {
+                fadeManager.FadeControl();
+                fadeManager.fadeIntervalFlag = true;
+            }
         }
         else enterFlag = false;
     }
@@ -99,7 +112,7 @@ public class StageMainManager : MonoBehaviour
         {
             fadeManager.fadeOutFlag = false;
             fadeManager.endFlag = false;
-            firstFadeFlag = true;
+            //firstFadeFlag = true;
         }
         else if (!fadeManager.fadeInFlag && !fadeManager.fadeIntervalFlag && !fadeManager.fadeOutFlag)
         {

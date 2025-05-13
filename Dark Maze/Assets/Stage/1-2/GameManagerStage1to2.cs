@@ -6,6 +6,7 @@ public class GameManagerStage1to2 : MonoBehaviour
 {
     [SerializeField] GameObject fadeManagerObject;
     FadeManager fadeManager;
+    bool fadeFlag;
     public enum GameStatus
     {
         start,
@@ -48,8 +49,11 @@ public class GameManagerStage1to2 : MonoBehaviour
         {
             fade = Instantiate(fadeManagerObject);
             fadeManager = fade.GetComponent<FadeManager>();
+        fadeManager.AfterFade();
         }
         else if (fade != null) fadeManager = fade.GetComponent<FadeManager>();
+        fadeManager.fadeOutFlag = true;
+        fadeFlag = true;
 
         for (int i = 0; i < defeatGateFlag.Length; i++)
         {
@@ -100,13 +104,21 @@ public class GameManagerStage1to2 : MonoBehaviour
 
     void StartAnime()
     {
-        player.transform.position = new Vector3(startObject.transform.position.x, startObject.transform.position.y + 1, startObject.transform.position.z);
-        if (startTimer > startTime)
+        if(fadeFlag)
         {
-            startTimer = 0;
-            status = GameStatus.play;
+            if(fadeManager.fadeOutFlag && fadeManager.endFlag) fadeFlag = false;          
+            fadeManager.FadeControl();            
         }
-        else if (startTimer < startTime) startTimer += Time.deltaTime;
+        else
+        {
+            player.transform.position = new Vector3(startObject.transform.position.x, startObject.transform.position.y + 1, startObject.transform.position.z);
+            if (startTimer > startTime)
+            {
+                startTimer = 0;
+                status = GameStatus.play;
+            }
+            else if (startTimer < startTime) startTimer += Time.deltaTime;
+        }
     }
 
     // 右上エリアの箱を感圧版に置くギミック

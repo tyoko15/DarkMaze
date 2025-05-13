@@ -1015,7 +1015,7 @@ MonoBehaviour:
   fadeObjectWidth: 0
   fadeInSecond: 0.5
   fadeInFlag: 0
-  fadeOutSecond: 0.5
+  fadeOutSecond: 5
   fadeOutFlag: 0
   fadeIntervalSecond: 5
   fadeIntervalTimer: 0

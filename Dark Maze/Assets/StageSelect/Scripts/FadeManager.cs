@@ -44,9 +44,10 @@ public class FadeManager : MonoBehaviour
         fadeOutTimer = fadeInSecond / fadeObjects.Length; 
         for(int i = 0; i < fadeObjects.Length; i++)
         {
-            fadeObjects[i].gameObject.GetComponent<RectTransform>().anchoredPosition = new Vector3(-fadeObjectWidth - i * 300f, fadeObjects[i].gameObject.GetComponent<RectTransform>().anchoredPosition.y);
+            //fadeObjects[i].gameObject.GetComponent<RectTransform>().anchoredPosition = new Vector3(-fadeObjectWidth - i * 300f, fadeObjects[i].gameObject.GetComponent<RectTransform>().anchoredPosition.y);
             timer[i] -= i * fadeInTimer;
         }
+
     }
 
     void Update()
@@ -75,6 +76,7 @@ public class FadeManager : MonoBehaviour
 
     void InFade()
     {
+        Debug.Log($"FadeIn{endFlag}");
         for (int i = 0; i < fadeObjects.Length; i++)
         {
             if (fadeObjects[i].gameObject.GetComponent<RectTransform>().anchoredPosition.x == 0)
@@ -129,6 +131,7 @@ public class FadeManager : MonoBehaviour
 
     void IntervalFade()
     {
+        Debug.Log($"FadeInterval{endFlag}");
         if (fadeIntervalTimer == 0)
         {
             fadeBannerFadeInFlag = true;
@@ -187,7 +190,7 @@ public class FadeManager : MonoBehaviour
     }
 
     // 流れを管理
-    void FadeControl()
+    public void FadeControl()
     {
         // フェイドイン終了時
         if (endFlag && fadeInFlag)
@@ -208,10 +211,6 @@ public class FadeManager : MonoBehaviour
         {
             fadeOutFlag = false;
             endFlag = false;
-        }
-        else if (!fadeInFlag && !fadeIntervalFlag && !fadeOutFlag)
-        {
-            fadeInFlag = true;
         }
     }
 
