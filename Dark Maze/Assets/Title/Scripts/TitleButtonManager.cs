@@ -157,21 +157,21 @@ public class TitleButtonManager : MonoBehaviour
                 {
                     if (selectNum == 0)
                     {
-                        EnterSelectDataDecisionButton();
-                        if (oldSelectNum == 1) ExitSelectDataReturnButton();
+                        EnterSelectDataReturnButton();
+                        if (oldSelectNum == 1) ExitSelectDataDecisionButton();
                     }
                     else if (selectNum == 1)
                     {
-                        EnterSelectDataReturnButton();
-                        if (oldSelectNum == 0) ExitSelectDataDecisionButton();
-                    }
+                        EnterSelectDataDecisionButton();
+                        if (oldSelectNum == 0) ExitSelectDataReturnButton();
+                    }                    
                     oldSelectNum = selectNum;
                     oneFlag = false;
                 }
                 if (EnterFlag)
                 {
-                    if (selectNum == 0) ClickSelectDataDecisionButton();
-                    else if (selectNum == 1) ClickSelectDataReturnButton();
+                    if (selectNum == 0) ClickSelectDataReturnButton();
+                    else if (selectNum == 1) ClickSelectDataDecisionButton();
                     selectNum = 0;
                     oldSelectNum = 1;
                     EnterFlag = false;

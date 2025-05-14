@@ -1013,9 +1013,9 @@ MonoBehaviour:
   - {fileID: 0}
   fadeBannerSpriteNum: 0
   fadeObjectWidth: 0
-  fadeInSecond: 0.5
+  fadeInSecond: 1
   fadeInFlag: 0
-  fadeOutSecond: 5
+  fadeOutSecond: 1
   fadeOutFlag: 0
   fadeIntervalSecond: 5
   fadeIntervalTimer: 0
@@ -1089,7 +1089,7 @@ Canvas:
   m_AdditionalShaderChannelsFlag: 0
   m_UpdateRectTransformForStandalone: 0
   m_SortingLayerID: 0
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_TargetDisplay: 0
 --- !u!114 &2492535141646561106
 MonoBehaviour:

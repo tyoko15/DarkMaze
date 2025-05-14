@@ -46,6 +46,7 @@ public class GameManagerStage1to1 : MonoBehaviour
         if (fade == null)
         {
             fade = Instantiate(fadeManagerObject);
+            fade.gameObject.name = "FadeManager";
             fadeManager = fade.GetComponent<FadeManager>();
             fadeManager.AfterFade();
         }
@@ -92,7 +93,7 @@ public class GameManagerStage1to1 : MonoBehaviour
                 break;
             case GameStatus.clear:
                 playerController.status = 4;
-                SceneManager.LoadScene("StageSelect");
+                EndAnime();
                 break;
         }
     }
@@ -101,8 +102,13 @@ public class GameManagerStage1to1 : MonoBehaviour
     {
         if (fadeFlag)
         {
-            if (fadeManager.fadeOutFlag && fadeManager.endFlag) fadeFlag = false;
-            fadeManager.FadeControl();
+            if (fadeManager.fadeOutFlag && fadeManager.endFlag)
+            {
+                fadeManager.fadeOutFlag = false;
+                fadeManager.endFlag = false;
+                fadeFlag = false;
+            }
+                fadeManager.FadeControl();
         }
         else
         {
@@ -115,7 +121,20 @@ public class GameManagerStage1to1 : MonoBehaviour
             else if (startTimer < startTime) startTimer += Time.deltaTime;
         }
     }
+    void EndAnime()
+    {
+        if (fadeFlag)
+        {
+            if (fadeManager.fadeIntervalFlag && fadeManager.endFlag)
+            {
+                fadeFlag = false;
+                Debug.Log($"fadeFlag{fadeFlag}");
+            }
+                fadeManager.FadeControl();
+        }
+        else SceneManager.LoadScene("StageSelect");
 
+    }
     // ‰EãƒGƒŠƒA‚Ì‰ñ“]ƒMƒ~ƒbƒN
     public void Gimmick1()
     {
@@ -146,11 +165,16 @@ public class GameManagerStage1to1 : MonoBehaviour
     }
     public void Goal()
     {
-        if(goalObject.GetComponent<GoalManager>().isGoalFlag) status = GameStatus.clear;
+        if (goalObject.GetComponent<GoalManager>().isGoalFlag)
+        {
+            fadeFlag = true;
+            fadeManager.fadeInFlag = true;
+            status = GameStatus.clear;
+        }
     }
 
-    // ‰ñ“]ƒMƒ~ƒbƒN(‰ñ“]‚·‚éƒGƒŠƒAA‰ñ“]•ûŒüA‰ñ“]“xA‰ñ“]‚É‚©‚©‚éŽžŠÔ)
-    public void AreaRotation(GameObject area, int direction, int degree,  float time, int i, ref bool flag)
+        // ‰ñ“]ƒMƒ~ƒbƒN(‰ñ“]‚·‚éƒGƒŠƒAA‰ñ“]•ûŒüA‰ñ“]“xA‰ñ“]‚É‚©‚©‚éŽžŠÔ)
+        public void AreaRotation(GameObject area, int direction, int degree,  float time, int i, ref bool flag)
     {
         if (rotationTimer[i] == 0) originDegree = area.transform.localEulerAngles.y;
         if (rotationTimer[i] > time)

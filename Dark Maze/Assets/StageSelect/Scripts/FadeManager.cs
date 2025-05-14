@@ -76,7 +76,6 @@ public class FadeManager : MonoBehaviour
 
     void InFade()
     {
-        Debug.Log($"FadeIn{endFlag}");
         for (int i = 0; i < fadeObjects.Length; i++)
         {
             if (fadeObjects[i].gameObject.GetComponent<RectTransform>().anchoredPosition.x == 0)
@@ -131,7 +130,6 @@ public class FadeManager : MonoBehaviour
 
     void IntervalFade()
     {
-        Debug.Log($"FadeInterval{endFlag}");
         if (fadeIntervalTimer == 0)
         {
             fadeBannerFadeInFlag = true;

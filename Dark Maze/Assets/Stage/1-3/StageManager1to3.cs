@@ -2,7 +2,7 @@ using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public class GameManagerStage1to2 : MonoBehaviour
+public class GameManagerStage1to3 : MonoBehaviour
 {
     [SerializeField] GameObject fadeManagerObject;
     FadeManager fadeManager;
@@ -50,7 +50,7 @@ public class GameManagerStage1to2 : MonoBehaviour
             fade = Instantiate(fadeManagerObject);
             fade.gameObject.name = "FadeManager";
             fadeManager = fade.GetComponent<FadeManager>();
-        fadeManager.AfterFade();
+            fadeManager.AfterFade();
         }
         else if (fade != null) fadeManager = fade.GetComponent<FadeManager>();
         fadeManager.fadeOutFlag = true;
@@ -61,12 +61,12 @@ public class GameManagerStage1to2 : MonoBehaviour
             defeatGateFlag[i] = true;
         }
         openTimer[0] = 2f;
-        if(GameObject.Find("DataManager") != null)
+        if (GameObject.Find("DataManager") != null)
         {
             int dataNum = GameObject.Find("DataManager").GetComponent<DataManager>().useDataNum;
             player.GetComponent<PlayerController>().clearStageNum = GameObject.Find("DataManager").GetComponent<DataManager>().data[dataNum].clearStageNum;
         }
-        else if(GameObject.Find("DataManager") == null) player.GetComponent<PlayerController>().clearStageNum = 1;
+        else if (GameObject.Find("DataManager") == null) player.GetComponent<PlayerController>().clearStageNum = 1;
     }
 
     void Update()
@@ -81,7 +81,7 @@ public class GameManagerStage1to2 : MonoBehaviour
                 Gimmick1();
                 Gimmick2();
                 Gimmick3();
-                Gimmick4(); 
+                Gimmick4();
                 Goal();
                 playerController.status = 1;
                 break;
@@ -105,7 +105,7 @@ public class GameManagerStage1to2 : MonoBehaviour
 
     void StartAnime()
     {
-        if(fadeFlag)
+        if (fadeFlag)
         {
             if (fadeManager.fadeOutFlag && fadeManager.endFlag)
             {
@@ -113,7 +113,7 @@ public class GameManagerStage1to2 : MonoBehaviour
                 fadeManager.fadeOutFlag = false;
                 fadeManager.endFlag = false;
             }
-            fadeManager.FadeControl();            
+            fadeManager.FadeControl();
         }
         else
         {
@@ -141,31 +141,25 @@ public class GameManagerStage1to2 : MonoBehaviour
         else SceneManager.LoadScene("StageSelect");
     }
 
-        // 右上エリアの箱を感圧版に置くギミック
-        public void Gimmick1()
+    // 
+    public void Gimmick1()
     {
-        SenceGate(gateObjects[0], buttonObjects[0].GetComponent<ButtonManager>().buttonFlag, 2, 0);
+
     }
-    // 左下エリアの回転ギミック
+    // 
     public void Gimmick2()
     {
-        if (buttonObjects[1].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[2], -1, 90, 2, 0, ref buttonObjects[1].GetComponent<ButtonManager>().buttonFlag);
+
     }
-    // 右下エリアの敵撃破＆離れたボタンギミック
+    // 
     public void Gimmick3()
     {
-        if (enterArea[3].enterAreaFlag) Gate(gateObjects[1], false, 2, 1, true, ref enterArea[3].enterAreaFlag);
-        if (enemys[0].transform.childCount == 0 && defeatGateFlag[0])
-        {
-            ActiveLight(lightObjects[0], 2 , 0, false, ref defeatGateFlag[0]);
-            Gate(gateObjects[1], true, 2, 1, true, ref defeatGateFlag[0]);            
-        }
-        if (buttonObjects[2].GetComponent<ButtonManager>().buttonFlag) Gate(gateObjects[2], true, 2, 1, true, ref buttonObjects[2].GetComponent<ButtonManager>().buttonFlag);
+        
     }
     // 右上エリアのゲートオープンギミック
     public void Gimmick4()
     {
-        if (buttonObjects[3].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[2], -1, 180, 2, 0, ref buttonObjects[3].GetComponent<ButtonManager>().buttonFlag);
+
     }
     public void Goal()
     {
@@ -177,8 +171,8 @@ public class GameManagerStage1to2 : MonoBehaviour
         }
     }
 
-        // 回転ギミック(回転するエリア、回転方向、回転度、回転にかかる時間)
-        public void AreaRotation(GameObject area, int direction, int degree, float time, int i, ref bool flag)
+    // 回転ギミック(回転するエリア、回転方向、回転度、回転にかかる時間)
+    public void AreaRotation(GameObject area, int direction, int degree, float time, int i, ref bool flag)
     {
         if (rotationTimer[i] == 0) originDegree = area.transform.localEulerAngles.y;
         if (rotationTimer[i] > time)
@@ -210,7 +204,7 @@ public class GameManagerStage1to2 : MonoBehaviour
                 a = Mathf.InverseLerp(1f, -1.1f, nowHeight);
                 openTimer[i] = a * time;
             }
-            else if(!open)
+            else if (!open)
             {
                 a = Mathf.InverseLerp(-1.1f, 1f, nowHeight);
                 openTimer[i] = a * time;

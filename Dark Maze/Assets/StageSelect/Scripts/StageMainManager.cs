@@ -35,6 +35,7 @@ public class StageMainManager : MonoBehaviour
         if (fade == null)
         {
             fade = Instantiate(fadeManagerObject);
+            fade.gameObject.name = "FadeManager";
             fadeManager = fade.GetComponent<FadeManager>();
         }
         else if (fade != null) fadeManager = fade.GetComponent<FadeManager>();
@@ -64,8 +65,21 @@ public class StageMainManager : MonoBehaviour
     {
         // 画面切り替え後のFade
         //if (!firstFadeFlag) FirstFade();
-        if (startFadeFlag && fadeManager.fadeOutFlag && fadeManager.endFlag) startFadeFlag = false;
-        else if (endFadeFlag && fadeManager.fadeOutFlag && fadeManager.endFlag) endFadeFlag = false;
+        if (startFadeFlag && fadeManager.fadeOutFlag && fadeManager.endFlag)
+        {
+            startFadeFlag = false;
+            fadeManager.fadeOutFlag = false;
+            fadeManager.endFlag = false;
+        }
+        else if (endFadeFlag && fadeManager.fadeIntervalFlag && fadeManager.endFlag)
+        {
+            endFadeFlag = false;
+            fadeManager.fadeIntervalFlag = false;
+            fadeManager.endFlag = false;
+            SceneManager.LoadScene($"{FieldNum + 1}-{stageSelectManagers[FieldNum].selectNum + 1}");
+            //Debug.Log($"{FieldNum + 1}-{stageSelectManager[FieldNum].selectNum + 1}");
+            enterFlag = false;
+        }
         if (startFadeFlag || endFadeFlag) fadeManager.FadeControl();
         // フィールド移動
         if (stageSelectManagers[FieldNum].changeNextFlag)
@@ -81,19 +95,10 @@ public class StageMainManager : MonoBehaviour
 
         if (fadeFlag) ChangeField();
 
-        if (stageSelectManagers[FieldNum].moveFlag == 0 && !fadeFlag && enterFlag)
+        if (stageSelectManagers[FieldNum].moveFlag == 0 && !fadeFlag && !endFadeFlag && enterFlag)
         {
-            if (fadeManager.fadeIntervalFlag && fadeManager.endFlag)
-            {
-                SceneManager.LoadScene($"{FieldNum + 1}-{stageSelectManagers[FieldNum].selectNum + 1}");
-                //Debug.Log($"{FieldNum + 1}-{stageSelectManager[FieldNum].selectNum + 1}");
-                enterFlag = false;
-            }
-            else
-            {
-                fadeManager.FadeControl();
-                fadeManager.fadeIntervalFlag = true;
-            }
+            endFadeFlag = true;
+            fadeManager.fadeInFlag = true;
         }
         else enterFlag = false;
     }

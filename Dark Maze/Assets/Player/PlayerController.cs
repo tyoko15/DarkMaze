@@ -311,17 +311,14 @@ public class PlayerController : MonoBehaviour
         if(collision.gameObject.tag == "Wall")
         {
             float x = playerObject.transform.position.x - collision.gameObject.transform.position.x;
+            float y = playerObject.transform.position.y - collision.gameObject.transform.position.y;
             float z = playerObject.transform.position.z - collision.gameObject.transform.position.z;
-            if (Mathf.Abs(x) > Mathf.Abs(z))
+            if (y < 0.5f)
             {
-                if (x > 0 && playerHorizontal < 0) playerHorizontal = 0f; 
-                else if (x < 0 && playerHorizontal > 0) playerHorizontal = 0f;
+                if (Mathf.Abs(x) > Mathf.Abs(z)) playerHorizontal = 0f;
+                else if (Mathf.Abs(x) < Mathf.Abs(z)) playerVertical = 0f;
             }
-            else if(Mathf.Abs(x) < Mathf.Abs(z))
-            {
-                if(z > 0 && playerVertical < 0) playerVertical = 0f;
-                else if(z < 0 && playerVertical > 0) playerVertical = 0f;
-            }
+            else if (y > 0.5f) Debug.Log("a");
         }
     }
 
