@@ -11,6 +11,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("プレイヤーの基本情報")]
     [SerializeField] GameObject playerObject;
+    [SerializeField] Rigidbody rb;
+    [SerializeField] Vector3 gravity;
     [SerializeField] float playerHorizontal;
     [SerializeField] float playerVertical;
     [SerializeField] float playerSpeed;
@@ -58,7 +60,7 @@ public class PlayerController : MonoBehaviour
     Vector3 itemUseDirection;
     void Start()
     {
-
+        rb.useGravity = false;
     }
 
     void Update()
@@ -97,6 +99,7 @@ public class PlayerController : MonoBehaviour
             //進む方向に滑らかに向く。
             transform.forward = Vector3.Slerp(transform.forward, new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime), Time.deltaTime * 10f);
         }
+        rb.AddForce(gravity, ForceMode.Acceleration);
     }
 
     void CameraControl()

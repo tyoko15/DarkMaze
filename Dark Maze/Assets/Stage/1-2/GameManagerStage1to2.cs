@@ -131,18 +131,14 @@ public class GameManagerStage1to2 : MonoBehaviour
     {
         if (fadeFlag)
         {
-            if (fadeManager.fadeIntervalFlag && fadeManager.endFlag)
-            {
-                fadeFlag = false;
-                Debug.Log("a");
-            }
+            if (fadeManager.fadeIntervalFlag && fadeManager.endFlag) fadeFlag = false;
             fadeManager.FadeControl();
         }
         else SceneManager.LoadScene("StageSelect");
     }
 
-        // 右上エリアの箱を感圧版に置くギミック
-        public void Gimmick1()
+    // 右上エリアの箱を感圧版に置くギミック
+    public void Gimmick1()
     {
         SenceGate(gateObjects[0], buttonObjects[0].GetComponent<ButtonManager>().buttonFlag, 2, 0);
     }

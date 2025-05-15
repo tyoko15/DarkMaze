@@ -60,13 +60,13 @@ public class GameManagerStage1to3 : MonoBehaviour
         {
             defeatGateFlag[i] = true;
         }
-        openTimer[0] = 2f;
+        //openTimer[0] = 2f;
         if (GameObject.Find("DataManager") != null)
         {
             int dataNum = GameObject.Find("DataManager").GetComponent<DataManager>().useDataNum;
             player.GetComponent<PlayerController>().clearStageNum = GameObject.Find("DataManager").GetComponent<DataManager>().data[dataNum].clearStageNum;
         }
-        else if (GameObject.Find("DataManager") == null) player.GetComponent<PlayerController>().clearStageNum = 1;
+        else if (GameObject.Find("DataManager") == null) player.GetComponent<PlayerController>().clearStageNum = 2;
     }
 
     void Update()
@@ -141,22 +141,32 @@ public class GameManagerStage1to3 : MonoBehaviour
         else SceneManager.LoadScene("StageSelect");
     }
 
-    // 
+    // 左下エリアのボタンで右上エリアと左下エリアの回転ギミック
     public void Gimmick1()
     {
-
+        if (buttonObjects[0].GetComponent<ButtonManager>().buttonFlag)
+        {
+            AreaRotation(areas[1], -1, 90, 2, 0, false, ref buttonObjects[0].GetComponent<ButtonManager>().buttonFlag);
+            AreaRotation(areas[2], -1, 90, 2, 1, true, ref buttonObjects[0].GetComponent<ButtonManager>().buttonFlag);
+        }
     }
-    // 
+    // 右下エリアの敵前撃破で開放ギミック
     public void Gimmick2()
     {
-
+        if (enterArea[3].enterAreaFlag) Gate(gateObjects[0], false, 2, 0, true, ref enterArea[3].enterAreaFlag);
+        if (enemys[0].transform.childCount == 0 && defeatGateFlag[0])
+        {
+            ActiveLight(lightObjects[0], 2, 0, false, ref defeatGateFlag[0]);
+            Gate(gateObjects[0], true, 2, 0, false, ref defeatGateFlag[0]);
+            Gate(gateObjects[1], true, 2, 1, true, ref defeatGateFlag[0]);
+        }
     }
-    // 
+    // 右上エリアのボタンで右上エリアの回転ギミック
     public void Gimmick3()
     {
-        
+        if (buttonObjects[1].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[1], -1, 180, 2, 0, true, ref buttonObjects[1].GetComponent<ButtonManager>().buttonFlag);
     }
-    // 右上エリアのゲートオープンギミック
+    // 
     public void Gimmick4()
     {
 
@@ -172,7 +182,7 @@ public class GameManagerStage1to3 : MonoBehaviour
     }
 
     // 回転ギミック(回転するエリア、回転方向、回転度、回転にかかる時間)
-    public void AreaRotation(GameObject area, int direction, int degree, float time, int i, ref bool flag)
+    public void AreaRotation(GameObject area, int direction, int degree, float time, int i, bool end ,ref bool flag)
     {
         if (rotationTimer[i] == 0) originDegree = area.transform.localEulerAngles.y;
         if (rotationTimer[i] > time)
@@ -180,7 +190,7 @@ public class GameManagerStage1to3 : MonoBehaviour
             status = GameStatus.play;
             rotationTimer[i] = 0;
             area.transform.rotation = Quaternion.Euler(0, originDegree + direction * degree, 0);
-            flag = false;
+            if(end) flag = false;
             stageNav.RemoveData();
             stageNav.BuildNavMesh();
         }

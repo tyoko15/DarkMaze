@@ -5,6 +5,7 @@ public class ArrowManager : MonoBehaviour
     [SerializeField] GameObject arrowObject;
     [SerializeField] GameObject playerObject;
     [SerializeField] Rigidbody rb;
+    [SerializeField] BoxCollider boxCollider;
     [SerializeField] float speed;
     [SerializeField] Vector3 position;
     [SerializeField] Vector3 rotate;
@@ -19,7 +20,7 @@ public class ArrowManager : MonoBehaviour
         arrowObject.transform.position = position;
         position = playerObject.transform.forward;
         arrowObject.transform.rotation = Quaternion.Euler(rotate);
-        arrowObject.GetComponent<BoxCollider>().isTrigger = true;
+        boxCollider.isTrigger = false;
     }
 
     void Update()
@@ -43,7 +44,6 @@ public class ArrowManager : MonoBehaviour
             {
                 lostTimer += Time.deltaTime;
             }        
-            if(lostTimer > 0.15f) arrowObject.GetComponent<BoxCollider>().isTrigger = false;
         }
         else
         {            
@@ -60,7 +60,12 @@ public class ArrowManager : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Wall")
+        if (collision.gameObject == playerObject)
+        {
+            boxCollider.isTrigger = false;
+            Debug.Log("a");
+        }
+            if (collision.gameObject.tag == "Wall")
         {
             stopFlag = true;
             lostTimer = 0;
@@ -68,8 +73,16 @@ public class ArrowManager : MonoBehaviour
         }
         if(collision.gameObject.tag == "Arrow" && collision.gameObject.GetComponent<ArrowManager>().lostTimer > lostTimer) Destroy(collision.gameObject);
     }
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject == playerObject)
+        {
+            boxCollider.isTrigger = true;
+            Debug.Log("b");
+        }
+    }
 
-    public void OnTriggerEnter(Collider other)
+        public void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Wall") 
         {

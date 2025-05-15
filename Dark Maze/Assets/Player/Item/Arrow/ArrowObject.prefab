@@ -9,11 +9,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 7734142817197975604}
+  - component: {fileID: 4085097032471677790}
   - component: {fileID: 7656694702925094867}
   - component: {fileID: 3742414832501071095}
   - component: {fileID: 4576535782575244975}
   - component: {fileID: 909408433132849564}
-  - component: {fileID: 4085097032471677790}
   m_Layer: 0
   m_Name: ArrowObject
   m_TagString: Arrow
@@ -36,6 +36,26 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4085097032471677790
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4029604668275548159}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c6513b8c8caa3c64ca26c7b4a9286c47, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  arrowObject: {fileID: 4029604668275548159}
+  playerObject: {fileID: 0}
+  rb: {fileID: 909408433132849564}
+  boxCollider: {fileID: 4576535782575244975}
+  speed: 100
+  position: {x: 0, y: 0, z: 0}
+  rotate: {x: 0, y: 0, z: 0}
+  lostTime: 1
 --- !u!33 &7656694702925094867
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -134,22 +154,3 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 116
   m_CollisionDetection: 0
---- !u!114 &4085097032471677790
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4029604668275548159}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c6513b8c8caa3c64ca26c7b4a9286c47, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  arrowObject: {fileID: 4029604668275548159}
-  playerObject: {fileID: 0}
-  rb: {fileID: 909408433132849564}
-  speed: 50
-  position: {x: 0, y: 0, z: 0}
-  rotate: {x: 0, y: 0, z: 0}
-  lostTime: 1
