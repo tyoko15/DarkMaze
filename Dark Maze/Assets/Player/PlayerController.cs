@@ -321,7 +321,6 @@ public class PlayerController : MonoBehaviour
                 if (Mathf.Abs(x) > Mathf.Abs(z)) playerHorizontal = 0f;
                 else if (Mathf.Abs(x) < Mathf.Abs(z)) playerVertical = 0f;
             }
-            else if (y > 0.5f) Debug.Log("a");
         }
     }
 

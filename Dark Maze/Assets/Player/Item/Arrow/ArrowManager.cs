@@ -63,7 +63,6 @@ public class ArrowManager : MonoBehaviour
         if (collision.gameObject == playerObject)
         {
             boxCollider.isTrigger = false;
-            Debug.Log("a");
         }
             if (collision.gameObject.tag == "Wall")
         {
@@ -78,7 +77,6 @@ public class ArrowManager : MonoBehaviour
         if (collision.gameObject == playerObject)
         {
             boxCollider.isTrigger = true;
-            Debug.Log("b");
         }
     }
 
