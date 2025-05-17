@@ -45,7 +45,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d234b1a1dc83cb4b894160023e08c7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  area: {fileID: 0}
+  area: {fileID: 8242772049703494611}
   enterAreaFlag: 0
   enemyAreaFlag: 0
 --- !u!65 &7605765940237538782

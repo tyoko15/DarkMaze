@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
-using UnityEditor.Experimental.GraphView;
 
 public class PlayerController : MonoBehaviour
 {
@@ -58,6 +57,14 @@ public class PlayerController : MonoBehaviour
     bool itemUseFlag;
     bool endUseFlag;
     Vector3 itemUseDirection;
+    [Header("特殊効果")]
+    // 砂の効果
+    [SerializeField] LayerMask sandLayer;
+    bool onSandFlag;
+    [SerializeField] float sandTime;
+    float sandTimer;
+    Vector3 originPosition;
+
     void Start()
     {
         rb.useGravity = false;
@@ -89,7 +96,31 @@ public class PlayerController : MonoBehaviour
     // Player行動管理関数
     void PlayerControl()
     {
-        if (!itemSelectFlag && !itemUseFlag)
+        // 地面が砂の場合
+        Ray ray = new Ray(playerObject.transform.position, -playerObject.transform.up);
+        RaycastHit hit;
+        if(Physics.Raycast(ray, out hit, 0.3f, sandLayer)) onSandFlag = true;
+        // 砂の演出
+        if(onSandFlag)
+        {
+            playerObject.GetComponent<Collider>().enabled = false;
+            if(sandTimer == 0) originPosition = playerObject.transform.position;
+            if(sandTimer > sandTime)
+            {
+                playerObject.GetComponent<Collider>().enabled = true;
+                sandTimer = 0;
+                onSandFlag = false;
+                playerObject.transform.position = new Vector3(playerObject.transform.parent.transform.position.x, playerObject.transform.parent.transform.position.y + 2f, playerObject.transform.parent.transform.position.z);
+            }
+            else if(sandTimer < sandTime)
+            {
+                sandTimer += Time.deltaTime;
+                float y = Mathf.Lerp(originPosition.y, originPosition.y -2.5f, sandTimer / sandTime);
+                playerObject.transform.position = new Vector3(playerObject.transform.position.x, y, playerObject.transform.position.z);                
+            }
+        }
+
+        if (!itemSelectFlag && !itemUseFlag && !onSandFlag)
         {
             // 行動
             Vector3 playerPosition = playerObject.transform.position;

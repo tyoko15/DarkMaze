@@ -42,7 +42,6 @@ public class GameManagerStage2to1 : MonoBehaviour
     [SerializeField] bool[] activeFlag;
     [SerializeField] EnterArea[] enterArea;
     [SerializeField] bool[] defeatGateFlag;
-    bool bothflag;
     void Start()
     {
         GameObject fade = GameObject.Find("FadeManager");
@@ -61,7 +60,6 @@ public class GameManagerStage2to1 : MonoBehaviour
         {
             defeatGateFlag[i] = true;
         }
-        bothflag = true;
         //openTimer[0] = 2f;
         if (GameObject.Find("DataManager") != null)
         {
@@ -139,21 +137,36 @@ public class GameManagerStage2to1 : MonoBehaviour
         else SceneManager.LoadScene("StageSelect");
     }
 
-    // 
+    // 左下エリアの敵撃破でボタン出現
+    // ボタンは左下エリアの回転ギミック
     public void Gimmick1()
     {
         if (enterArea[2].enterAreaFlag) Gate(gateObjects[0], false, 2, 0, true, ref enterArea[2].enterAreaFlag);
-        //if (buttonObjects[0].GetComponent<ButtonManager>())
+        if (enemys[0].transform.childCount == 0 && defeatGateFlag[0])
+        {
+            ActiveLight(lightObjects[0], 2, 0, false, ref defeatGateFlag[0]);
+            ActiveObject(buttonObjects[0], 2, 0, false, ref defeatGateFlag[0]);
+            Gate(gateObjects[0], true, 2, 0, true, ref defeatGateFlag[0]);
+        }
+        if (buttonObjects[0].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[2],  1, 90, 2, 0, true, ref buttonObjects[0].GetComponent<ButtonManager>().buttonFlag);
     }
-    // 
+    // 右下エリアのボタンを同時押しでボタン出現
+    // ボタンは右下エリアの回転ギミック
     public void Gimmick2()
     {
-
+        if (buttonObjects[1].GetComponent<ButtonManager>().buttonFlag && buttonObjects[2].GetComponent<ButtonManager>().buttonFlag) ActiveObject(buttonObjects[3], 2, 0, true, ref buttonObjects[2].GetComponent<ButtonManager>().buttonFlag);
+        if (buttonObjects[3].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[3], 1, 90, 2, 1, true, ref buttonObjects[3].GetComponent<ButtonManager>().buttonFlag);
     }
-    // 
+    // 右上エリアの敵撃破で扉開放ギミック
     public void Gimmick3()
     {
-
+        if (enterArea[1].enterAreaFlag) Gate(gateObjects[1], false, 2, 1, true, ref enterArea[1].enterAreaFlag);
+        if (enemys[1].transform.childCount == 0 && defeatGateFlag[1])
+        {
+            ActiveLight(lightObjects[1], 2, 1, false, ref defeatGateFlag[1]);
+            Gate(gateObjects[1], true, 2, 1, false, ref defeatGateFlag[1]);
+            Gate(gateObjects[2], true, 2, 2, true, ref defeatGateFlag[1]);
+        }
     }
     // 
     public void Gimmick4()
