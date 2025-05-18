@@ -7,6 +7,7 @@ public class TitleManager : MonoBehaviour
 {
     [SerializeField] DataManager dataManager;
     [SerializeField] FadeManager fadeManager;
+    [SerializeField] GameObject fadeManagerObject;
     // UIŽæ“¾
     [Header("UI‚ÌŽæ“¾")]
     [SerializeField] GameObject titleUIObject;
@@ -34,6 +35,17 @@ public class TitleManager : MonoBehaviour
     public bool fadeFlag;
     void Start()
     {
+        GameObject fade = GameObject.Find("FadeManager");
+        if (fade == null)
+        {
+            fade = Instantiate(fadeManagerObject);
+            fade.gameObject.name = "FadeManager";
+            fadeManager = fade.GetComponent<FadeManager>();
+        }
+        else if (fade != null)
+        {
+            fadeManager = fade.GetComponent<FadeManager>();
+        }
         TitleUIActive(true);
         SelectDataUIActive(false);
         CreateDataUIActive(false);

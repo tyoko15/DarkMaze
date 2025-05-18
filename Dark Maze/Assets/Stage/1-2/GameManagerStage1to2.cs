@@ -1,5 +1,7 @@
+using TMPro;
 using Unity.AI.Navigation;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class GameManagerStage1to2 : MonoBehaviour
@@ -12,6 +14,7 @@ public class GameManagerStage1to2 : MonoBehaviour
         start,
         play,
         stop,
+        menu, 
         over,
         clear,
     }
@@ -25,6 +28,7 @@ public class GameManagerStage1to2 : MonoBehaviour
     [SerializeField] GameObject goalObject;
     [SerializeField] GameObject[] buttonObjects;
     [SerializeField] GameObject[] gateObjects;
+    [SerializeField] GameObject chestObject;
     [SerializeField] GameObject[] lightObjects;
     [SerializeField] GameObject[] enemys;
     [Header("ステージ詳細情報")]
@@ -42,6 +46,17 @@ public class GameManagerStage1to2 : MonoBehaviour
     [SerializeField] bool[] activeFlag;
     [SerializeField] EnterArea[] enterArea;
     [SerializeField] bool[] defeatGateFlag;
+
+    [Header("Input情報")]
+    [SerializeField] GameObject playUI;
+    [SerializeField] GameObject menuUI;
+    bool startMenuFlag;
+    [SerializeField] float startMenuTime;
+    float startMenuTimer;
+    [SerializeField] GameObject[] menuTexts;
+    [SerializeField] bool menuFlag;
+    [SerializeField] bool enterFlag;
+    [SerializeField] int menuSelectNum;
     void Start()
     {
         GameObject fade = GameObject.Find("FadeManager");
@@ -50,7 +65,7 @@ public class GameManagerStage1to2 : MonoBehaviour
             fade = Instantiate(fadeManagerObject);
             fade.gameObject.name = "FadeManager";
             fadeManager = fade.GetComponent<FadeManager>();
-        fadeManager.AfterFade();
+            fadeManager.AfterFade();
         }
         else if (fade != null) fadeManager = fade.GetComponent<FadeManager>();
         fadeManager.fadeOutFlag = true;
@@ -93,11 +108,16 @@ public class GameManagerStage1to2 : MonoBehaviour
                 Goal();
                 playerController.status = 2;
                 break;
-            case GameStatus.over:
+            case GameStatus.menu:
+                MenuControl();
+                if (!menuFlag) status = GameStatus.play;
                 playerController.status = 3;
                 break;
-            case GameStatus.clear:
+            case GameStatus.over:
                 playerController.status = 4;
+                break;
+            case GameStatus.clear:
+                playerController.status = 5;
                 EndAnime();
                 break;
         }
@@ -134,7 +154,17 @@ public class GameManagerStage1to2 : MonoBehaviour
             if (fadeManager.fadeIntervalFlag && fadeManager.endFlag) fadeFlag = false;
             fadeManager.FadeControl();
         }
-        else SceneManager.LoadScene("StageSelect");
+        else
+        {
+            if (GameObject.Find("DataManager") != null)
+            {
+                DataManager dataManager = GameObject.Find("DataManager").GetComponent<DataManager>();
+                int dataNum = dataManager.useDataNum;
+                if (dataManager.data[dataNum].clearStageNum == 1) dataManager.data[dataNum].clearStageNum = 2;
+                dataManager.SaveData(dataManager.useDataNum, dataManager.data[dataManager.useDataNum].playerName, dataManager.data[dataNum].clearStageNum);
+            }
+            SceneManager.LoadScene("StageSelect");
+        }
     }
 
     // 右上エリアの箱を感圧版に置くギミック
@@ -153,6 +183,7 @@ public class GameManagerStage1to2 : MonoBehaviour
         if (enterArea[3].enterAreaFlag) Gate(gateObjects[1], false, 2, 1, true, ref enterArea[3].enterAreaFlag);
         if (enemys[0].transform.childCount == 0 && defeatGateFlag[0])
         {
+            ActiveObject(chestObject, 2, 0, false, ref defeatGateFlag[0]);
             ActiveLight(lightObjects[0], 2 , 0, false, ref defeatGateFlag[0]);
             Gate(gateObjects[1], true, 2, 1, true, ref defeatGateFlag[0]);            
         }
@@ -173,8 +204,8 @@ public class GameManagerStage1to2 : MonoBehaviour
         }
     }
 
-        // 回転ギミック(回転するエリア、回転方向、回転度、回転にかかる時間)
-        public void AreaRotation(GameObject area, int direction, int degree, float time, int i, ref bool flag)
+    // 回転ギミック(回転するエリア、回転方向、回転度、回転にかかる時間)
+    public void AreaRotation(GameObject area, int direction, int degree, float time, int i, ref bool flag)
     {
         if (rotationTimer[i] == 0) originDegree = area.transform.localEulerAngles.y;
         if (rotationTimer[i] > time)
@@ -327,6 +358,108 @@ public class GameManagerStage1to2 : MonoBehaviour
             activeLightTimer[i] += Time.deltaTime;
             float range = Mathf.Lerp(0f, 180f, activeLightTimer[i] / time);
             lightOb.GetComponent<Light>().spotAngle = range;
+        }
+    }
+
+    // メニュー関数
+    void MenuControl()
+    {
+        if (startMenuFlag)
+        {
+            if (startMenuTimer > startMenuTime)
+            {
+                menuUI.GetComponent<RectTransform>().localScale = new Vector3(1f, 1f, 1f);
+                startMenuTimer = 0;
+                startMenuFlag = false;
+            }
+            else if (startMenuTimer < startMenuTime)
+            {
+                startMenuTimer += Time.deltaTime;
+                float scale = Mathf.Lerp(0f, 1f, startMenuTimer / startMenuTime);
+                menuUI.GetComponent<RectTransform>().localScale = new Vector3(scale, scale, 1f);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < menuTexts.Length; i++)
+            {
+                if (menuSelectNum == i) TextAnime(menuTexts[i], true);
+                else if (menuSelectNum != i) TextAnime(menuTexts[i], false);
+            }
+            if (enterFlag)
+            {
+                if (fadeFlag)
+                {
+                    if (fadeManager.fadeIntervalFlag && fadeManager.endFlag) fadeFlag = false;
+                    fadeManager.FadeControl();
+                }
+                else
+                {
+                    if (menuSelectNum == 0) SceneManager.LoadScene("1-2");
+                    else if (menuSelectNum == 1) SceneManager.LoadScene("StageSelect");
+                    else if (menuSelectNum == 2)
+                    {
+                        playUI.SetActive(true);
+                        menuUI.SetActive(false);
+                        menuSelectNum = 0;
+                        for (int i = 0; i < menuTexts.Length; i++) TextAnime(menuTexts[i], false);
+                        menuFlag = false;
+                    }
+                    enterFlag = false;
+                }
+            }
+        }
+    }
+    void TextAnime(GameObject textOb, bool flag)
+    {
+        TextMeshProUGUI text = textOb.GetComponent<TextMeshProUGUI>();
+        // 元のサイズ
+        if (!flag) text.fontSize = 100f;
+        // 拡大
+        else text.fontSize = 120f;
+    }
+    // Input関数
+    public void InputMenuButton(InputAction.CallbackContext context)
+    {
+        if (context.started && !menuFlag && status == GameStatus.play)
+        {
+            menuFlag = true;
+            playUI.SetActive(false);
+            menuUI.SetActive(true);
+            menuUI.GetComponent<RectTransform>().localScale = new Vector3(0f, 0f, 0f);
+        }
+    }
+    //Enter
+    public void InputEnterButton(InputAction.CallbackContext context)
+    {
+        if (menuFlag && context.started && !enterFlag)
+        {
+            enterFlag = true;
+            fadeManager.fadeInFlag = true;
+            fadeFlag = true;
+        }
+    }
+    // Select
+    public void InputSelectControl(InputAction.CallbackContext context)
+    {
+        if (menuFlag)
+        {
+            if (context.started && context.ReadValue<Vector2>().y > 0)
+            {
+                menuSelectNum++;
+                if (menuSelectNum > 2)
+                {
+                    menuSelectNum = 0;
+                }
+            }
+            else if (context.started && context.ReadValue<Vector2>().y < 0)
+            {
+                menuSelectNum--;
+                if (menuSelectNum < 0)
+                {
+                    menuSelectNum = 2;
+                }
+            }
         }
     }
 }

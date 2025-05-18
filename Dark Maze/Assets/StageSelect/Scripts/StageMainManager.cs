@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -27,10 +28,18 @@ public class StageMainManager : MonoBehaviour
 
     bool enterFlag;
 
-
-
+    [SerializeField] GameObject selectUI;
+    [SerializeField] GameObject menuUI;
+    [SerializeField] GameObject[] menuTexts;
+    bool startMenuFlag;
+    [SerializeField] float startMenuTime;
+    float startMenuTimer;
+    [SerializeField] bool menuFlag;
+    [SerializeField] int menuSelectNum;
     void Start()
     {
+        selectUI.SetActive(true);
+        menuUI.SetActive(false);
         GameObject fade = GameObject.Find("FadeManager");
         if (fade == null)
         {
@@ -51,6 +60,7 @@ public class StageMainManager : MonoBehaviour
         }
         else
         {
+            //dataManager.SaveData(dataManager.useDataNum, dataManager.name, totalClearNum);
             clearFieldNum = totalClearNum / 5;
             clearStageNum = totalClearNum % 5;
         }
@@ -62,6 +72,41 @@ public class StageMainManager : MonoBehaviour
     }
 
     void Update()
+    {
+        if(!menuFlag) SelectControl();
+        else MenuControl();     
+    }
+
+    void FirstFade()
+    {
+        // フェイドインターバル終了時
+        if (fadeManager.endFlag && fadeManager.fadeIntervalFlag)
+        {
+            fadeManager.fadeIntervalFlag = false;
+            fadeManager.endFlag = false;
+            fadeManager.fadeOutFlag = true;
+        }
+        // フェイドアウト終了時
+        else if (fadeManager.endFlag && fadeManager.fadeOutFlag)
+        {
+            fadeManager.fadeOutFlag = false;
+            fadeManager.endFlag = false;
+            //firstFadeFlag = true;
+        }
+        else if (!fadeManager.fadeInFlag && !fadeManager.fadeIntervalFlag && !fadeManager.fadeOutFlag)
+        {
+            fadeManager.fadeInFlag = true;
+        }
+    }
+
+    void LoadClearStage()
+    {
+        totalClearNum = dataManager.data[dataManager.useDataNum].clearStageNum;
+        clearFieldNum = totalClearNum / 5;
+        clearStageNum = totalClearNum % 5;
+    }
+
+    void SelectControl()
     {
         // 画面切り替え後のFade
         //if (!firstFadeFlag) FirstFade();
@@ -102,36 +147,6 @@ public class StageMainManager : MonoBehaviour
         }
         else enterFlag = false;
     }
-
-    void FirstFade()
-    {
-        // フェイドインターバル終了時
-        if (fadeManager.endFlag && fadeManager.fadeIntervalFlag)
-        {
-            fadeManager.fadeIntervalFlag = false;
-            fadeManager.endFlag = false;
-            fadeManager.fadeOutFlag = true;
-        }
-        // フェイドアウト終了時
-        else if (fadeManager.endFlag && fadeManager.fadeOutFlag)
-        {
-            fadeManager.fadeOutFlag = false;
-            fadeManager.endFlag = false;
-            //firstFadeFlag = true;
-        }
-        else if (!fadeManager.fadeInFlag && !fadeManager.fadeIntervalFlag && !fadeManager.fadeOutFlag)
-        {
-            fadeManager.fadeInFlag = true;
-        }
-    }
-
-    void LoadClearStage()
-    {
-        totalClearNum = dataManager.data[dataManager.useDataNum].clearStageNum;
-        clearFieldNum = totalClearNum / 5;
-        clearStageNum = totalClearNum % 5;
-    }
-
     // フィールドを移動する
     void ChangeField()
     {
@@ -217,6 +232,65 @@ public class StageMainManager : MonoBehaviour
         }
     }
 
+    void MenuControl()
+    {
+        if (startMenuFlag)
+        {
+            if(startMenuTimer > startMenuTime)
+            {
+                startMenuTimer = 0;
+                startMenuFlag = false;
+                menuUI.GetComponent<RectTransform>().sizeDelta = new Vector2(1f, 1f);
+            }
+            else if(startMenuTimer < startMenuTime)
+            {
+                float scale = Mathf.Lerp(0f, 1f, startMenuTimer / startMenuTime);
+                menuUI.GetComponent<RectTransform>().sizeDelta = new Vector2(scale, scale);
+            }
+        }
+        else
+        {
+            for (int i = 0; i < menuTexts.Length; i++)
+            {
+                if (menuSelectNum == i) TextAnime(menuTexts[i], true);
+                else if (menuSelectNum != i) TextAnime(menuTexts[i], false);
+            }
+            if (enterFlag)
+            {
+                if (fadeFlag)
+                {
+                    if (fadeManager.fadeIntervalFlag && fadeManager.endFlag) fadeFlag = false;
+                    fadeManager.FadeControl();
+                }
+                else
+                {
+                    if (menuSelectNum == 0)
+                    {
+                        SceneManager.LoadScene("Title");
+                        GameObject fadeObject = GameObject.Find("FadeManager");
+                        Destroy(fadeObject);
+                        if(GameObject.Find("DataManager")) Destroy(GameObject.Find("DataManager"));
+                    }
+                    else if (menuSelectNum == 1)
+                    {
+                        selectUI.SetActive(true);
+                        menuUI.SetActive(false);
+                        menuSelectNum = 0;
+                        for (int i = 0; i < menuTexts.Length; i++) TextAnime(menuTexts[i], false);
+                        menuFlag = false;
+                    }
+                    enterFlag = false;
+                }
+            }
+        }
+    }
+    void TextAnime(GameObject textOb, bool flag)
+    {
+        TextMeshProUGUI text = textOb.GetComponent<TextMeshProUGUI>();
+        if (!flag) text.fontSize = 100f;
+        else text.fontSize = 120f;
+
+    }
     public void InputSelect(InputAction.CallbackContext context)
     {
         if(!fadeFlag)
@@ -288,5 +362,36 @@ public class StageMainManager : MonoBehaviour
     public void InputEnter(InputAction.CallbackContext context)
     {
         if(context.started) enterFlag = true;
+        if(menuFlag && menuSelectNum == 0)
+        {
+            fadeFlag = true;
+            fadeManager.fadeInFlag = true;
+        }
+    }
+    public void InputMenuEnter(InputAction.CallbackContext context)
+    {
+        if (context.started && !menuFlag)
+        {
+            menuUI.GetComponent<RectTransform>().sizeDelta = new Vector2(0f, 0f);
+            selectUI.SetActive(false);
+            menuUI.SetActive(true);
+            menuFlag = true;
+        }
+    }
+    public void InputMenuSelectControl(InputAction.CallbackContext context)
+    {
+        if(menuFlag)
+        {
+            if (context.started && context.ReadValue<Vector2>().y > 0)
+            {
+                menuSelectNum++;
+                if (menuSelectNum > 1) menuSelectNum = 0;
+            }
+            else if (context.started && context.ReadValue<Vector2>().y < 0)
+            {
+                menuSelectNum--;
+                if (menuSelectNum < 0) menuSelectNum = 1;
+            }
+        }
     }
 }

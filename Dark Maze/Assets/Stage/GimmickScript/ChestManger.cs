@@ -8,9 +8,10 @@ public class ChestManger : MonoBehaviour
     bool openFlag;
     [SerializeField] float openedTime;
     float openedTimer;
+    [SerializeField] bool hideFlag;
     void Start()
     {
-        
+        if(hideFlag) chestObject.SetActive(false);
     }
 
     void Update()

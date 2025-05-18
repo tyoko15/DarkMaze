@@ -1,11 +1,10 @@
 using TMPro;
 using Unity.AI.Navigation;
-using UnityEditor;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-public class GameManagerStage1to4 : MonoBehaviour
+public class GameManagerStage2to2 : MonoBehaviour
 {
     [SerializeField] GameObject fadeManagerObject;
     FadeManager fadeManager;
@@ -15,7 +14,7 @@ public class GameManagerStage1to4 : MonoBehaviour
         start,
         play,
         stop,
-        menu, 
+        menu,
         over,
         clear,
     }
@@ -46,7 +45,6 @@ public class GameManagerStage1to4 : MonoBehaviour
     [SerializeField] bool[] activeFlag;
     [SerializeField] EnterArea[] enterArea;
     [SerializeField] bool[] defeatGateFlag;
-    bool bothflag;
 
     [Header("Input情報")]
     [SerializeField] GameObject playUI;
@@ -76,14 +74,13 @@ public class GameManagerStage1to4 : MonoBehaviour
         {
             defeatGateFlag[i] = true;
         }
-        bothflag = true;
         //openTimer[0] = 2f;
         if (GameObject.Find("DataManager") != null)
         {
             int dataNum = GameObject.Find("DataManager").GetComponent<DataManager>().useDataNum;
             player.GetComponent<PlayerController>().clearStageNum = GameObject.Find("DataManager").GetComponent<DataManager>().data[dataNum].clearStageNum;
         }
-        else if (GameObject.Find("DataManager") == null) player.GetComponent<PlayerController>().clearStageNum = 3;
+        else if (GameObject.Find("DataManager") == null) player.GetComponent<PlayerController>().clearStageNum = 5;
     }
 
     void Update()
@@ -162,66 +159,48 @@ public class GameManagerStage1to4 : MonoBehaviour
             {
                 DataManager dataManager = GameObject.Find("DataManager").GetComponent<DataManager>();
                 int dataNum = dataManager.useDataNum;
-                if (dataManager.data[dataNum].clearStageNum == 3) dataManager.data[dataNum].clearStageNum = 4;
+                if (dataManager.data[dataNum].clearStageNum == 5) dataManager.data[dataNum].clearStageNum = 6;
                 dataManager.SaveData(dataManager.useDataNum, dataManager.data[dataManager.useDataNum].playerName, dataManager.data[dataNum].clearStageNum);
             }
             SceneManager.LoadScene("StageSelect");
         }
     }
 
-    // 左上エリアの敵撃破でボタン出現ギミック
-    // ボタンで左上エリア回転ギミック
+    // 左下エリアの敵撃破でボタン出現
+    // ボタンは左下エリアの回転ギミック
     public void Gimmick1()
     {
+        if (enterArea[2].enterAreaFlag) Gate(gateObjects[0], false, 2, 0, true, ref enterArea[2].enterAreaFlag);
         if (enemys[0].transform.childCount == 0 && defeatGateFlag[0])
         {
+            ActiveLight(lightObjects[0], 2, 0, false, ref defeatGateFlag[0]);
             ActiveObject(buttonObjects[0], 2, 0, false, ref defeatGateFlag[0]);
-            ActiveLight(lightObjects[0], 2, 0, true, ref defeatGateFlag[0]);
+            Gate(gateObjects[0], true, 2, 0, true, ref defeatGateFlag[0]);
         }
-            if (buttonObjects[0].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[0], -1, 90, 2, 0, true, ref buttonObjects[0].GetComponent<ButtonManager>().buttonFlag);
+        if (buttonObjects[0].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[2], 1, 90, 2, 0, true, ref buttonObjects[0].GetComponent<ButtonManager>().buttonFlag);
     }
-    // 左下エリアと右上エリアの敵撃破でボタン出現ギミック
-    // 
+    // 右下エリアのボタンを同時押しでボタン出現
+    // ボタンは右下エリアの回転ギミック
     public void Gimmick2()
     {
-        if (enterArea[2].enterAreaFlag) Gate(gateObjects[0], false, 2, 0, true, ref enterArea[2].enterAreaFlag);
-        if (enemys[2].transform.childCount == 0 && defeatGateFlag[2])
-        {
-            Gate(gateObjects[0], true, 2, 0, false, ref defeatGateFlag[2]);
-            ActiveLight(lightObjects[2], 2, 2, true, ref defeatGateFlag[2]);
-
-        }
+        if (buttonObjects[1].GetComponent<ButtonManager>().buttonFlag && buttonObjects[2].GetComponent<ButtonManager>().buttonFlag) ActiveObject(buttonObjects[3], 2, 0, true, ref buttonObjects[2].GetComponent<ButtonManager>().buttonFlag);
+        if (buttonObjects[3].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[3], 1, 90, 2, 1, true, ref buttonObjects[3].GetComponent<ButtonManager>().buttonFlag);
+    }
+    // 右上エリアの敵撃破で扉開放ギミック
+    public void Gimmick3()
+    {
         if (enterArea[1].enterAreaFlag) Gate(gateObjects[1], false, 2, 1, true, ref enterArea[1].enterAreaFlag);
         if (enemys[1].transform.childCount == 0 && defeatGateFlag[1])
         {
+            ActiveLight(lightObjects[1], 2, 1, false, ref defeatGateFlag[1]);
             Gate(gateObjects[1], true, 2, 1, false, ref defeatGateFlag[1]);
-            ActiveLight(lightObjects[1], 2, 1, true, ref defeatGateFlag[1]);
+            Gate(gateObjects[2], true, 2, 2, true, ref defeatGateFlag[1]);
         }
-    }
-    // 
-    public void Gimmick3()
-    {
-        if (!defeatGateFlag[2] && !defeatGateFlag[1] && bothflag)
-        {
-            ActiveObject(buttonObjects[1], 2, 0, false, ref bothflag);
-            Gate(gateObjects[2], true, 2, 2, false, ref bothflag);
-            Gate(gateObjects[3], true, 2, 3, true, ref bothflag);
-        }
-        if(buttonObjects[1].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[2], -1, 90, 2, 0, true, ref buttonObjects[1].GetComponent<ButtonManager>().buttonFlag);
     }
     // 
     public void Gimmick4()
     {
-        if (enterArea[3].enterAreaFlag) Gate(gateObjects[2], false, 2, 2, true, ref enterArea[3].enterAreaFlag);
-        if (enemys[3].transform.childCount == 0 && defeatGateFlag[3])
-        {
-            Gate(gateObjects[2], true, 2, 2, false, ref defeatGateFlag[3]);
-            ActiveObject(buttonObjects[2], 2, 1, false, ref bothflag);
-            ActiveObject(buttonObjects[3], 2, 2, false, ref bothflag);
-            ActiveLight(lightObjects[3], 2, 3, true, ref defeatGateFlag[3]);
-        }
-        if (!defeatGateFlag[3] && buttonObjects[2].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[2], -1, 90, 2, 0, true, ref buttonObjects[2].GetComponent<ButtonManager>().buttonFlag);
-        if (!defeatGateFlag[3] && buttonObjects[3].GetComponent<ButtonManager>().buttonFlag) ActiveObject(goalObject, 2, 3, true, ref buttonObjects[3].GetComponent<ButtonManager>().buttonFlag);
+
     }
     public void Goal()
     {
@@ -423,7 +402,7 @@ public class GameManagerStage1to4 : MonoBehaviour
                 }
                 else
                 {
-                    if (menuSelectNum == 0) SceneManager.LoadScene("1-4");
+                    if (menuSelectNum == 0) SceneManager.LoadScene("2-1");
                     else if (menuSelectNum == 1) SceneManager.LoadScene("StageSelect");
                     else if (menuSelectNum == 2)
                     {

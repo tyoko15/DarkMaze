@@ -1,6 +1,9 @@
+using TMPro;
 using Unity.AI.Navigation;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 public class GameManagerStage1to1 : MonoBehaviour
 {
@@ -12,6 +15,7 @@ public class GameManagerStage1to1 : MonoBehaviour
         start,
         play,
         stop,
+        menu,
         over,
         clear,
     }
@@ -40,8 +44,21 @@ public class GameManagerStage1to1 : MonoBehaviour
     [SerializeField] bool[] activeFlag;
     [SerializeField] EnterArea[] enterArea;
     [SerializeField] bool[] defeatGateFlag;
+
+    [Header("InputèÓïÒ")]
+    [SerializeField] GameObject playUI;
+    [SerializeField] GameObject menuUI;
+    bool startMenuFlag;
+    [SerializeField] float startMenuTime;
+    float startMenuTimer;
+    [SerializeField] GameObject[] menuTexts;
+    [SerializeField] bool menuFlag;
+    [SerializeField] bool enterFlag;
+    [SerializeField] int menuSelectNum;
     void Start()
     {
+        playUI.SetActive(true);
+        menuUI.SetActive(false);
         GameObject fade = GameObject.Find("FadeManager");
         if (fade == null)
         {
@@ -79,6 +96,7 @@ public class GameManagerStage1to1 : MonoBehaviour
                 Gimmick2();
                 Gimmick3();
                 Goal();
+                if (menuFlag) status = GameStatus.menu;
                 playerController.status = 1;
                 break;
             case GameStatus.stop:
@@ -88,11 +106,16 @@ public class GameManagerStage1to1 : MonoBehaviour
                 Goal();
                 playerController.status = 2;
                 break;
-            case GameStatus.over:
+            case GameStatus.menu:
+                MenuControl();
+                if (!menuFlag) status = GameStatus.play;
                 playerController.status = 3;
                 break;
-            case GameStatus.clear:
+            case GameStatus.over:
                 playerController.status = 4;
+                break;
+            case GameStatus.clear:
+                playerController.status = 5;
                 EndAnime();
                 break;
         }
@@ -108,7 +131,7 @@ public class GameManagerStage1to1 : MonoBehaviour
                 fadeManager.endFlag = false;
                 fadeFlag = false;
             }
-                fadeManager.FadeControl();
+            fadeManager.FadeControl();
         }
         else
         {
@@ -125,16 +148,22 @@ public class GameManagerStage1to1 : MonoBehaviour
     {
         if (fadeFlag)
         {
-            if (fadeManager.fadeIntervalFlag && fadeManager.endFlag)
-            {
-                fadeFlag = false;
-                Debug.Log($"fadeFlag{fadeFlag}");
-            }
-                fadeManager.FadeControl();
+            if (fadeManager.fadeIntervalFlag && fadeManager.endFlag) fadeFlag = false;
+            fadeManager.FadeControl();
         }
-        else SceneManager.LoadScene("StageSelect");
-
+        else
+        {
+            if (GameObject.Find("DataManager") != null)
+            {
+                DataManager dataManager = GameObject.Find("DataManager").GetComponent<DataManager>();
+                int dataNum = dataManager.useDataNum;
+                if (dataManager.data[dataNum].clearStageNum == 0) dataManager.data[dataNum].clearStageNum = 1;
+                dataManager.SaveData(dataManager.useDataNum, dataManager.data[dataManager.useDataNum].playerName, dataManager.data[dataNum].clearStageNum);
+            }
+            SceneManager.LoadScene("StageSelect");
+        }
     }
+
     // âEè„ÉGÉäÉAÇÃâÒì]ÉMÉ~ÉbÉN
     public void Gimmick1()
     {
@@ -173,8 +202,8 @@ public class GameManagerStage1to1 : MonoBehaviour
         }
     }
 
-        // âÒì]ÉMÉ~ÉbÉN(âÒì]Ç∑ÇÈÉGÉäÉAÅAâÒì]ï˚å¸ÅAâÒì]ìxÅAâÒì]Ç…Ç©Ç©ÇÈéûä‘)
-        public void AreaRotation(GameObject area, int direction, int degree,  float time, int i, ref bool flag)
+    // âÒì]ÉMÉ~ÉbÉN(âÒì]Ç∑ÇÈÉGÉäÉAÅAâÒì]ï˚å¸ÅAâÒì]ìxÅAâÒì]Ç…Ç©Ç©ÇÈéûä‘)
+    public void AreaRotation(GameObject area, int direction, int degree,  float time, int i, ref bool flag)
     {
         if (rotationTimer[i] == 0) originDegree = area.transform.localEulerAngles.y;
         if (rotationTimer[i] > time)
@@ -274,6 +303,109 @@ public class GameManagerStage1to1 : MonoBehaviour
             activeLightTimer[i] += Time.deltaTime;
             float range = Mathf.Lerp(0f, 180f, activeLightTimer[i] / time);
             lightOb.GetComponent<Light>().spotAngle = range;
+        }
+    }
+
+    // ÉÅÉjÉÖÅ[ä÷êî
+    void MenuControl()
+    {
+        if(startMenuFlag)
+        {
+            if(startMenuTimer > startMenuTime)
+            {
+                menuUI.GetComponent<RectTransform>().localScale = new Vector3(1f, 1f, 1f);
+                startMenuTimer = 0;
+                startMenuFlag = false;
+            }
+            else if(startMenuTimer < startMenuTime)
+            {
+                startMenuTimer += Time.deltaTime;
+                float scale = Mathf.Lerp(0f, 1f, startMenuTimer / startMenuTime);
+                menuUI.GetComponent<RectTransform>().localScale = new Vector3(scale, scale, 1f);
+            }            
+        }
+        else
+        {
+            for (int i = 0; i < menuTexts.Length; i++)
+            {
+                if (menuSelectNum == i) TextAnime(menuTexts[i], true);
+                else if (menuSelectNum != i) TextAnime(menuTexts[i], false);
+            }
+            if (enterFlag)
+            {
+                if (fadeFlag)
+                {
+                    if (fadeManager.fadeIntervalFlag && fadeManager.endFlag) fadeFlag = false;
+                    fadeManager.FadeControl();
+                }
+                else
+                {
+                    if (menuSelectNum == 0) SceneManager.LoadScene("1-1");
+                    else if (menuSelectNum == 1) SceneManager.LoadScene("StageSelect");
+                    else if (menuSelectNum == 2)
+                    {
+                        playUI.SetActive(true);
+                        menuUI.SetActive(false);
+                        menuSelectNum = 0;
+                        for (int i = 0; i < menuTexts.Length; i++) TextAnime(menuTexts[i], false);
+                        menuFlag = false;
+                    }
+                    enterFlag = false;
+                }
+            }
+        }
+    }
+    void TextAnime(GameObject textOb, bool flag)
+    {
+        TextMeshProUGUI text = textOb.GetComponent<TextMeshProUGUI>();
+        // å≥ÇÃÉTÉCÉY
+        if (!flag) text.fontSize = 100f;
+        // ägëÂ
+        else text.fontSize = 120f;
+    }
+    // Inputä÷êî
+    public void InputMenuButton(InputAction.CallbackContext context)
+    {
+        if (context.started && !menuFlag && status == GameStatus.play)
+        {
+            menuFlag = true;
+            startMenuFlag = true;
+            playUI.SetActive(false);
+            menuUI.SetActive(true);
+            menuUI.GetComponent<RectTransform>().localScale = new Vector3(0f, 0f, 0f);
+        }
+    }
+    //Enter
+    public void InputEnterButton(InputAction.CallbackContext context)
+    {
+        if (menuFlag && context.started && !enterFlag)
+        {
+            enterFlag = true;
+            fadeManager.fadeInFlag = true;
+            fadeFlag = true;
+        }
+    }
+    // Select
+    public void InputSelectControl (InputAction.CallbackContext context)
+    {
+        if (menuFlag)
+        {
+            if (context.started && context.ReadValue<Vector2>().y > 0)
+            {
+                menuSelectNum++;
+                if(menuSelectNum > 2)
+                {
+                    menuSelectNum = 0;
+                }
+            }
+            else if (context.started && context.ReadValue<Vector2>().y < 0)
+            {
+                menuSelectNum--;
+                if(menuSelectNum < 0)
+                {
+                    menuSelectNum = 2;
+                }
+            }
         }
     }
 }

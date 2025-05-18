@@ -83,9 +83,11 @@ public class PlayerController : MonoBehaviour
             break;
             case 2: // stop
                 break;
-            case 3: // over
+            case 3: // menu
                 break;
-            case 4: // clear
+            case 4: // over
+                break;
+            case 5: // clear
                 break;
         }
         PlayerItemSelectControl(); 
@@ -416,12 +418,5 @@ public class PlayerController : MonoBehaviour
     public void InputPlayerUseItemControl(InputAction.CallbackContext context)
     {
         itemUseDirection = new Vector3(context.ReadValue<Vector2>().x, 0f, context.ReadValue<Vector2>().y);
-    }
-    public void InputPlayerMenuButton(InputAction.CallbackContext context)
-    {
-        if (context.started)
-        {
-
-        }
     }
 }
