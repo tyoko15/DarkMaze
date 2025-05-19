@@ -40,6 +40,11 @@ public class GameManagerStage2to2 : MonoBehaviour
     [SerializeField] float[] openTimer;
     float nowHeight;
     bool oldOpenFlag;
+    [SerializeField] float limitActiveObTime;
+    bool endLimitActiveFlag;
+    bool endFadeInFlag;
+    bool endFadeOutFlag;
+    [SerializeField] float[] limitActiveObTimer; 
     [SerializeField] float[] activeObTimer;
     [SerializeField] float[] activeLightTimer;
     [SerializeField] bool[] activeFlag;
@@ -166,36 +171,20 @@ public class GameManagerStage2to2 : MonoBehaviour
         }
     }
 
-    // 左下エリアの敵撃破でボタン出現
-    // ボタンは左下エリアの回転ギミック
+    // 
     public void Gimmick1()
     {
-        if (enterArea[2].enterAreaFlag) Gate(gateObjects[0], false, 2, 0, true, ref enterArea[2].enterAreaFlag);
-        if (enemys[0].transform.childCount == 0 && defeatGateFlag[0])
-        {
-            ActiveLight(lightObjects[0], 2, 0, false, ref defeatGateFlag[0]);
-            ActiveObject(buttonObjects[0], 2, 0, false, ref defeatGateFlag[0]);
-            Gate(gateObjects[0], true, 2, 0, true, ref defeatGateFlag[0]);
-        }
-        if (buttonObjects[0].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[2], 1, 90, 2, 0, true, ref buttonObjects[0].GetComponent<ButtonManager>().buttonFlag);
+        if (buttonObjects[0].GetComponent<ButtonManager>().buttonFlag) LimitActiveObject(gateObjects[0], 0, true, ref buttonObjects[0].GetComponent<ButtonManager>().buttonFlag);
     }
-    // 右下エリアのボタンを同時押しでボタン出現
-    // ボタンは右下エリアの回転ギミック
+    // 
     public void Gimmick2()
     {
-        if (buttonObjects[1].GetComponent<ButtonManager>().buttonFlag && buttonObjects[2].GetComponent<ButtonManager>().buttonFlag) ActiveObject(buttonObjects[3], 2, 0, true, ref buttonObjects[2].GetComponent<ButtonManager>().buttonFlag);
-        if (buttonObjects[3].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[3], 1, 90, 2, 1, true, ref buttonObjects[3].GetComponent<ButtonManager>().buttonFlag);
+
     }
-    // 右上エリアの敵撃破で扉開放ギミック
+    // 
     public void Gimmick3()
     {
-        if (enterArea[1].enterAreaFlag) Gate(gateObjects[1], false, 2, 1, true, ref enterArea[1].enterAreaFlag);
-        if (enemys[1].transform.childCount == 0 && defeatGateFlag[1])
-        {
-            ActiveLight(lightObjects[1], 2, 1, false, ref defeatGateFlag[1]);
-            Gate(gateObjects[1], true, 2, 1, false, ref defeatGateFlag[1]);
-            Gate(gateObjects[2], true, 2, 2, true, ref defeatGateFlag[1]);
-        }
+
     }
     // 
     public void Gimmick4()
@@ -329,6 +318,51 @@ public class GameManagerStage2to2 : MonoBehaviour
                 float y = Mathf.Lerp(-1.1f, 1f, openTimer[i] / time);
                 gate.transform.position = new Vector3(gate.transform.position.x, y, gate.transform.position.z);
             }
+        }
+    }
+    // 時間内オブジェクトを出現ギミック
+    public void LimitActiveObject(GameObject activeOb, int i, bool end, ref bool flag)
+    {
+        if (limitActiveObTimer[i] == 0)
+        {
+            Color color = activeOb.GetComponent<MeshRenderer>().material.color;
+            color.a = 0f;
+            activeOb.GetComponent<MeshRenderer>().material.color = color;
+            activeOb.SetActive(true);
+        }
+        if (limitActiveObTimer[i] > limitActiveObTime)
+        {
+            activeOb.SetActive(false);
+            limitActiveObTimer[i] = 0;
+            if (end) flag = false;
+            endFadeInFlag = false;
+        }
+        else if (limitActiveObTimer[i] < limitActiveObTime)
+        {
+            // FadeIn
+            if (limitActiveObTimer[i] < 0.2f && !endFadeInFlag)
+            {
+                Color color = activeOb.GetComponent<MeshRenderer>().material.color;
+                float a = Mathf.Lerp(0f, 1f, limitActiveObTimer[i] / limitActiveObTime);
+                color.a = a;
+                activeOb.GetComponent<MeshRenderer>().material.color = color;
+            }
+            else if (limitActiveObTimer[i] > 0.2f && !endFadeInFlag)
+            {
+                Color color = activeOb.GetComponent<MeshRenderer>().material.color;
+                color.a = 1f;
+                activeOb.GetComponent<MeshRenderer>().material.color = color;
+                endFadeInFlag = true;
+            }
+            // FadeOut
+            if (limitActiveObTimer[i] > limitActiveObTime - 0.2f)
+            {
+                Color color = activeOb.GetComponent<MeshRenderer>().material.color;
+                float a = Mathf.Lerp(1f, 0f, limitActiveObTimer[i] / limitActiveObTime);
+                color.a = a;
+                activeOb.GetComponent<MeshRenderer>().material.color = color;
+            }           
+            limitActiveObTimer[i] += Time.deltaTime;
         }
     }
     // 透明化オブジェクトを可視化ギミック
