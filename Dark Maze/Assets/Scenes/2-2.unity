@@ -2724,7 +2724,7 @@ GameObject:
   - component: {fileID: 903199880}
   - component: {fileID: 903199879}
   - component: {fileID: 903199878}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wood (1)
   m_TagString: Wood
   m_Icon: {fileID: 0}
@@ -6012,7 +6012,7 @@ GameObject:
   - component: {fileID: 2043933352}
   - component: {fileID: 2043933351}
   - component: {fileID: 2043933350}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wood (2)
   m_TagString: Wood
   m_Icon: {fileID: 0}
@@ -11240,7 +11240,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d234b1a1dc83cb4b894160023e08c7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  area: {fileID: 1758573247585331210}
+  area: {fileID: 182623122314657264}
   enterAreaFlag: 0
   enemyAreaFlag: 0
 --- !u!65 &1319293157293504267
@@ -17851,7 +17851,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d234b1a1dc83cb4b894160023e08c7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  area: {fileID: 3178270678095677935}
+  area: {fileID: 6433553336822698384}
   enterAreaFlag: 0
   enemyAreaFlag: 0
 --- !u!23 &2763276059839864392
@@ -25302,7 +25302,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d234b1a1dc83cb4b894160023e08c7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  area: {fileID: 5219879475715637468}
+  area: {fileID: 3138003382668025878}
   enterAreaFlag: 0
   enemyAreaFlag: 0
 --- !u!65 &4770788665325105340
@@ -34837,7 +34837,7 @@ Transform:
   m_GameObject: {fileID: 3967222364316206907}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: -11, y: 0, z: 11}
+  m_LocalPosition: {x: -7, y: 0, z: 9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -37415,7 +37415,7 @@ MonoBehaviour:
   attackFlag: 0
   sword: {fileID: 9072451321279422732}
   attackTime: 0.5
-  canItemFlag: 000000
+  canItemFlag: 010100
   itemSlots:
   - {fileID: 7795111361711719215}
   - {fileID: 7953640265354807534}
@@ -37430,6 +37430,19 @@ MonoBehaviour:
   itemSelectNum: 0
   itemTime: 0.2
   arrowObject: {fileID: 4029604668275548159, guid: b7dbc8765ed41964eb3d84d70b568a6d, type: 3}
+  woodLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  ropePrefab: {fileID: 3252700491665716981, guid: 4ad408df8b5d4e64499d28ae69ec3dba, type: 3}
+  ropeObject: {fileID: 0}
+  ropeTargetObjects:
+  - {fileID: 7915323457417078723}
+  - {fileID: 903199876}
+  - {fileID: 2043933348}
+  rangeRopeTargetObjects:
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 0}
   sandLayer:
     serializedVersion: 2
     m_Bits: 128
@@ -38457,7 +38470,7 @@ GameObject:
   - component: {fileID: 368487648514494342}
   - component: {fileID: 4533368767869213031}
   - component: {fileID: 1293872964288349781}
-  m_Layer: 0
+  m_Layer: 8
   m_Name: Wood (0)
   m_TagString: Wood
   m_Icon: {fileID: 0}
@@ -39645,7 +39658,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d234b1a1dc83cb4b894160023e08c7e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  area: {fileID: 8674908491872805127}
+  area: {fileID: 780259237115953765}
   enterAreaFlag: 0
   enemyAreaFlag: 0
 --- !u!1 &8233875038460584732

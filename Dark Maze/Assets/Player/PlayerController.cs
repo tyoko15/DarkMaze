@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.HID;
 
 public class PlayerController : MonoBehaviour
 {
@@ -54,6 +55,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float itemTime;
     float[] itemTimer = new float[3];
     [SerializeField] GameObject arrowObject;
+    [SerializeField] LayerMask woodLayer;
+    [SerializeField] GameObject ropePrefab;
+    [SerializeField] GameObject ropeObject;
+    [SerializeField] GameObject[] ropeTargetObjects;
+    [SerializeField] GameObject[] rangeRopeTargetObjects;
+    int rangeTargetNum;
+    int selectRangeTargetNum;
     bool itemUseFlag;
     bool endUseFlag;
     Vector3 itemUseDirection;
@@ -319,10 +327,47 @@ public class PlayerController : MonoBehaviour
             itemSelect.GetComponent<Image>().sprite = itemImageSprites[1];
             if(itemUseFlag)
             {
+                if (ropeObject == null)
+                {
+                    //ropeObject = Instantiate(ropePrefab, playerObject.transform.parent.position, Quaternion.identity);
+                    //ropeObject.transform.position = new Vector3(ropeObject.transform.position.x, ropeObject.transform.position.y, ropeObject.transform.position.z);
+                    //ropeObject.transform.parent = playerObject.transform;
 
+                }
+                for (int i = 0; i < ropeTargetObjects.Length; i++)
+                {
+                    Ray ray = new Ray(new Vector3(playerObject.transform.position.x, playerObject.transform.position.y + 1f, playerObject.transform.position.z), playerObject.transform.forward);
+                    RaycastHit hit;
+                    if (Physics.SphereCast(ray.origin, 0.2f, ray.direction, out hit, 15f, woodLayer))
+                    {
+                        //Debug.DrawRay(ray.origin, ray.direction * 13f, Color.red);
+                        Debug.Log(hit.collider.gameObject);
+                        if (hit.collider.gameObject == ropeTargetObjects[i])
+                        {
+                            //if (Vector3.Distance(playerObject.transform.position, ropeTargetObjects[i].transform.position) < 5f)
+                            //{
+                            //    rangeRopeTargetObjects[rangeTargetNum] = ropeTargetObjects[i];
+                            //    rangeTargetNum++;
+                            //}
+                            rangeRopeTargetObjects[i] = ropeTargetObjects[i];
+                            //rangeTargetNum++;
+                            Debug.Log("a");
+                        }
+                    }
+                }
+                if (rangeRopeTargetObjects[selectRangeTargetNum] != null)
+                {
+                    ropeObject.transform.position = rangeRopeTargetObjects[selectRangeTargetNum].transform.position;
+                    playerObject.transform.LookAt(rangeRopeTargetObjects[selectRangeTargetNum].transform.position);
+                }
+                Quaternion rotation = Quaternion.LookRotation(itemUseDirection);
+                //i‚Þ•ûŒü‚ÉŠŠ‚ç‚©‚ÉŒü‚­B
+                transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 10f);
             }
             if(endUseFlag)
             {
+                //Destroy(ropeObject);
+                ropeObject = null;
                 itemUseFlag = false;
                 endUseFlag = false;
             }
@@ -342,6 +387,7 @@ public class PlayerController : MonoBehaviour
         }
         else itemSelect.GetComponent<Image>().sprite = itemImageSprites[3];
     }
+
     private void OnCollisionStay(Collision collision)
     {
         if(collision.gameObject.tag == "Wall")
