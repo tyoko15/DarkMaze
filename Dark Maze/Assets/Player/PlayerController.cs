@@ -2,12 +2,13 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.HID;
+using System.Linq;
 
 public class PlayerController : MonoBehaviour
 {
     // 0.start 1.play 2.stop 3.over 4.clear
     [Header("GameManger制御用")]
-    [SerializeField] public int status; 
+    [SerializeField] public int status;
 
     [Header("プレイヤーの基本情報")]
     [SerializeField] GameObject playerObject;
@@ -26,9 +27,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Image lightGauge;
     [SerializeField, Range(30f, 180f)] float playerLightRange;
     [SerializeField, Range(2.75f, 17.25f)] float lightRangeObjectRange;
-    [Header("最拡大するまでにかかる秒数"),SerializeField] float lightSpreadTime;
+    [Header("最拡大するまでにかかる秒数"), SerializeField] float lightSpreadTime;
     float lightSpreadTimer;
-    [Header("最縮小するまでにかかる秒数"),SerializeField] float lightShrinkTime;
+    [Header("最縮小するまでにかかる秒数"), SerializeField] float lightShrinkTime;
     float lightRangeMinRange;
     float lightShrinkTimer;
     [SerializeField] Image lightMaxIntervalTimerGauge;
@@ -41,6 +42,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float attackTime;
     float attackTimer;
     [Header("プレイヤーのアイテム情報")]
+
+    [Header("アイテム選択情報")]
     bool getItemFlag;
     [SerializeField] public bool[] canItemFlag;
     // 0.弓、1.縄、2.
@@ -54,17 +57,26 @@ public class PlayerController : MonoBehaviour
     bool endSelectFlag = true;
     [SerializeField] float itemTime;
     float[] itemTimer = new float[3];
-    [SerializeField] GameObject arrowObject;
-    [SerializeField] LayerMask woodLayer;
-    [SerializeField] GameObject ropePrefab;
-    [SerializeField] GameObject ropeObject;
-    [SerializeField] GameObject[] ropeTargetObjects;
-    [SerializeField] GameObject[] rangeRopeTargetObjects;
-    int rangeTargetNum;
-    int selectRangeTargetNum;
+    [Header("アイテム使用情報")]
     bool itemUseFlag;
     bool endUseFlag;
     Vector3 itemUseDirection;
+    [Header("弓矢詳細")]
+    [SerializeField] GameObject arrowObject;
+    [Header("縄詳細")]
+    [SerializeField] LayerMask woodLayer;
+    bool betweenObjectFlag;
+    GameObject betweenObject;
+    [SerializeField] GameObject ropePrefab;
+    [SerializeField] GameObject ropeObject;
+    [SerializeField] GameObject[] ropeTargetObjects;
+    [SerializeField] GameObject rangeRopeTargetObject;
+    Vector3 originPlayerObjectPosition;
+    Vector3 rangeRopeTargetPosition;
+    [SerializeField] bool ropeMoveFlag;
+    [SerializeField] float ropeMoveTime;
+    float ropeMoveTimer;
+
     [Header("特殊効果")]
     // 砂の効果
     [SerializeField] LayerMask sandLayer;
@@ -109,7 +121,7 @@ public class PlayerController : MonoBehaviour
         // 地面が砂の場合
         Ray ray = new Ray(playerObject.transform.position, -playerObject.transform.up);
         RaycastHit hit;
-        if(Physics.Raycast(ray, out hit, 0.3f, sandLayer)) onSandFlag = true;
+        if(Physics.Raycast(ray, out hit, 0.1f, sandLayer) && !ropeMoveFlag) onSandFlag = true;
         // 砂の演出
         if(onSandFlag)
         {
@@ -145,7 +157,17 @@ public class PlayerController : MonoBehaviour
 
     void CameraControl()
     {
-        mainCamera.transform.position = new Vector3(playerObject.transform.position.x, playerObject.transform.position.y + 10f, playerObject.transform.position.z -2f);
+        if(canItemFlag[itemSelectNum] && itemSelectNum == 1)
+        {
+            if (rangeRopeTargetObject != null)
+            {
+                float x = (playerObject.transform.position.x + rangeRopeTargetObject.transform.position.x) / 2;
+                float z = (playerObject.transform.position.z + rangeRopeTargetObject.transform.position.z) / 2;
+                mainCamera.transform.position = new Vector3(x, playerObject.transform.position.y + 15f, z);
+            }
+            else mainCamera.transform.position = new Vector3(playerObject.transform.position.x, playerObject.transform.position.y + 10f, playerObject.transform.position.z - 2f);
+        }
+        else mainCamera.transform.position = new Vector3(playerObject.transform.position.x, playerObject.transform.position.y + 10f, playerObject.transform.position.z - 2f);
     }
 
     void PlayerLightControl()
@@ -327,38 +349,73 @@ public class PlayerController : MonoBehaviour
             itemSelect.GetComponent<Image>().sprite = itemImageSprites[1];
             if(itemUseFlag)
             {
-                if (ropeObject == null)
-                {
-                    //ropeObject = Instantiate(ropePrefab, playerObject.transform.parent.position, Quaternion.identity);
-                    //ropeObject.transform.position = new Vector3(ropeObject.transform.position.x, ropeObject.transform.position.y, ropeObject.transform.position.z);
-                    //ropeObject.transform.parent = playerObject.transform;
-
-                }
                 for (int i = 0; i < ropeTargetObjects.Length; i++)
                 {
                     Ray ray = new Ray(new Vector3(playerObject.transform.position.x, playerObject.transform.position.y + 1f, playerObject.transform.position.z), playerObject.transform.forward);
                     RaycastHit hit;
-                    if (Physics.SphereCast(ray.origin, 0.2f, ray.direction, out hit, 15f, woodLayer))
+                    if (Physics.Raycast (ray.origin, 0.2f, ray.direction, out hit, 15f))
                     {
-                        //Debug.DrawRay(ray.origin, ray.direction * 13f, Color.red);
-                        Debug.Log(hit.collider.gameObject);
-                        if (hit.collider.gameObject == ropeTargetObjects[i])
+                        if (hit.collider.gameObject.GetComponent<Collider>().isTrigger == false)
                         {
-                            //if (Vector3.Distance(playerObject.transform.position, ropeTargetObjects[i].transform.position) < 5f)
-                            //{
-                            //    rangeRopeTargetObjects[rangeTargetNum] = ropeTargetObjects[i];
-                            //    rangeTargetNum++;
-                            //}
-                            rangeRopeTargetObjects[i] = ropeTargetObjects[i];
-                            //rangeTargetNum++;
-                            Debug.Log("a");
+                            //Debug.Log($"hit{hit.collider.gameObject.name}");
+                            Debug.Log(Physics.RaycastAll(ray).First().transform.name);
+                            betweenObjectFlag = true;
                         }
                     }
+                    // playerとwoodの間にobjectがないか検知
+                    if (Physics.SphereCast(ray.origin, 0.2f, ray.direction, out hit, 15f))
+                    {
+                        if (!hit.collider.gameObject.GetComponent<Collider>().isTrigger)
+                        {
+                            if (hit.collider.gameObject.layer != woodLayer)
+                            {
+                                //Debug.Log($"hit:{hit.collider.gameObject.transform.parent.parent.name}-{hit.collider.gameObject.transform.parent.name}-{hit.collider.gameObject.name}");
+                                Debug.DrawRay(ray.origin, ray.direction * 15f, Color.red);
+                                betweenObjectFlag = true;
+                            }
+                            else if (hit.collider.gameObject.layer == woodLayer)
+                            {
+                                betweenObjectFlag = false;
+                                Debug.DrawRay(ray.origin, ray.direction * 15f, Color.green);
+
+                            }
+                        }
+                        else
+                        {
+                            Debug.DrawRay(ray.origin, ray.direction * 15f, Color.green);
+                            betweenObjectFlag = false;
+                            betweenObject = hit.collider.gameObject;
+                            betweenObject.SetActive(false);
+                        }
+                    }
+                    // woodを検知
+                    if (Physics.SphereCast(ray.origin, 0.2f, ray.direction, out hit, 15f, woodLayer) && !betweenObjectFlag)
+                    {
+                        if (hit.collider.gameObject == ropeTargetObjects[i])
+                        {
+                            rangeRopeTargetObject = ropeTargetObjects[i];
+                            if (ropeObject == null)
+                            {
+                                ropeObject = Instantiate(ropePrefab, playerObject.transform.parent.position, Quaternion.identity);
+                                ropeObject.transform.position = new Vector3(ropeObject.transform.position.x, ropeObject.transform.position.y, ropeObject.transform.position.z);
+                                ropeObject.transform.parent = playerObject.transform;
+                            }
+                            ropeMoveFlag = true;
+                        }
+                    }
+                    else
+                    {
+                        Destroy(ropeObject);
+                        rangeRopeTargetObject = null;
+                        ropeObject = null;
+                        ropeMoveFlag = false;
+                    }
                 }
-                if (rangeRopeTargetObjects[selectRangeTargetNum] != null)
+                if (rangeRopeTargetObject != null)
                 {
-                    ropeObject.transform.position = rangeRopeTargetObjects[selectRangeTargetNum].transform.position;
-                    playerObject.transform.LookAt(rangeRopeTargetObjects[selectRangeTargetNum].transform.position);
+                    rangeRopeTargetPosition = rangeRopeTargetObject.transform.position;
+                    ropeObject.transform.position = rangeRopeTargetPosition;
+                    //playerObject.transform.LookAt(new Vector3(rangeRopeTargetPosition.x, rangeRopeTargetPosition.y-1f, rangeRopeTargetPosition.z));
                 }
                 Quaternion rotation = Quaternion.LookRotation(itemUseDirection);
                 //進む方向に滑らかに向く。
@@ -366,10 +423,61 @@ public class PlayerController : MonoBehaviour
             }
             if(endUseFlag)
             {
-                //Destroy(ropeObject);
-                ropeObject = null;
                 itemUseFlag = false;
-                endUseFlag = false;
+                betweenObject.SetActive(true);
+                if (ropeMoveFlag)
+                {
+                    if(ropeMoveTimer == 0)
+                    {
+                        originPlayerObjectPosition = playerObject.transform.position;
+                        float x = rangeRopeTargetPosition.x - playerObject.transform.position.x;
+                        float z = rangeRopeTargetPosition.z - playerObject.transform.position.z;
+                        if(Mathf.Abs(x) > Mathf.Abs(z)) // 左右
+                        {
+                            if(x > 0) // 右
+                            {
+                                rangeRopeTargetPosition.x -= 1f;
+                            }
+                            else if(x < 0) // 左
+                            {
+                                rangeRopeTargetPosition.x += 1f;
+                            }
+                        }
+                        else if(Mathf.Abs(x) < Mathf.Abs(z)) // 前後
+                        {
+                            if (z > 0) // 前
+                            {
+                                rangeRopeTargetPosition.z -= 1f;
+                            }
+                            else if (z < 0) // 後
+                            {
+                                rangeRopeTargetPosition.z += 1f;
+                            }
+                        }
+                    }
+                    if(ropeMoveTimer > ropeMoveTime)
+                    {
+                        ropeMoveTimer = 0;
+                        ropeMoveFlag = false;
+                    }
+                    else if(ropeMoveTimer < ropeMoveTime)
+                    {
+                        ropeObject.transform.position = rangeRopeTargetObject.transform.position;
+                        float x = Mathf.Lerp(originPlayerObjectPosition.x, rangeRopeTargetPosition.x, ropeMoveTimer / ropeMoveTime);
+                        float z = Mathf.Lerp(originPlayerObjectPosition.z, rangeRopeTargetPosition.z, ropeMoveTimer / ropeMoveTime);
+                        playerObject.transform.position = new Vector3(x, originPlayerObjectPosition.y, z);
+                        ropeMoveTimer += Time.deltaTime;
+                    }
+                }
+                else
+                {
+                    Destroy(ropeObject);
+                    rangeRopeTargetObject = null;
+                    ropeObject = null;
+                    itemUseFlag = false;
+                    endUseFlag = false;
+                    betweenObjectFlag = false;
+                }
             }
         }
         else if (canItemFlag[itemSelectNum] && itemSelectNum == 2)
