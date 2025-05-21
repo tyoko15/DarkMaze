@@ -62,9 +62,9 @@ public class ArrowManager : MonoBehaviour
     {
         if (collision.gameObject == playerObject)
         {
-            boxCollider.isTrigger = false;
+            boxCollider.isTrigger = true;
         }
-            if (collision.gameObject.tag == "Wall")
+        if (collision.gameObject.tag == "Wall")
         {
             stopFlag = true;
             lostTimer = 0;
@@ -72,21 +72,33 @@ public class ArrowManager : MonoBehaviour
         }
         if(collision.gameObject.tag == "Arrow" && collision.gameObject.GetComponent<ArrowManager>().lostTimer > lostTimer) Destroy(collision.gameObject);
     }
+    private void OnCollisionStay(Collision collision)
+    {
+        if(collision.gameObject == playerObject) boxCollider.isTrigger = true;
+        Debug.Log(boxCollider.isTrigger);
+    }
     private void OnCollisionExit(Collision collision)
     {
-        if (collision.gameObject == playerObject)
-        {
-            boxCollider.isTrigger = true;
-        }
+        //if (collision.gameObject == playerObject)
+        //{
+        //    boxCollider.isTrigger = false;
+        //}
     }
 
-        public void OnTriggerEnter(Collider other)
+    public void OnTriggerEnter(Collider other)
     {
         if (other.gameObject.tag == "Wall") 
         {
             stopFlag = true;
             lostTimer = 0;
             rb.isKinematic = true;
-        } 
+        }
+    }
+    public void OnTriggerExit(Collider other)
+    {
+        if(other.gameObject == playerObject)
+        {
+            boxCollider.isTrigger = false;
+        }
     }
 }

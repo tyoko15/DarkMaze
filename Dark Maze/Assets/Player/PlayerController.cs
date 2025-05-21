@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.HID;
-using System.Linq;
 
 public class PlayerController : MonoBehaviour
 {
@@ -79,6 +77,8 @@ public class PlayerController : MonoBehaviour
 
     [Header("特殊効果")]
     // 砂の効果
+    [SerializeField] GameObject[] respawnPositions;
+    int playerPosiNum;
     [SerializeField] LayerMask sandLayer;
     bool onSandFlag;
     [SerializeField] float sandTime;
@@ -121,7 +121,17 @@ public class PlayerController : MonoBehaviour
         // 地面が砂の場合
         Ray ray = new Ray(playerObject.transform.position, -playerObject.transform.up);
         RaycastHit hit;
-        if(Physics.Raycast(ray, out hit, 0.1f, sandLayer) && !ropeMoveFlag) onSandFlag = true;
+        for (int i = 0; i < playerObject.transform.parent.childCount; i++)
+        {
+            for (int j = 0; j < 4; j++)
+            {
+                if (playerObject.transform.parent.GetChild(i).name == $"EnterArea ({j})")
+                {
+                    playerPosiNum = j;
+                }
+            }
+        }
+        if (Physics.Raycast(ray, out hit, 0.1f, sandLayer) && !ropeMoveFlag) onSandFlag = true;
         // 砂の演出
         if(onSandFlag)
         {
@@ -132,7 +142,7 @@ public class PlayerController : MonoBehaviour
                 playerObject.GetComponent<Collider>().enabled = true;
                 sandTimer = 0;
                 onSandFlag = false;
-                playerObject.transform.position = new Vector3(playerObject.transform.parent.transform.position.x, playerObject.transform.parent.transform.position.y + 2f, playerObject.transform.parent.transform.position.z);
+                playerObject.transform.position = new Vector3(respawnPositions[playerPosiNum].transform.position.x, respawnPositions[playerPosiNum].transform.position.y + 2f, respawnPositions[playerPosiNum].transform.position.z);
             }
             else if(sandTimer < sandTime)
             {
@@ -142,7 +152,7 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-        if (!itemSelectFlag && !itemUseFlag && !onSandFlag)
+        if (!itemSelectFlag && !itemUseFlag && !endUseFlag && !onSandFlag)
         {
             // 行動
             Vector3 playerPosition = playerObject.transform.position;
@@ -338,7 +348,7 @@ public class PlayerController : MonoBehaviour
             }
             if (endUseFlag)
             {
-                Instantiate(arrowObject, playerObject.transform.forward, Quaternion.identity);                
+                Instantiate(arrowObject, playerObject.transform.position, Quaternion.identity);                
                 itemUseFlag = false;
                 endUseFlag = false;
             }
@@ -353,39 +363,31 @@ public class PlayerController : MonoBehaviour
                 {
                     Ray ray = new Ray(new Vector3(playerObject.transform.position.x, playerObject.transform.position.y + 1f, playerObject.transform.position.z), playerObject.transform.forward);
                     RaycastHit hit;
-                    if (Physics.Raycast (ray.origin, 0.2f, ray.direction, out hit, 15f))
-                    {
-                        if (hit.collider.gameObject.GetComponent<Collider>().isTrigger == false)
-                        {
-                            //Debug.Log($"hit{hit.collider.gameObject.name}");
-                            Debug.Log(Physics.RaycastAll(ray).First().transform.name);
-                            betweenObjectFlag = true;
-                        }
-                    }
                     // playerとwoodの間にobjectがないか検知
                     if (Physics.SphereCast(ray.origin, 0.2f, ray.direction, out hit, 15f))
                     {
                         if (!hit.collider.gameObject.GetComponent<Collider>().isTrigger)
                         {
-                            if (hit.collider.gameObject.layer != woodLayer)
+                            if (hit.collider.gameObject.tag != "Wood")
                             {
-                                //Debug.Log($"hit:{hit.collider.gameObject.transform.parent.parent.name}-{hit.collider.gameObject.transform.parent.name}-{hit.collider.gameObject.name}");
                                 Debug.DrawRay(ray.origin, ray.direction * 15f, Color.red);
                                 betweenObjectFlag = true;
                             }
-                            else if (hit.collider.gameObject.layer == woodLayer)
+                            else if (hit.collider.gameObject.tag == "Wood")
                             {
-                                betweenObjectFlag = false;
                                 Debug.DrawRay(ray.origin, ray.direction * 15f, Color.green);
-
+                                betweenObjectFlag = false;
                             }
                         }
                         else
                         {
                             Debug.DrawRay(ray.origin, ray.direction * 15f, Color.green);
                             betweenObjectFlag = false;
-                            betweenObject = hit.collider.gameObject;
-                            betweenObject.SetActive(false);
+                            if (betweenObject == null)
+                            {
+                                betweenObject = hit.collider.gameObject;
+                                betweenObject.SetActive(false);
+                            }
                         }
                     }
                     // woodを検知
@@ -424,7 +426,11 @@ public class PlayerController : MonoBehaviour
             if(endUseFlag)
             {
                 itemUseFlag = false;
-                betweenObject.SetActive(true);
+                if (betweenObject != null)
+                {
+                    betweenObject.SetActive(true);
+                    betweenObject = null;
+                }
                 if (ropeMoveFlag)
                 {
                     if(ropeMoveTimer == 0)
