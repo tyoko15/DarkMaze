@@ -407,7 +407,7 @@ public class PlayerController : MonoBehaviour
                     }
                     else
                     {
-                        Destroy(ropeObject);
+                        if(ropeObject != null) Destroy(ropeObject);
                         rangeRopeTargetObject = null;
                         ropeObject = null;
                         ropeMoveFlag = false;
@@ -547,7 +547,7 @@ public class PlayerController : MonoBehaviour
 
     public void InputPlayerSelectItemButton(InputAction.CallbackContext context)
     {
-        if (context.started && status == 1)
+        if (context.started && status == 1 && !itemUseFlag && !endUseFlag)
         {
             itemSelectFlag = true;
             endSelectFlag = false;
@@ -572,11 +572,11 @@ public class PlayerController : MonoBehaviour
     }
     public void InputPlayerUseItemButton(InputAction.CallbackContext context)
     {
-        if(context.started && status == 1) itemUseFlag = true;
-        if (context.canceled) endUseFlag = true;
+        if(context.started && status == 1 && !itemSelectFlag) itemUseFlag = true;
+        if (context.canceled && status == 1 && !itemSelectFlag) endUseFlag = true;
     }
     public void InputPlayerUseItemControl(InputAction.CallbackContext context)
     {
-        itemUseDirection = new Vector3(context.ReadValue<Vector2>().x, 0f, context.ReadValue<Vector2>().y);
+        if(itemUseFlag) itemUseDirection = new Vector3(context.ReadValue<Vector2>().x, 0f, context.ReadValue<Vector2>().y);
     }
 }

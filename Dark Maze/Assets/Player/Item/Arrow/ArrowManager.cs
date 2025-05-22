@@ -75,7 +75,6 @@ public class ArrowManager : MonoBehaviour
     private void OnCollisionStay(Collision collision)
     {
         if(collision.gameObject == playerObject) boxCollider.isTrigger = true;
-        Debug.Log(boxCollider.isTrigger);
     }
     private void OnCollisionExit(Collision collision)
     {

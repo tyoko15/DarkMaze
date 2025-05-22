@@ -2743,7 +2743,7 @@ GameObject:
   - component: {fileID: 625978636}
   - component: {fileID: 625978635}
   m_Layer: 0
-  m_Name: Button (2)
+  m_Name: Button (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2852,7 +2852,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonFlag: 0
   hideFlag: 0
-  somethingFlag: 0
+  somethingFlag: 1
   senceFlag: 0
 --- !u!1 &719325308
 GameObject:
@@ -7031,8 +7031,8 @@ MonoBehaviour:
   goalObject: {fileID: 8960251454028893959}
   buttonObjects:
   - {fileID: 1844266749675369899}
-  - {fileID: 1900555967}
   - {fileID: 625978633}
+  - {fileID: 1900555967}
   gateObjects: []
   lightObjects:
   - {fileID: 391496449}
@@ -7645,7 +7645,7 @@ GameObject:
   - component: {fileID: 1900555970}
   - component: {fileID: 1900555969}
   m_Layer: 0
-  m_Name: Button (1)
+  m_Name: Button (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -7754,7 +7754,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonFlag: 0
   hideFlag: 0
-  somethingFlag: 0
+  somethingFlag: 1
   senceFlag: 0
 --- !u!1 &1952966677
 GameObject:
@@ -29613,6 +29613,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1875396321749436934}
+  - {fileID: 6931788710505469062}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!65 &5025854962975847902
@@ -31374,7 +31375,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   buttonFlag: 0
   hideFlag: 0
-  somethingFlag: 0
+  somethingFlag: 1
   senceFlag: 0
 --- !u!23 &5434258716788083572
 MeshRenderer:
@@ -37503,7 +37504,7 @@ Transform:
   - {fileID: 26475689871457102}
   - {fileID: 5917858246363794271}
   - {fileID: 110490060812951257}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 5010823293575303018}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &6943557631084045586
 GameObject:
@@ -40243,7 +40244,7 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 256
   ropePrefab: {fileID: 3252700491665716981, guid: 4ad408df8b5d4e64499d28ae69ec3dba, type: 3}
-  ropeObject: {fileID: 3252700491665716981, guid: 4ad408df8b5d4e64499d28ae69ec3dba, type: 3}
+  ropeObject: {fileID: 0}
   ropeTargetObjects:
   - {fileID: 8717805088517666806}
   - {fileID: 1485427244}
@@ -47292,4 +47293,3 @@ SceneRoots:
   - {fileID: 34064759}
   - {fileID: 9104746192963170514}
   - {fileID: 5010823293575303018}
-  - {fileID: 6931788710505469062}

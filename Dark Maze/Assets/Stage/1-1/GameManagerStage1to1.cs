@@ -3,7 +3,6 @@ using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
 
 public class GameManagerStage1to1 : MonoBehaviour
 {

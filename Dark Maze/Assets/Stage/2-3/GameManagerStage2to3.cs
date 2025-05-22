@@ -171,19 +171,20 @@ public class GameManagerStage2to3 : MonoBehaviour
         }
     }
 
-    // 
+    // 右下エリア回転ギミック
     public void Gimmick1()
     {
-
+        if (buttonObjects[0].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[3], 1, 90, 2, 0, true, ref buttonObjects[0].GetComponent<ButtonManager>().buttonFlag);
     }
     // 
     public void Gimmick2()
     {
-
+        if (buttonObjects[1].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[1], 1, 90, 2, 1, true, ref buttonObjects[1].GetComponent<ButtonManager>().buttonFlag);
     }
     // 
     public void Gimmick3()
     {
+        if (buttonObjects[2].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[1], -1, 90, 2, 1, true, ref buttonObjects[2].GetComponent<ButtonManager>().buttonFlag);
 
     }
     // 
