@@ -63,12 +63,21 @@ public class StageMainManager : MonoBehaviour
             //dataManager.SaveData(dataManager.useDataNum, dataManager.name, totalClearNum);
             clearFieldNum = totalClearNum / 5;
             clearStageNum = totalClearNum % 5;
-            fieldNum = clearFieldNum;
             for (int i = 0; i < fieldObjects.Length; i++)
             {
-                stageSelectManagers[i].selectObject.SetActive(false);
-                if (fieldNum == i) stageSelectManagers[i].selectObject.SetActive(true);
+                if (clearFieldNum == i)
+                {
+                    fieldObjects[i].SetActive(true);
+                    stageSelectManagers[i].selectObject.SetActive(true);
+                }
+                else if (clearFieldNum != i)
+                {
+                    fieldObjects[i].SetActive(false);
+                    stageSelectManagers[i].selectObject.SetActive(false);
+                }
             }
+            fieldNum = clearFieldNum;
+            stageSelectManagers[fieldNum].selectNum = clearStageNum - 1;
         }
     }
 
@@ -105,21 +114,24 @@ public class StageMainManager : MonoBehaviour
         totalClearNum = dataManager.data[dataManager.useDataNum].clearStageNum;
         clearFieldNum = totalClearNum / 5;
         clearStageNum = totalClearNum % 5;
-        fieldNum = clearFieldNum;
-        for(int i = 0; i < fieldObjects.Length; i++)
+        int dateNum = dataManager.useDataNum;
+        int selectFieldNum = dataManager.data[dateNum].selectStageNum / 5;
+        int selectStageNum = dataManager.data[dateNum].selectStageNum % 5;
+        for (int i = 0; i < fieldObjects.Length; i++)
         {
-            if (clearFieldNum == i)
+            if (selectFieldNum == i)
             {
                 fieldObjects[i].SetActive(true);
                 stageSelectManagers[i].selectObject.SetActive(true);
             }
-            else if (clearFieldNum != i)
+            else if (selectFieldNum != i)
             {
                 fieldObjects[i].SetActive(false);
                 stageSelectManagers[i].selectObject.SetActive(false);
             }
         }
-        stageSelectManagers[clearFieldNum].selectNum = clearStageNum;
+        fieldNum = selectFieldNum;
+        stageSelectManagers[selectFieldNum].selectNum = selectStageNum;
     }
 
     void SelectControl()

@@ -4650,12 +4650,12 @@ MonoBehaviour:
   - {fileID: 2139008013}
   - {fileID: 1875148314}
   - {fileID: 2100967135}
-  FieldNum: 0
+  fieldNum: 0
   fadeFieldNum: 0
   fadeFlag: 0
   fadeIntervalTime: 5
   fadeIntervalTimer: 0
-  totalClearNum: 25
+  totalClearNum: 9
   clearFieldNum: 0
   clearStageNum: 0
   selectUI: {fileID: 200657923}

@@ -157,7 +157,7 @@ public class GameManagerStage1to1 : MonoBehaviour
                 DataManager dataManager = GameObject.Find("DataManager").GetComponent<DataManager>();
                 int dataNum = dataManager.useDataNum;
                 if (dataManager.data[dataNum].clearStageNum == 0) dataManager.data[dataNum].clearStageNum = 1;
-                dataManager.data[dataNum].selectStageNum = 1;
+                dataManager.data[dataNum].selectStageNum = 0;
                 dataManager.SaveData(dataManager.useDataNum, dataManager.data[dataManager.useDataNum].playerName, dataManager.data[dataNum].clearStageNum, dataManager.data[dataNum].selectStageNum);
             }
             SceneManager.LoadScene("StageSelect");
@@ -341,7 +341,16 @@ public class GameManagerStage1to1 : MonoBehaviour
                 else
                 {
                     if (menuSelectNum == 0) SceneManager.LoadScene("1-1");
-                    else if (menuSelectNum == 1) SceneManager.LoadScene("StageSelect");
+                    else if (menuSelectNum == 1)
+                    {
+                        if (GameObject.Find("DataManager") != null)
+                        {
+                            DataManager dataManager = GameObject.Find("DataManager").GetComponent<DataManager>();
+                            int dataNum = dataManager.useDataNum;
+                            dataManager.data[dataNum].selectStageNum = 0;
+                        }
+                        SceneManager.LoadScene("StageSelect");
+                    }
                     else if (menuSelectNum == 2)
                     {
                         playUI.SetActive(true);
