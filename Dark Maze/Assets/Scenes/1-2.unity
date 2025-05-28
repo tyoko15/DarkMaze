@@ -4603,7 +4603,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &229528837
 Light:
   m_ObjectHideFlags: 0
@@ -20349,7 +20349,7 @@ RectTransform:
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
+  m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 1664857269}
   - {fileID: 1068315932}
@@ -20358,10 +20358,10 @@ RectTransform:
   - {fileID: 262827015}
   m_Father: {fileID: 8267193231457628432}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0, y: 0}
-  m_AnchorMax: {x: 1, y: 1}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 0, y: 0}
+  m_SizeDelta: {x: 1920, y: 1080}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1180365695
 GameObject:
@@ -39855,6 +39855,16 @@ MonoBehaviour:
   itemSelectNum: 0
   itemTime: 0.2
   arrowObject: {fileID: 4029604668275548159, guid: b7dbc8765ed41964eb3d84d70b568a6d, type: 3}
+  woodLayer:
+    serializedVersion: 2
+    m_Bits: 0
+  ropePrefab: {fileID: 0}
+  ropeObject: {fileID: 0}
+  ropeTargetObjects: []
+  rangeRopeTargetObject: {fileID: 0}
+  ropeMoveFlag: 0
+  ropeMoveTime: 0
+  respawnPositions: []
   sandLayer:
     serializedVersion: 2
     m_Bits: 0

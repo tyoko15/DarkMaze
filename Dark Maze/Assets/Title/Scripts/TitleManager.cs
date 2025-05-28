@@ -127,7 +127,7 @@ public class TitleManager : MonoBehaviour
     }
     public void CreateName()
     {
-        dataManager.SaveData(selectDataNum, nameInputField.text, 0);
+        dataManager.SaveData(selectDataNum, nameInputField.text, 0, 0);
         nameInputField.text = null;
     }
 

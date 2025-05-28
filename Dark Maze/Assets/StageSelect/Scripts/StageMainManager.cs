@@ -14,8 +14,8 @@ public class StageMainManager : MonoBehaviour
     bool endFadeFlag;
 
     // 各Stageの取得
-    [SerializeField] GameObject[] FieldObject;
-    [SerializeField] int FieldNum;
+    [SerializeField] GameObject[] fieldObjects;
+    [SerializeField] int fieldNum;
     [SerializeField] int fadeFieldNum;
 
     [SerializeField] bool fadeFlag;
@@ -63,11 +63,12 @@ public class StageMainManager : MonoBehaviour
             //dataManager.SaveData(dataManager.useDataNum, dataManager.name, totalClearNum);
             clearFieldNum = totalClearNum / 5;
             clearStageNum = totalClearNum % 5;
-        }
-        for(int i = 0; i < FieldObject.Length; i++)
-        {
-            stageSelectManagers[i].selectObject.SetActive(false);
-            if(FieldNum == i) stageSelectManagers[i].selectObject.SetActive(true);
+            fieldNum = clearFieldNum;
+            for (int i = 0; i < fieldObjects.Length; i++)
+            {
+                stageSelectManagers[i].selectObject.SetActive(false);
+                if (fieldNum == i) stageSelectManagers[i].selectObject.SetActive(true);
+            }
         }
     }
 
@@ -104,6 +105,21 @@ public class StageMainManager : MonoBehaviour
         totalClearNum = dataManager.data[dataManager.useDataNum].clearStageNum;
         clearFieldNum = totalClearNum / 5;
         clearStageNum = totalClearNum % 5;
+        fieldNum = clearFieldNum;
+        for(int i = 0; i < fieldObjects.Length; i++)
+        {
+            if (clearFieldNum == i)
+            {
+                fieldObjects[i].SetActive(true);
+                stageSelectManagers[i].selectObject.SetActive(true);
+            }
+            else if (clearFieldNum != i)
+            {
+                fieldObjects[i].SetActive(false);
+                stageSelectManagers[i].selectObject.SetActive(false);
+            }
+        }
+        stageSelectManagers[clearFieldNum].selectNum = clearStageNum;
     }
 
     void SelectControl()
@@ -121,26 +137,26 @@ public class StageMainManager : MonoBehaviour
             endFadeFlag = false;
             fadeManager.fadeIntervalFlag = false;
             fadeManager.endFlag = false;
-            SceneManager.LoadScene($"{FieldNum + 1}-{stageSelectManagers[FieldNum].selectNum + 1}");
+            SceneManager.LoadScene($"{fieldNum + 1}-{stageSelectManagers[fieldNum].selectNum + 1}");
             //Debug.Log($"{FieldNum + 1}-{stageSelectManager[FieldNum].selectNum + 1}");
             enterFlag = false;
         }
         if (startFadeFlag || endFadeFlag) fadeManager.FadeControl();
         // フィールド移動
-        if (stageSelectManagers[FieldNum].changeNextFlag)
+        if (stageSelectManagers[fieldNum].changeNextFlag)
         {
-            fadeFieldNum = FieldNum;
+            fadeFieldNum = fieldNum;
             fadeFlag = true;
         }
-        else if (stageSelectManagers[FieldNum].changeReturnFlag)
+        else if (stageSelectManagers[fieldNum].changeReturnFlag)
         {
-            fadeFieldNum = FieldNum;
+            fadeFieldNum = fieldNum;
             fadeFlag = true;
         }
 
         if (fadeFlag) ChangeField();
 
-        if (stageSelectManagers[FieldNum].moveFlag == 0 && !fadeFlag && !endFadeFlag && enterFlag)
+        if (stageSelectManagers[fieldNum].moveFlag == 0 && !fadeFlag && !endFadeFlag && enterFlag)
         {
             endFadeFlag = true;
             fadeManager.fadeInFlag = true;
@@ -163,11 +179,11 @@ public class StageMainManager : MonoBehaviour
             // フェイドインターバル終了時
             else if(fadeManager.endFlag && fadeManager.fadeIntervalFlag)
             {
-                FieldNum++;
-                for (int i = 0; i < FieldObject.Length; i++)
+                fieldNum++;
+                for (int i = 0; i < fieldObjects.Length; i++)
                 {
-                    if (FieldNum != i) FieldObject[i].SetActive(false);
-                    else if (FieldNum == i) FieldObject[i].SetActive(true);
+                    if (fieldNum != i) fieldObjects[i].SetActive(false);
+                    else if (fieldNum == i) fieldObjects[i].SetActive(true);
                 }
                 fadeManager.fadeIntervalFlag = false;
                 fadeManager.endFlag = false;
@@ -182,8 +198,8 @@ public class StageMainManager : MonoBehaviour
                 stageSelectManagers[fadeFieldNum].changeNextFlag = false;
                 fadeFieldNum = 0;
                 fadeFlag = false;
-                stageSelectManagers[FieldNum].moveFlag = 3;
-                stageSelectManagers[FieldNum].movePointsNum = 1;
+                stageSelectManagers[fieldNum].moveFlag = 3;
+                stageSelectManagers[fieldNum].movePointsNum = 1;
             }
             else if (!fadeManager.fadeInFlag && !fadeManager.fadeIntervalFlag && !fadeManager.fadeOutFlag)
             {
@@ -203,11 +219,11 @@ public class StageMainManager : MonoBehaviour
             // フェイドインターバル終了時
             else if (fadeManager.endFlag && fadeManager.fadeIntervalFlag)
             {
-                FieldNum--;
-                for (int i = 0; i < FieldObject.Length; i++)
+                fieldNum--;
+                for (int i = 0; i < fieldObjects.Length; i++)
                 {
-                    if (FieldNum != i) FieldObject[i].SetActive(false);
-                    else if (FieldNum == i) FieldObject[i].SetActive(true);
+                    if (fieldNum != i) fieldObjects[i].SetActive(false);
+                    else if (fieldNum == i) fieldObjects[i].SetActive(true);
                 }
                 fadeManager.fadeIntervalFlag = false;
                 fadeManager.endFlag = false;
@@ -222,8 +238,8 @@ public class StageMainManager : MonoBehaviour
                 stageSelectManagers[fadeFieldNum].changeReturnFlag = false;
                 fadeFieldNum = 0;
                 fadeFlag = false;
-                stageSelectManagers[FieldNum].moveFlag = -3;
-                stageSelectManagers[FieldNum].movePointsNum = stageSelectManagers[FieldNum].select5toPoints.Length - 1;
+                stageSelectManagers[fieldNum].moveFlag = -3;
+                stageSelectManagers[fieldNum].movePointsNum = stageSelectManagers[fieldNum].select5toPoints.Length - 1;
             }
             else if (!fadeManager.fadeInFlag && !fadeManager.fadeOutFlag)
             {
@@ -299,30 +315,30 @@ public class StageMainManager : MonoBehaviour
             if (context.ReadValue<Vector2>().x > 0)
             {
                 // 選択移動中に入力させるのをはじく
-                if (stageSelectManagers[FieldNum].moveFlag == 0)
+                if (stageSelectManagers[fieldNum].moveFlag == 0)
                 {
-                    stageSelectManagers[FieldNum].selectNum++;
-                    stageSelectManagers[FieldNum].moveFlag = 1;
+                    stageSelectManagers[fieldNum].selectNum++;
+                    stageSelectManagers[fieldNum].moveFlag = 1;
                     // ステージ移動をクリア数に応じて制限
-                    if(FieldNum == clearFieldNum && stageSelectManagers[FieldNum].selectNum == clearStageNum + 1)
+                    if(fieldNum == clearFieldNum && stageSelectManagers[fieldNum].selectNum == clearStageNum + 1)
                     {
-                        stageSelectManagers[FieldNum].selectNum = clearStageNum;
-                        stageSelectManagers[FieldNum].moveFlag = 0;
+                        stageSelectManagers[fieldNum].selectNum = clearStageNum;
+                        stageSelectManagers[fieldNum].moveFlag = 0;
                     }
                     // 次のFeildへ移動
-                    if (stageSelectManagers[FieldNum].selectNum == stageSelectManagers[FieldNum].selectPoints.Length && FieldNum != FieldObject.Length - 1)
+                    if (stageSelectManagers[fieldNum].selectNum == stageSelectManagers[fieldNum].selectPoints.Length && fieldNum != fieldObjects.Length - 1)
                     {
-                        stageSelectManagers[FieldNum].selectNum = 0;
-                        stageSelectManagers[FieldNum].moveFlag = 2;
-                        stageSelectManagers[FieldNum].movePointsNum = 1;
+                        stageSelectManagers[fieldNum].selectNum = 0;
+                        stageSelectManagers[fieldNum].moveFlag = 2;
+                        stageSelectManagers[fieldNum].movePointsNum = 1;
                     }
-                    stageSelectManagers[FieldNum].movePointsNum = 1;
+                    stageSelectManagers[fieldNum].movePointsNum = 1;
                     // 端で止める
-                    if (stageSelectManagers[FieldNum].selectNum > stageSelectManagers[FieldNum].selectPoints.Length - 1)
+                    if (stageSelectManagers[fieldNum].selectNum > stageSelectManagers[fieldNum].selectPoints.Length - 1)
                     {
-                        stageSelectManagers[FieldNum].selectNum = stageSelectManagers[FieldNum].selectPoints.Length - 1;
-                        stageSelectManagers[FieldNum].moveFlag = 0;
-                        stageSelectManagers[FieldNum].movePointsNum = 0;
+                        stageSelectManagers[fieldNum].selectNum = stageSelectManagers[fieldNum].selectPoints.Length - 1;
+                        stageSelectManagers[fieldNum].moveFlag = 0;
+                        stageSelectManagers[fieldNum].movePointsNum = 0;
                     }
                 }
             }
@@ -330,29 +346,29 @@ public class StageMainManager : MonoBehaviour
             else if (context.ReadValue<Vector2>().x < 0)
             {
                 // 選択移動中に入力させるのをはじく
-                if (stageSelectManagers[FieldNum].moveFlag == 0)
+                if (stageSelectManagers[fieldNum].moveFlag == 0)
                 {
-                    stageSelectManagers[FieldNum].selectNum--;
-                    stageSelectManagers[FieldNum].moveFlag = -1;
+                    stageSelectManagers[fieldNum].selectNum--;
+                    stageSelectManagers[fieldNum].moveFlag = -1;
                     // 各ステージの間の最後を取得する
-                    if (stageSelectManagers[FieldNum].selectNum == 3) stageSelectManagers[FieldNum].movePointsNum = stageSelectManagers[FieldNum].select4to5Points.Length - 1;
-                    else if (stageSelectManagers[FieldNum].selectNum == 2) stageSelectManagers[FieldNum].movePointsNum = stageSelectManagers[FieldNum].select3to4Points.Length - 1;
-                    else if (stageSelectManagers[FieldNum].selectNum == 1) stageSelectManagers[FieldNum].movePointsNum = stageSelectManagers[FieldNum].select2to3Points.Length - 1;
-                    else if (stageSelectManagers[FieldNum].selectNum == 0) stageSelectManagers[FieldNum].movePointsNum = stageSelectManagers[FieldNum].select1to2Points.Length - 1;
+                    if (stageSelectManagers[fieldNum].selectNum == 3) stageSelectManagers[fieldNum].movePointsNum = stageSelectManagers[fieldNum].select4to5Points.Length - 1;
+                    else if (stageSelectManagers[fieldNum].selectNum == 2) stageSelectManagers[fieldNum].movePointsNum = stageSelectManagers[fieldNum].select3to4Points.Length - 1;
+                    else if (stageSelectManagers[fieldNum].selectNum == 1) stageSelectManagers[fieldNum].movePointsNum = stageSelectManagers[fieldNum].select2to3Points.Length - 1;
+                    else if (stageSelectManagers[fieldNum].selectNum == 0) stageSelectManagers[fieldNum].movePointsNum = stageSelectManagers[fieldNum].select1to2Points.Length - 1;
                     // 前のFeildへ移動
-                    if (stageSelectManagers[FieldNum].selectNum == -1 && FieldNum != 0)
+                    if (stageSelectManagers[fieldNum].selectNum == -1 && fieldNum != 0)
                     {
-                        stageSelectManagers[FieldNum - 1].selectNum = stageSelectManagers[FieldNum - 1].selectPoints.Length - 1;
-                        stageSelectManagers[FieldNum].selectNum = 0;
-                        stageSelectManagers[FieldNum].moveFlag = -2;
-                        stageSelectManagers[FieldNum].movePointsNum = stageSelectManagers[FieldNum].selectto1Points.Length - 1;
+                        stageSelectManagers[fieldNum - 1].selectNum = stageSelectManagers[fieldNum - 1].selectPoints.Length - 1;
+                        stageSelectManagers[fieldNum].selectNum = 0;
+                        stageSelectManagers[fieldNum].moveFlag = -2;
+                        stageSelectManagers[fieldNum].movePointsNum = stageSelectManagers[fieldNum].selectto1Points.Length - 1;
                     }
                     // 端で止める
-                    if (stageSelectManagers[FieldNum].selectNum < 0)
+                    if (stageSelectManagers[fieldNum].selectNum < 0)
                     {
-                        stageSelectManagers[FieldNum].selectNum = 0;
-                        stageSelectManagers[FieldNum].moveFlag = 0;
-                        stageSelectManagers[FieldNum].movePointsNum = 0;
+                        stageSelectManagers[fieldNum].selectNum = 0;
+                        stageSelectManagers[fieldNum].moveFlag = 0;
+                        stageSelectManagers[fieldNum].movePointsNum = 0;
                     }
                 }
             }

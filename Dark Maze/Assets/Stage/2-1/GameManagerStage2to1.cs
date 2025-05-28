@@ -97,6 +97,7 @@ public class GameManagerStage2to1 : MonoBehaviour
                 Gimmick3();
                 Gimmick4();
                 Goal();
+                if (menuFlag) status = GameStatus.menu;
                 playerController.status = 1;
                 break;
             case GameStatus.stop:
@@ -160,7 +161,8 @@ public class GameManagerStage2to1 : MonoBehaviour
                 DataManager dataManager = GameObject.Find("DataManager").GetComponent<DataManager>();
                 int dataNum = dataManager.useDataNum;
                 if (dataManager.data[dataNum].clearStageNum == 5) dataManager.data[dataNum].clearStageNum = 6;
-                dataManager.SaveData(dataManager.useDataNum, dataManager.data[dataManager.useDataNum].playerName, dataManager.data[dataNum].clearStageNum);
+                dataManager.data[dataNum].selectStageNum = 6;
+                dataManager.SaveData(dataManager.useDataNum, dataManager.data[dataManager.useDataNum].playerName, dataManager.data[dataNum].clearStageNum, dataManager.data[dataNum].selectStageNum);
             }
             SceneManager.LoadScene("StageSelect");
         }
@@ -431,6 +433,7 @@ public class GameManagerStage2to1 : MonoBehaviour
         if (context.started && !menuFlag && status == GameStatus.play)
         {
             menuFlag = true;
+            startMenuFlag = true;
             playUI.SetActive(false);
             menuUI.SetActive(true);
             menuUI.GetComponent<RectTransform>().localScale = new Vector3(0f, 0f, 0f);
@@ -442,8 +445,11 @@ public class GameManagerStage2to1 : MonoBehaviour
         if (menuFlag && context.started && !enterFlag)
         {
             enterFlag = true;
-            fadeManager.fadeInFlag = true;
-            fadeFlag = true;
+            if (menuSelectNum != 2)
+            {
+                fadeManager.fadeInFlag = true;
+                fadeFlag = true;
+            }
         }
     }
     // Select

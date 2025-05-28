@@ -85,7 +85,7 @@ public class GameManagerStage2to3 : MonoBehaviour
             int dataNum = GameObject.Find("DataManager").GetComponent<DataManager>().useDataNum;
             player.GetComponent<PlayerController>().clearStageNum = GameObject.Find("DataManager").GetComponent<DataManager>().data[dataNum].clearStageNum;
         }
-        else if (GameObject.Find("DataManager") == null) player.GetComponent<PlayerController>().clearStageNum = 5;
+        else if (GameObject.Find("DataManager") == null) player.GetComponent<PlayerController>().clearStageNum = 7;
     }
 
     void Update()
@@ -102,6 +102,7 @@ public class GameManagerStage2to3 : MonoBehaviour
                 Gimmick3();
                 Gimmick4();
                 Goal();
+                if (menuFlag) status = GameStatus.menu;
                 playerController.status = 1;
                 break;
             case GameStatus.stop:
@@ -164,8 +165,9 @@ public class GameManagerStage2to3 : MonoBehaviour
             {
                 DataManager dataManager = GameObject.Find("DataManager").GetComponent<DataManager>();
                 int dataNum = dataManager.useDataNum;
-                if (dataManager.data[dataNum].clearStageNum == 5) dataManager.data[dataNum].clearStageNum = 6;
-                dataManager.SaveData(dataManager.useDataNum, dataManager.data[dataManager.useDataNum].playerName, dataManager.data[dataNum].clearStageNum);
+                if (dataManager.data[dataNum].clearStageNum == 7) dataManager.data[dataNum].clearStageNum = 8;
+                dataManager.data[dataNum].selectStageNum = 8;
+                dataManager.SaveData(dataManager.useDataNum, dataManager.data[dataManager.useDataNum].playerName, dataManager.data[dataNum].clearStageNum, dataManager.data[dataNum].selectStageNum);
             }
             SceneManager.LoadScene("StageSelect");
         }
@@ -437,7 +439,7 @@ public class GameManagerStage2to3 : MonoBehaviour
                 }
                 else
                 {
-                    if (menuSelectNum == 0) SceneManager.LoadScene("2-1");
+                    if (menuSelectNum == 0) SceneManager.LoadScene("2-3");
                     else if (menuSelectNum == 1) SceneManager.LoadScene("StageSelect");
                     else if (menuSelectNum == 2)
                     {
@@ -466,6 +468,7 @@ public class GameManagerStage2to3 : MonoBehaviour
         if (context.started && !menuFlag && status == GameStatus.play)
         {
             menuFlag = true;
+            startMenuFlag = true;
             playUI.SetActive(false);
             menuUI.SetActive(true);
             menuUI.GetComponent<RectTransform>().localScale = new Vector3(0f, 0f, 0f);
@@ -477,8 +480,11 @@ public class GameManagerStage2to3 : MonoBehaviour
         if (menuFlag && context.started && !enterFlag)
         {
             enterFlag = true;
-            fadeManager.fadeInFlag = true;
-            fadeFlag = true;
+            if (menuSelectNum != 2)
+            {
+                fadeManager.fadeInFlag = true;
+                fadeFlag = true;
+            }
         }
     }
     // Select

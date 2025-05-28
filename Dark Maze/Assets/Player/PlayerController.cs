@@ -519,7 +519,7 @@ public class PlayerController : MonoBehaviour
 
     public void InputPlayerControl(InputAction.CallbackContext context)
     {
-        if(!itemSelectFlag)
+        if(!itemSelectFlag && (!itemUseFlag || !endUseFlag))
         {
             if (context.ReadValue<Vector2>().x == 0) playerHorizontal = 0;
             if (context.ReadValue<Vector2>().x > 0) playerHorizontal = context.ReadValue<Vector2>().x;
