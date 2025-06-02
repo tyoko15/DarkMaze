@@ -442,22 +442,22 @@ public class PlayerController : MonoBehaviour
                         {
                             if(x > 0) // ‰E
                             {
-                                rangeRopeTargetPosition.x -= 1f;
+                                rangeRopeTargetPosition.x -= 1.5f;
                             }
                             else if(x < 0) // ¶
                             {
-                                rangeRopeTargetPosition.x += 1f;
+                                rangeRopeTargetPosition.x += 1.5f;
                             }
                         }
                         else if(Mathf.Abs(x) < Mathf.Abs(z)) // ‘OŒã
                         {
                             if (z > 0) // ‘O
                             {
-                                rangeRopeTargetPosition.z -= 1f;
+                                rangeRopeTargetPosition.z -= 1.5f;
                             }
                             else if (z < 0) // Œã
                             {
-                                rangeRopeTargetPosition.z += 1f;
+                                rangeRopeTargetPosition.z += 1.5f;
                             }
                         }
                     }
