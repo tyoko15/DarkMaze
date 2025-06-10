@@ -1,59 +1,7 @@
-using TMPro;
-using Unity.AI.Navigation;
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-
-public class GameManagerStage1to1 : MonoBehaviour
+public class GameManagerStage1to1 : GeneralStageManager
 {
-    [SerializeField] GameObject fadeManagerObject;
-    FadeManager fadeManager;
-    bool fadeFlag;
-    public enum GameStatus
-    {
-        start,
-        play,
-        stop,
-        menu,
-        over,
-        clear,
-    }
-    public GameStatus status = GameStatus.start;
-    [SerializeField] PlayerController playerController;
-    [SerializeField] GameObject player;
-    [SerializeField] NavMeshSurface stageNav;
-    [Header("ステージ情報")]
-    [SerializeField] GameObject[] areas;
-    [SerializeField] GameObject startObject;
-    [SerializeField] GameObject goalObject;
-    [SerializeField] GameObject[] buttonObjects;
-    [SerializeField] GameObject[] gateObjects;
-    [SerializeField] GameObject[] lightObjects;
-    [SerializeField] GameObject[] enemys;
-    [Header("ステージ詳細情報")]
-    [SerializeField] float startTime;
-    float startTimer;
-
-    // ギミック変数
-    float originDegree;
-    [SerializeField ] float[] rotationTimer;
-    [SerializeField] float[] openTimer;
-    [SerializeField] float[] activeObTimer;
-    [SerializeField] float[] activeLightTimer;
-    [SerializeField] bool[] activeFlag;
-    [SerializeField] EnterArea[] enterArea;
-    [SerializeField] bool[] defeatGateFlag;
-
-    [Header("Input情報")]
-    [SerializeField] GameObject playUI;
-    [SerializeField] GameObject menuUI;
-    bool startMenuFlag;
-    [SerializeField] float startMenuTime;
-    float startMenuTimer;
-    [SerializeField] GameObject[] menuTexts;
-    [SerializeField] bool menuFlag;
-    [SerializeField] bool enterFlag;
-    [SerializeField] int menuSelectNum;
     void Start()
     {
         playUI.SetActive(true);
@@ -119,30 +67,6 @@ public class GameManagerStage1to1 : MonoBehaviour
                 break;
         }
     }
-
-    void StartAnime()
-    {
-        if (fadeFlag)
-        {
-            if (fadeManager.fadeOutFlag && fadeManager.endFlag)
-            {
-                fadeManager.fadeOutFlag = false;
-                fadeManager.endFlag = false;
-                fadeFlag = false;
-            }
-            fadeManager.FadeControl();
-        }
-        else
-        {
-            player.transform.position = new Vector3(startObject.transform.position.x, startObject.transform.position.y + 1, startObject.transform.position.z);
-            if (startTimer > startTime)
-            {
-                startTimer = 0;
-                status = GameStatus.play;
-            }
-            else if (startTimer < startTime) startTimer += Time.deltaTime;
-        }
-    }
     void EndAnime()
     {
         if (fadeFlag)
@@ -156,18 +80,17 @@ public class GameManagerStage1to1 : MonoBehaviour
             {
                 DataManager dataManager = GameObject.Find("DataManager").GetComponent<DataManager>();
                 int dataNum = dataManager.useDataNum;
-                if (dataManager.data[dataNum].clearStageNum == 0) dataManager.data[dataNum].clearStageNum = 1;
-                dataManager.data[dataNum].selectStageNum = 0;
+                if (dataManager.data[dataNum].clearStageNum == 1) dataManager.data[dataNum].clearStageNum = 2;
+                dataManager.data[dataNum].selectStageNum = 1;
                 dataManager.SaveData(dataManager.useDataNum, dataManager.data[dataManager.useDataNum].playerName, dataManager.data[dataNum].clearStageNum, dataManager.data[dataNum].selectStageNum);
             }
             SceneManager.LoadScene("StageSelect");
         }
     }
-
     // 右上エリアの回転ギミック
     public void Gimmick1()
     {
-        if (buttonObjects[0].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[1], -1, 90, 2, 0, ref buttonObjects[0].GetComponent<ButtonManager>().buttonFlag);
+        if (buttonObjects[0].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[1], -1, 90, 2, 0, true, ref buttonObjects[0].GetComponent<ButtonManager>().buttonFlag);
     }
     // 右下エリアの敵撃破ギミック
     public void Gimmick2()
@@ -191,233 +114,5 @@ public class GameManagerStage1to1 : MonoBehaviour
             ActiveObject(buttonObjects[1], 2, 0 ,true, ref defeatGateFlag[1]);
         }
         if (buttonObjects[1].GetComponent<ButtonManager>().buttonFlag) Gate(gateObjects[2], true, 2, 2, true, ref buttonObjects[1].GetComponent<ButtonManager>().buttonFlag);
-    }
-    public void Goal()
-    {
-        if (goalObject.GetComponent<GoalManager>().isGoalFlag)
-        {
-            fadeFlag = true;
-            fadeManager.fadeInFlag = true;
-            status = GameStatus.clear;
-        }
-    }
-
-    // 回転ギミック(回転するエリア、回転方向、回転度、回転にかかる時間)
-    public void AreaRotation(GameObject area, int direction, int degree,  float time, int i, ref bool flag)
-    {
-        if (rotationTimer[i] == 0) originDegree = area.transform.localEulerAngles.y;
-        if (rotationTimer[i] > time)
-        {
-            status = GameStatus.play;
-            rotationTimer[i] = 0;
-            area.transform.rotation = Quaternion.Euler(0, originDegree + direction * degree, 0);
-            flag = false;
-            stageNav.RemoveData();
-            stageNav.BuildNavMesh();
-        }
-        else if(rotationTimer[i] < time) 
-        {
-            status = GameStatus.stop;
-            rotationTimer[i] += Time.deltaTime;
-            float y = Mathf.Lerp(originDegree, originDegree + direction * degree, rotationTimer[i] / time);
-            area.transform.rotation = Quaternion.Euler(0, y, 0);
-        }
-    }
-    //  ゲートオープンギミック(開閉ゲート、open=true,close=false、開閉にかかる時間、同じギミック同時の際最後のフラグ、複数同時の際フラグ、終了フラグ)
-    public void Gate(GameObject gate, bool open, float time , int i, bool end, ref bool flag)
-    {
-        if(open)
-        {
-            if (openTimer[i] == 0) gate.SetActive(true);
-            if (openTimer[i] > time)
-            {
-                status = GameStatus.play;
-                gate.transform.position = new Vector3(gate.transform.position.x, -1.1f, gate.transform.position.z);
-                gate.SetActive(false);
-                openTimer[i] = 0f; 
-                if (end) flag = false;
-            }
-            else if(openTimer[i] < time)
-            {
-                status = GameStatus.stop;
-                openTimer[i] += Time.deltaTime;
-                float y = Mathf.Lerp(1f, -1.1f, openTimer[i] / time);
-                gate.transform.position = new Vector3(gate.transform.position.x, y, gate.transform.position.z);
-            }
-        }
-        else if(!open)
-        {
-            if (openTimer[i] == 0) gate.SetActive(true); 
-            if (openTimer[i] > time)
-            {
-                status = GameStatus.play;
-                gate.transform.position = new Vector3(gate.transform.position.x, 1f, gate.transform.position.z);
-                gate.SetActive(true);
-                if (end)
-                {
-                    flag = false;
-                    openTimer[i] = 0f;
-                }
-            }
-            else if (openTimer[i] < time)
-            {
-                status = GameStatus.stop;
-                openTimer[i] += Time.deltaTime;
-                float y = Mathf.Lerp(-1.1f, 1f, openTimer[i] / time);
-                gate.transform.position = new Vector3(gate.transform.position.x, y, gate.transform.position.z);
-            }
-        }
-    }
-    // 透明化オブジェクトを可視化ギミック
-    public void ActiveObject(GameObject activeOb, float time, int i, bool end, ref bool flag)
-    {
-        if (activeObTimer[i] == 0) activeOb.SetActive(true);
-        if (activeObTimer[i] > time)
-        {
-            Color color = activeOb.GetComponent<MeshRenderer>().material.color;
-            color.a = 1f;
-            activeOb.GetComponent<MeshRenderer>().material.color = color;
-            activeObTimer[i] = 0f;
-            if (end) flag = false;
-        }
-        else if (activeObTimer[i] < time)
-        {
-            activeObTimer[i] += Time.deltaTime;
-            Color color = activeOb.GetComponent<MeshRenderer>().material.color;
-            float a = Mathf.Lerp(0f, 1f, activeObTimer[i] / time);
-            color.a = a;
-            activeOb.GetComponent<MeshRenderer>().material.color = color;
-        }
-    }
-    public void ActiveLight(GameObject lightOb, float time,int i, bool end, ref bool flag)
-    {
-        if(activeLightTimer[i] == 0) lightOb.SetActive(true);
-        if(activeLightTimer[i] > time)
-        {
-            activeLightTimer[i] = 0;
-            lightOb.GetComponent<Light>().spotAngle = 180f;
-            if(end) flag = false;
-        }
-        else if(activeLightTimer[i] < time)
-        {
-            activeLightTimer[i] += Time.deltaTime;
-            float range = Mathf.Lerp(0f, 180f, activeLightTimer[i] / time);
-            lightOb.GetComponent<Light>().spotAngle = range;
-        }
-    }
-
-    // メニュー関数
-    void MenuControl()
-    {
-        if(startMenuFlag)
-        {
-            if(startMenuTimer > startMenuTime)
-            {
-                menuUI.GetComponent<RectTransform>().localScale = new Vector3(1f, 1f, 1f);
-                startMenuTimer = 0;
-                startMenuFlag = false;
-            }
-            else if(startMenuTimer < startMenuTime)
-            {
-                startMenuTimer += Time.deltaTime;
-                float scale = Mathf.Lerp(0f, 1f, startMenuTimer / startMenuTime);
-                menuUI.GetComponent<RectTransform>().localScale = new Vector3(scale, scale, 1f);
-            }
-        }
-        else
-        {
-            for (int i = 0; i < menuTexts.Length; i++)
-            {
-                if (menuSelectNum == i) TextAnime(menuTexts[i], true);
-                else if (menuSelectNum != i) TextAnime(menuTexts[i], false);
-            }
-            if (enterFlag)
-            {
-                if (fadeFlag)
-                {
-                    if (fadeManager.fadeIntervalFlag && fadeManager.endFlag) fadeFlag = false;
-                    fadeManager.FadeControl();
-                }
-                else
-                {
-                    if (menuSelectNum == 0) SceneManager.LoadScene("1-1");
-                    else if (menuSelectNum == 1)
-                    {
-                        if (GameObject.Find("DataManager") != null)
-                        {
-                            DataManager dataManager = GameObject.Find("DataManager").GetComponent<DataManager>();
-                            int dataNum = dataManager.useDataNum;
-                            dataManager.data[dataNum].selectStageNum = 0;
-                        }
-                        SceneManager.LoadScene("StageSelect");
-                    }
-                    else if (menuSelectNum == 2)
-                    {
-                        playUI.SetActive(true);
-                        menuUI.SetActive(false);
-                        menuSelectNum = 0;
-                        for (int i = 0; i < menuTexts.Length; i++) TextAnime(menuTexts[i], false);
-                        menuFlag = false;
-                    }
-                    enterFlag = false;
-                }
-            }
-        }
-    }
-    void TextAnime(GameObject textOb, bool flag)
-    {
-        TextMeshProUGUI text = textOb.GetComponent<TextMeshProUGUI>();
-        // 元のサイズ
-        if (!flag) text.fontSize = 100f;
-        // 拡大
-        else text.fontSize = 120f;
-    }
-    // Input関数
-    public void InputMenuButton(InputAction.CallbackContext context)
-    {
-        if (context.started && !menuFlag && status == GameStatus.play)
-        {
-            menuFlag = true;
-            startMenuFlag = true;
-            playUI.SetActive(false);
-            menuUI.SetActive(true);
-            menuUI.GetComponent<RectTransform>().localScale = new Vector3(0f, 0f, 0f);
-        }
-    }
-    //Enter
-    public void InputEnterButton(InputAction.CallbackContext context)
-    {
-        if (menuFlag && context.started && !enterFlag)
-        {
-            enterFlag = true;
-            if (menuSelectNum != 2)
-            {
-                fadeManager.fadeInFlag = true;
-                fadeFlag = true;
-            }
-        }
-    }
-    // Select
-    public void InputSelectControl (InputAction.CallbackContext context)
-    {
-        if (menuFlag)
-        {
-            if (context.started && context.ReadValue<Vector2>().y > 0)
-            {
-                menuSelectNum++;
-                if(menuSelectNum > 2)
-                {
-                    menuSelectNum = 0;
-                }
-            }
-            else if (context.started && context.ReadValue<Vector2>().y < 0)
-            {
-                menuSelectNum--;
-                if(menuSelectNum < 0)
-                {
-                    menuSelectNum = 2;
-                }
-            }
-        }
     }
 }
