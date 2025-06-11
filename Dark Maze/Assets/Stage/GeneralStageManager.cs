@@ -104,7 +104,7 @@ public class GeneralStageManager : MonoBehaviour
         }
     }
 
-    // 回転ギミック(回転するエリア、回転方向、回転度、回転にかかる時間)
+    // 回転ギミック(回転するエリア、ライト、回転方向、回転度、回転にかかる時間)
     public void AreaRotation(GameObject area, int direction, int degree, float time, int i, bool end, ref bool flag)
     {
         if (rotationTimer[i] == 0) originDegree = area.transform.localEulerAngles.y;
@@ -125,7 +125,32 @@ public class GeneralStageManager : MonoBehaviour
             area.transform.rotation = Quaternion.Euler(0, y, 0);
         }
     }
-    //  ゲートオープンギミック(開閉ゲート、open=true,close=false、開閉にかかる時間、同じギミック同時の際最後のフラグ、複数同時の際フラグ、終了フラグ)
+    public void PreAreaRotation(GameObject area, GameObject light, int direction, int degree, float time, int i, bool end, ref bool flag)
+    {
+        if (rotationTimer[i] == 0) 
+        {
+            originDegree = area.transform.localEulerAngles.y;
+            if(light != null)light.SetActive(true);
+        }
+        if (rotationTimer[i] > time)
+        {
+            status = GameStatus.play;
+            rotationTimer[i] = 0;
+            area.transform.rotation = Quaternion.Euler(0, originDegree + direction * degree, 0);
+            if(end)flag = false;
+            stageNav.RemoveData();
+            stageNav.BuildNavMesh();
+            if (light != null) light.SetActive(false);
+        }
+        else if (rotationTimer[i] < time)
+        {
+            status = GameStatus.stop;
+            rotationTimer[i] += Time.deltaTime;
+            float y = Mathf.Lerp(originDegree, originDegree + direction * degree, rotationTimer[i] / time);
+            area.transform.rotation = Quaternion.Euler(0, y, 0);
+        }
+    }
+    //  ゲートオープンギミック(開閉ゲート、ライト、open=true,close=false、開閉にかかる時間、同じギミック同時の際最後のフラグ、複数同時の際フラグ、終了フラグ)
     public void SenceGate(GameObject gate, bool open, float time, int i)
     {
         if (open != oldOpenFlag)
@@ -179,6 +204,62 @@ public class GeneralStageManager : MonoBehaviour
         }
         oldOpenFlag = open;
     }
+    public void PreSenceGate(GameObject gate, GameObject light, bool open, float time, int i)
+    {
+        if(light !=  null) light.SetActive(true);
+        if (open != oldOpenFlag)
+        {
+            float a;
+            nowHeight = gate.transform.position.y;
+            if (open)
+            {
+                a = Mathf.InverseLerp(1f, -1.1f, nowHeight);
+                openTimer[i] = a * time;
+            }
+            else if (!open)
+            {
+                a = Mathf.InverseLerp(-1.1f, 1f, nowHeight);
+                openTimer[i] = a * time;
+            }
+        }
+        // 閉じる
+        if (!open)
+        {
+            if (openTimer[i] > time)
+            {
+                status = GameStatus.play;
+                openTimer[i] = 2;
+                gate.transform.position = new Vector3(gate.transform.position.x, 1f, gate.transform.position.z);
+                if (light != null) light.SetActive(false);
+            }
+            else if (openTimer[i] < time)
+            {
+                status = GameStatus.stop;
+                openTimer[i] += Time.deltaTime;
+                float y = Mathf.Lerp(nowHeight, 1f, openTimer[i] / time);
+                gate.transform.position = new Vector3(gate.transform.position.x, y, gate.transform.position.z);
+            }
+        }
+        // 開ける
+        else
+        {
+            if (openTimer[i] > time)
+            {
+                status = GameStatus.play;
+                openTimer[i] = 2;
+                gate.transform.position = new Vector3(gate.transform.position.x, -1.1f, gate.transform.position.z);
+                if (light != null) light.SetActive(false);
+            }
+            else if (openTimer[i] < time)
+            {
+                status = GameStatus.stop;
+                openTimer[i] += Time.deltaTime;
+                float y = Mathf.Lerp(nowHeight, -1.1f, openTimer[i] / time);
+                gate.transform.position = new Vector3(gate.transform.position.x, y, gate.transform.position.z);
+            if(light !=  null) light.SetActive(true);}
+        }
+        oldOpenFlag = open;
+    }
     public void Gate(GameObject gate, bool open, float time, int i, bool end, ref bool flag)
     {
         if (open)
@@ -213,6 +294,57 @@ public class GeneralStageManager : MonoBehaviour
                     flag = false;
                     openTimer[i] = 0f;
                 }
+            }
+            else if (openTimer[i] < time)
+            {
+                status = GameStatus.stop;
+                openTimer[i] += Time.deltaTime;
+                float y = Mathf.Lerp(-2.1f, 0f, openTimer[i] / time);
+                gate.transform.position = new Vector3(gate.transform.position.x, y, gate.transform.position.z);
+            }
+        }
+    }
+    public void PreGate(GameObject gate, GameObject light, bool open, float time, int i, bool end, ref bool flag)
+    {
+        if (light != null) light.SetActive(true);
+        if (open)
+        {
+            if (openTimer[i] == 0) gate.SetActive(true);
+            if (openTimer[i] > time)
+            {
+                status = GameStatus.play;
+                gate.transform.position = new Vector3(gate.transform.position.x, -2.1f, gate.transform.position.z);
+                gate.SetActive(false);
+                if (end)
+                {
+                    flag = false;
+                    openTimer[i] = 0f;
+
+                }
+                if (light != null) light.SetActive(false);
+            }
+            else if (openTimer[i] < time)
+            {
+                status = GameStatus.stop;
+                openTimer[i] += Time.deltaTime;
+                float y = Mathf.Lerp(0f, -2.1f, openTimer[i] / time);
+                gate.transform.position = new Vector3(gate.transform.position.x, y, gate.transform.position.z);
+            }
+        }
+        else if (!open)
+        {
+            if (openTimer[i] == 0) gate.SetActive(true);
+            if (openTimer[i] > time)
+            {
+                status = GameStatus.play;
+                gate.transform.position = new Vector3(gate.transform.position.x, 0f, gate.transform.position.z);
+                gate.SetActive(true);
+                if (end)
+                {
+                    flag = false;
+                    openTimer[i] = 0f;
+                }
+                if (light != null) light.SetActive(false);
             }
             else if (openTimer[i] < time)
             {
@@ -268,6 +400,52 @@ public class GeneralStageManager : MonoBehaviour
             limitActiveObTimer[i] += Time.deltaTime;
         }
     }
+    public void PreLimitActiveObject(GameObject activeOb, GameObject light, int i, bool end, ref bool flag)
+    {
+        if (limitActiveObTimer[i] == 0)
+        {
+            Color color = activeOb.GetComponent<MeshRenderer>().material.color;
+            color.a = 0f;
+            activeOb.GetComponent<MeshRenderer>().material.color = color;
+            activeOb.SetActive(true);
+            if (light != null) light.SetActive(true);
+        }
+        if (limitActiveObTimer[i] > limitActiveObTime)
+        {
+            activeOb.SetActive(false);
+            limitActiveObTimer[i] = 0;
+            if (end) flag = false;
+            endFadeInFlag = false;
+            if (light != null) light.SetActive(false);
+        }
+        else if (limitActiveObTimer[i] < limitActiveObTime)
+        {
+            // FadeIn
+            if (limitActiveObTimer[i] < 0.2f && !endFadeInFlag)
+            {
+                Color color = activeOb.GetComponent<MeshRenderer>().material.color;
+                float a = Mathf.Lerp(0f, 1f, limitActiveObTimer[i] / limitActiveObTime);
+                color.a = a;
+                activeOb.GetComponent<MeshRenderer>().material.color = color;
+            }
+            else if (limitActiveObTimer[i] > 0.2f && !endFadeInFlag)
+            {
+                Color color = activeOb.GetComponent<MeshRenderer>().material.color;
+                color.a = 1f;
+                activeOb.GetComponent<MeshRenderer>().material.color = color;
+                endFadeInFlag = true;
+            }
+            // FadeOut
+            if (limitActiveObTimer[i] > limitActiveObTime - 0.2f)
+            {
+                Color color = activeOb.GetComponent<MeshRenderer>().material.color;
+                float a = Mathf.Lerp(1f, 0f, limitActiveObTimer[i] / limitActiveObTime);
+                color.a = a;
+                activeOb.GetComponent<MeshRenderer>().material.color = color;
+            }
+            limitActiveObTimer[i] += Time.deltaTime;
+        }
+    }
     // 透明化オブジェクトを可視化ギミック
     public void ActiveObject(GameObject activeOb, float time, int i, bool end, ref bool flag)
     {
@@ -279,6 +457,31 @@ public class GeneralStageManager : MonoBehaviour
             activeOb.GetComponent<MeshRenderer>().material.color = color;
             activeObTimer[i] = 0f;
             if (end) flag = false;
+        }
+        else if (activeObTimer[i] < time)
+        {
+            activeObTimer[i] += Time.deltaTime;
+            Color color = activeOb.GetComponent<MeshRenderer>().material.color;
+            float a = Mathf.Lerp(0f, 1f, activeObTimer[i] / time);
+            color.a = a;
+            activeOb.GetComponent<MeshRenderer>().material.color = color;
+        }
+    }
+    public void PreActiveObject(GameObject activeOb, GameObject light, float time, int i, bool end, ref bool flag)
+    {
+        if (activeObTimer[i] == 0)
+        {
+            activeOb.SetActive(true);
+            if (light != null) light.SetActive(true);
+        }
+        if (activeObTimer[i] > time)
+        {
+            Color color = activeOb.GetComponent<MeshRenderer>().material.color;
+            color.a = 1f;
+            activeOb.GetComponent<MeshRenderer>().material.color = color;
+            activeObTimer[i] = 0f;
+            if (end) flag = false;
+            if (light != null) light.SetActive(false);
         }
         else if (activeObTimer[i] < time)
         {
