@@ -111,7 +111,7 @@ public class GameManagerStage1to1 : GeneralStageManager
         {
             ActiveLight(lightObjects[1], 2, 1, false, ref defeatGateFlag[0]);
             Gate(gateObjects[1], true, 2, 1, false, ref defeatGateFlag[1]);
-            ActiveObject(buttonObjects[1], 2, 0 ,true, ref defeatGateFlag[1]);
+            ActiveObject(buttonObjects[1], 0.1f, 0 ,true, ref defeatGateFlag[1]);
         }
         if (buttonObjects[1].GetComponent<ButtonManager>().buttonFlag) Gate(gateObjects[2], true, 2, 2, true, ref buttonObjects[1].GetComponent<ButtonManager>().buttonFlag);
     }

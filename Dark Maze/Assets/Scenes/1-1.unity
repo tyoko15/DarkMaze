@@ -7258,9 +7258,25 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3133238582051373996, guid: 6eed0aeceb54f6c4bb9efdb31184734b, type: 3}
+      propertyPath: m_NavMeshData
+      value: 
+      objectReference: {fileID: 23800000, guid: bd59cad066c23304093b1795d85c30c4, type: 2}
+    - target: {fileID: 3133238582051373996, guid: 6eed0aeceb54f6c4bb9efdb31184734b, type: 3}
+      propertyPath: m_UseGeometry
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3133238582051373996, guid: 6eed0aeceb54f6c4bb9efdb31184734b, type: 3}
+      propertyPath: m_LayerMask.m_Bits
+      value: 64
+      objectReference: {fileID: 0}
     - target: {fileID: 3679723896041924342, guid: 6eed0aeceb54f6c4bb9efdb31184734b, type: 3}
       propertyPath: m_Name
       value: 1-1Objects
+      objectReference: {fileID: 0}
+    - target: {fileID: 6368453568323197426, guid: 6eed0aeceb54f6c4bb9efdb31184734b, type: 3}
+      propertyPath: m_IsTrigger
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

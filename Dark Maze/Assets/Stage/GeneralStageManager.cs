@@ -159,12 +159,12 @@ public class GeneralStageManager : MonoBehaviour
             nowHeight = gate.transform.position.y;
             if (open)
             {
-                a = Mathf.InverseLerp(1f, -1.1f, nowHeight);
+                a = Mathf.InverseLerp(0f, -2.1f, nowHeight);
                 openTimer[i] = a * time;
             }
             else if (!open)
             {
-                a = Mathf.InverseLerp(-1.1f, 1f, nowHeight);
+                a = Mathf.InverseLerp(-2.1f, 0f, nowHeight);
                 openTimer[i] = a * time;
             }
         }
@@ -175,13 +175,13 @@ public class GeneralStageManager : MonoBehaviour
             {
                 status = GameStatus.play;
                 openTimer[i] = 2;
-                gate.transform.position = new Vector3(gate.transform.position.x, 1f, gate.transform.position.z);
+                gate.transform.position = new Vector3(gate.transform.position.x, 0f, gate.transform.position.z);
             }
             else if (openTimer[i] < time)
             {
                 status = GameStatus.stop;
                 openTimer[i] += Time.deltaTime;
-                float y = Mathf.Lerp(nowHeight, 1f, openTimer[i] / time);
+                float y = Mathf.Lerp(nowHeight, 0f, openTimer[i] / time);
                 gate.transform.position = new Vector3(gate.transform.position.x, y, gate.transform.position.z);
             }
         }
@@ -192,13 +192,13 @@ public class GeneralStageManager : MonoBehaviour
             {
                 status = GameStatus.play;
                 openTimer[i] = 2;
-                gate.transform.position = new Vector3(gate.transform.position.x, -1.1f, gate.transform.position.z);
+                gate.transform.position = new Vector3(gate.transform.position.x, -2.1f, gate.transform.position.z);
             }
             else if (openTimer[i] < time)
             {
                 status = GameStatus.stop;
                 openTimer[i] += Time.deltaTime;
-                float y = Mathf.Lerp(nowHeight, -1.1f, openTimer[i] / time);
+                float y = Mathf.Lerp(nowHeight, -2.1f, openTimer[i] / time);
                 gate.transform.position = new Vector3(gate.transform.position.x, y, gate.transform.position.z);
             }
         }
@@ -213,12 +213,12 @@ public class GeneralStageManager : MonoBehaviour
             nowHeight = gate.transform.position.y;
             if (open)
             {
-                a = Mathf.InverseLerp(1f, -1.1f, nowHeight);
+                a = Mathf.InverseLerp(0f, -2.1f, nowHeight);
                 openTimer[i] = a * time;
             }
             else if (!open)
             {
-                a = Mathf.InverseLerp(-1.1f, 1f, nowHeight);
+                a = Mathf.InverseLerp(-2.1f, 0f, nowHeight);
                 openTimer[i] = a * time;
             }
         }
@@ -229,14 +229,14 @@ public class GeneralStageManager : MonoBehaviour
             {
                 status = GameStatus.play;
                 openTimer[i] = 2;
-                gate.transform.position = new Vector3(gate.transform.position.x, 1f, gate.transform.position.z);
+                gate.transform.position = new Vector3(gate.transform.position.x, 0f, gate.transform.position.z);
                 if (light != null) light.SetActive(false);
             }
             else if (openTimer[i] < time)
             {
                 status = GameStatus.stop;
                 openTimer[i] += Time.deltaTime;
-                float y = Mathf.Lerp(nowHeight, 1f, openTimer[i] / time);
+                float y = Mathf.Lerp(nowHeight, 0f, openTimer[i] / time);
                 gate.transform.position = new Vector3(gate.transform.position.x, y, gate.transform.position.z);
             }
         }
@@ -247,14 +247,14 @@ public class GeneralStageManager : MonoBehaviour
             {
                 status = GameStatus.play;
                 openTimer[i] = 2;
-                gate.transform.position = new Vector3(gate.transform.position.x, -1.1f, gate.transform.position.z);
+                gate.transform.position = new Vector3(gate.transform.position.x, -2.1f, gate.transform.position.z);
                 if (light != null) light.SetActive(false);
             }
             else if (openTimer[i] < time)
             {
                 status = GameStatus.stop;
                 openTimer[i] += Time.deltaTime;
-                float y = Mathf.Lerp(nowHeight, -1.1f, openTimer[i] / time);
+                float y = Mathf.Lerp(nowHeight, -2.1f, openTimer[i] / time);
                 gate.transform.position = new Vector3(gate.transform.position.x, y, gate.transform.position.z);
             if(light !=  null) light.SetActive(true);}
         }
@@ -452,20 +452,10 @@ public class GeneralStageManager : MonoBehaviour
         if (activeObTimer[i] == 0) activeOb.SetActive(true);
         if (activeObTimer[i] > time)
         {
-            Color color = activeOb.GetComponent<MeshRenderer>().material.color;
-            color.a = 1f;
-            activeOb.GetComponent<MeshRenderer>().material.color = color;
             activeObTimer[i] = 0f;
             if (end) flag = false;
         }
-        else if (activeObTimer[i] < time)
-        {
-            activeObTimer[i] += Time.deltaTime;
-            Color color = activeOb.GetComponent<MeshRenderer>().material.color;
-            float a = Mathf.Lerp(0f, 1f, activeObTimer[i] / time);
-            color.a = a;
-            activeOb.GetComponent<MeshRenderer>().material.color = color;
-        }
+        else if (activeObTimer[i] < time) activeObTimer[i] += Time.deltaTime;
     }
     public void PreActiveObject(GameObject activeOb, GameObject light, float time, int i, bool end, ref bool flag)
     {
