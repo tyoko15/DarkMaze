@@ -29,15 +29,24 @@ public class GeneralStageManager : MonoBehaviour
     [SerializeField] public GameObject[] buttonObjects;
     [SerializeField] public GameObject[] gateObjects;
     [SerializeField] public GameObject[] activeObject;
+    [SerializeField] public GameObject[] areaLightObjects;
     [SerializeField] public GameObject[] lightObjects;
+    [SerializeField] public GameObject mainCamera;
+    [SerializeField] public GameObject[] cameraPointObjects;
     [SerializeField] public GameObject[] enemys;
     [Header("ステージ詳細情報")]
     [SerializeField] public float startTime = 0.1f;
     float startTimer;
 
+    // cameraWorkの変数
+    float[] cameraTimer = new float[5];
+    Vector3 cameraPosi;
+    Vector3 cameraRota;
+    bool[] cameraWorkFlag = new bool[2];
     // ギミック変数
     public float originDegree;
     [SerializeField] float[] rotationTimer;
+
     [SerializeField] float[] openTimer;
     float nowHeight;
     bool oldOpenFlag;
@@ -107,7 +116,11 @@ public class GeneralStageManager : MonoBehaviour
     // 回転ギミック(回転するエリア、ライト、回転方向、回転度、回転にかかる時間)
     public void AreaRotation(GameObject area, int direction, int degree, float time, int i, bool end, ref bool flag)
     {
-        if (rotationTimer[i] == 0) originDegree = area.transform.localEulerAngles.y;
+        if (rotationTimer[i] == 0)
+        {
+            originDegree = area.transform.localEulerAngles.y;
+
+        }
         if (rotationTimer[i] > time)
         {
             status = GameStatus.play;
@@ -125,29 +138,69 @@ public class GeneralStageManager : MonoBehaviour
             area.transform.rotation = Quaternion.Euler(0, y, 0);
         }
     }
-    public void PreAreaRotation(GameObject area, GameObject light, int direction, int degree, float time, int i, bool end, ref bool flag)
+    public void PreAreaRotation(GameObject area, GameObject light, GameObject cameraPoint, int direction, int degree, float time, int i, bool end, ref bool flag)
     {
-        if (rotationTimer[i] == 0) 
-        {
-            originDegree = area.transform.localEulerAngles.y;
-            if(light != null)light.SetActive(true);
-        }
-        if (rotationTimer[i] > time)
-        {
-            status = GameStatus.play;
-            rotationTimer[i] = 0;
-            area.transform.rotation = Quaternion.Euler(0, originDegree + direction * degree, 0);
-            if(end)flag = false;
-            stageNav.RemoveData();
-            stageNav.BuildNavMesh();
-            if (light != null) light.SetActive(false);
-        }
-        else if (rotationTimer[i] < time)
+        // スタート
+        if (rotationTimer[i] == 0 && !cameraWorkFlag[0] && !cameraWorkFlag[1] && cameraTimer[i] == 0) 
         {
             status = GameStatus.stop;
+            originDegree = area.transform.localEulerAngles.y;
+            if(light != null)light.SetActive(true);
+            cameraPosi = mainCamera.transform.position;
+            cameraRota = mainCamera.transform.eulerAngles;
+            cameraWorkFlag[0] = true;
+        }
+        // 最初のカメラ移動
+        if (cameraWorkFlag[0] && cameraTimer[i] > 0.5f)
+        {
+            cameraWorkFlag[0] = false;
+            cameraTimer[i] = 0f;
+            mainCamera.transform.position = cameraPoint.transform.position;
+            mainCamera.transform.rotation = Quaternion.Euler(cameraPoint.transform.eulerAngles);
+        }
+        else if (cameraWorkFlag[0] && cameraTimer[i] < 0.5f)
+        {
+            cameraTimer[i] += Time.deltaTime;
+            Vector3 posi = Vector3.Lerp(cameraPosi, cameraPoint.transform.position, cameraTimer[i] / 0.5f);
+            Vector3 rota = Vector3.Lerp(cameraRota, cameraPoint.transform.eulerAngles, cameraTimer[i] / 0.5f);
+            mainCamera.transform.position = posi;
+            mainCamera.transform.rotation = Quaternion.Euler(rota);
+        }
+        // エリア回転
+        if (rotationTimer[i] > time && !cameraWorkFlag[0] && !cameraWorkFlag[1])
+        {
+            rotationTimer[i] = 0;
+            area.transform.rotation = Quaternion.Euler(0, originDegree + direction * degree, 0);
+            cameraWorkFlag[1] = true;
+            cameraPosi = new Vector3(player.transform.position.x, player.transform.position.y + 10f, player.transform.position.z - 2f);
+            cameraRota = new Vector3(80f, 0f, 0f);
+        }
+        else if (rotationTimer[i] < time && !cameraWorkFlag[0] && !cameraWorkFlag[1])
+        {
             rotationTimer[i] += Time.deltaTime;
             float y = Mathf.Lerp(originDegree, originDegree + direction * degree, rotationTimer[i] / time);
             area.transform.rotation = Quaternion.Euler(0, y, 0);
+        }
+        // 最後のカメラ移動
+        if (cameraWorkFlag[1] && cameraTimer[i] > 0.5f)
+        {
+            status = GameStatus.play;
+            mainCamera.transform.position = cameraPosi;
+            mainCamera.transform.rotation = Quaternion.Euler(cameraRota);
+            cameraWorkFlag[1] = false;
+            cameraTimer[i] = 0f;
+            if (light != null) light.SetActive(false);
+            if (end) flag = false;
+            stageNav.RemoveData();
+            stageNav.BuildNavMesh();
+        }
+        else if (cameraWorkFlag[1] && cameraTimer[i] < 0.5f)
+        {
+            cameraTimer[i] += Time.deltaTime;
+            Vector3 posi = Vector3.Lerp(cameraPoint.transform.position, cameraPosi, cameraTimer[i] / 0.5f);
+            Vector3 rota = Vector3.Lerp(cameraPoint.transform.eulerAngles, cameraRota, cameraTimer[i] / 0.5f);
+            mainCamera.transform.position = posi;
+            mainCamera.transform.rotation = Quaternion.Euler(rota);
         }
     }
     //  ゲートオープンギミック(開閉ゲート、ライト、open=true,close=false、開閉にかかる時間、同じギミック同時の際最後のフラグ、複数同時の際フラグ、終了フラグ)
@@ -289,11 +342,8 @@ public class GeneralStageManager : MonoBehaviour
                 status = GameStatus.play;
                 gate.transform.position = new Vector3(gate.transform.position.x, 0f, gate.transform.position.z);
                 gate.SetActive(true);
-                if (end)
-                {
-                    flag = false;
-                    openTimer[i] = 0f;
-                }
+                openTimer[i] = 0f;
+                if (end) flag = false;
             }
             else if (openTimer[i] < time)
             {
@@ -304,47 +354,131 @@ public class GeneralStageManager : MonoBehaviour
             }
         }
     }
-    public void PreGate(GameObject gate, GameObject light, bool open, float time, int i, bool end, ref bool flag)
+    public void PreGate(GameObject gate, GameObject light, GameObject cameraPoint, bool open, float time, int i, bool end, ref bool flag)
     {
-        if (light != null) light.SetActive(true);
         if (open)
         {
-            if (openTimer[i] == 0) gate.SetActive(true);
-            if (openTimer[i] > time)
+            if (openTimer[i] == 0 && !cameraWorkFlag[0] && !cameraWorkFlag[1])
             {
-                status = GameStatus.play;
+                status = GameStatus.stop;
+                gate.SetActive(true);
+                if (light != null) light.SetActive(true);
+                cameraPosi = mainCamera.transform.position;
+                cameraRota = mainCamera.transform.eulerAngles;
+                cameraWorkFlag[0] = true;
+            }
+            // 最初のカメラ移動
+            if (cameraWorkFlag[0] && cameraTimer[i] > 0.5f && cameraPoint != null)
+            {
+                cameraWorkFlag[0] = false;
+                cameraTimer[i] = 0f;
+                mainCamera.transform.position = cameraPoint.transform.position;
+                mainCamera.transform.rotation = Quaternion.Euler(cameraPoint.transform.eulerAngles);
+            }
+            else if (cameraWorkFlag[0] && cameraTimer[i] < 0.5f && cameraPoint != null)
+            {
+                cameraTimer[i] += Time.deltaTime;
+                Vector3 posi = Vector3.Lerp(cameraPosi, cameraPoint.transform.position, cameraTimer[i] / 0.5f);
+                Vector3 rota = Vector3.Lerp(cameraRota, cameraPoint.transform.eulerAngles, cameraTimer[i] / 0.5f);
+                mainCamera.transform.position = posi;
+                mainCamera.transform.rotation = Quaternion.Euler(rota);
+            }
+            else if(cameraWorkFlag[0] && cameraTimer[i] > 0.5f && cameraPoint == null)
+            {
+                cameraWorkFlag[0] = false;
+                cameraTimer[i] = 0f;
+            }
+            else if(cameraWorkFlag[0] && cameraTimer[i] > 0.5f && cameraPoint == null) cameraTimer[i] += Time.deltaTime;
+            // GateOpen
+            if (openTimer[i] > time && !cameraWorkFlag[0] && !cameraWorkFlag[1])
+            {
+                openTimer[i] = 0f;
                 gate.transform.position = new Vector3(gate.transform.position.x, -2.1f, gate.transform.position.z);
                 gate.SetActive(false);
-                if (end)
-                {
-                    flag = false;
-                    openTimer[i] = 0f;
-
-                }
-                if (light != null) light.SetActive(false);
+                cameraPosi = new Vector3(player.transform.position.x, player.transform.position.y + 10f, player.transform.position.z - 2f);
+                cameraRota = new Vector3(80f, 0f, 0f);
+                cameraWorkFlag[1] = true;
             }
-            else if (openTimer[i] < time)
+            else if (openTimer[i] < time && !cameraWorkFlag[0] && !cameraWorkFlag[1])
             {
                 status = GameStatus.stop;
                 openTimer[i] += Time.deltaTime;
                 float y = Mathf.Lerp(0f, -2.1f, openTimer[i] / time);
                 gate.transform.position = new Vector3(gate.transform.position.x, y, gate.transform.position.z);
             }
+            // 最後のカメラ移動
+            if (cameraWorkFlag[1] && cameraTimer[i] > 0.5f && cameraPoint != null)
+            {
+                status = GameStatus.play;
+                if (light != null) light.SetActive(false);
+                mainCamera.transform.position = cameraPosi;
+                mainCamera.transform.rotation = Quaternion.Euler(cameraRota);
+                cameraWorkFlag[1] = false;
+                cameraTimer[i] = 0f;
+                if (end) flag = false;
+            }
+            else if (cameraWorkFlag[1] && cameraTimer[i] < 0.5f && cameraPoint != null)
+            {
+                cameraTimer[i] += Time.deltaTime;
+                Vector3 posi = Vector3.Lerp(cameraPoint.transform.position, cameraPosi, cameraTimer[i] / 0.5f);
+                Vector3 rota = Vector3.Lerp(cameraPoint.transform.eulerAngles, cameraRota, cameraTimer[i] / 0.5f);
+                mainCamera.transform.position = posi;
+                mainCamera.transform.rotation = Quaternion.Euler(rota);
+            }
+            else if (cameraWorkFlag[0] && cameraTimer[i] > 0.5f && cameraPoint == null)
+            {
+                status = GameStatus.play;
+                cameraWorkFlag[1] = false;
+                cameraTimer[i] = 0f;
+                if (light != null) light.SetActive(false);
+                openTimer[i] = 0f;
+                if (end) flag = false;
+            }
+            else if (cameraWorkFlag[0] && cameraTimer[i] > 0.5f && cameraPoint == null) cameraTimer[i] += Time.deltaTime;
         }
         else if (!open)
         {
-            if (openTimer[i] == 0) gate.SetActive(true);
+            if (openTimer[i] == 0 && !cameraWorkFlag[0] && !cameraWorkFlag[1])
+            {
+                status = GameStatus.stop;
+                gate.SetActive(true);
+                if (light != null) light.SetActive(true);
+                cameraPosi = mainCamera.transform.position;
+                cameraRota = mainCamera.transform.eulerAngles;
+                cameraWorkFlag[0] = true;
+            }
+            // 最初のカメラ移動
+            if (cameraWorkFlag[0] && cameraTimer[i] > 0.5f)
+            {
+                cameraWorkFlag[0] = false;
+                cameraTimer[i] = 0f;
+                mainCamera.transform.position = cameraPoint.transform.position;
+                mainCamera.transform.rotation = Quaternion.Euler(cameraPoint.transform.eulerAngles);
+            }
+            else if (cameraWorkFlag[0] && cameraTimer[i] < 0.5f)
+            {
+                cameraTimer[i] += Time.deltaTime;
+                Vector3 posi = Vector3.Lerp(cameraPosi, cameraPoint.transform.position, cameraTimer[i] / 0.5f);
+                Vector3 rota = Vector3.Lerp(cameraRota, cameraPoint.transform.eulerAngles, cameraTimer[i] / 0.5f);
+                mainCamera.transform.position = posi;
+                mainCamera.transform.rotation = Quaternion.Euler(rota);
+            }
+            else if (cameraWorkFlag[0] && cameraTimer[i] > 0.5f && cameraPoint == null)
+            {
+                cameraWorkFlag[0] = false;
+                cameraTimer[i] = 0f;
+            }
+            else if (cameraWorkFlag[0] && cameraTimer[i] > 0.5f && cameraPoint == null) cameraTimer[i] += Time.deltaTime;
+            // GateClose
             if (openTimer[i] > time)
             {
-                status = GameStatus.play;
+                openTimer[i] = 0f;
                 gate.transform.position = new Vector3(gate.transform.position.x, 0f, gate.transform.position.z);
                 gate.SetActive(true);
-                if (end)
-                {
-                    flag = false;
-                    openTimer[i] = 0f;
-                }
                 if (light != null) light.SetActive(false);
+                cameraPosi = new Vector3(player.transform.position.x, player.transform.position.y + 10f, player.transform.position.z - 2f);
+                cameraRota = new Vector3(80f, 0f, 0f);
+                cameraWorkFlag[1] = true;
             }
             else if (openTimer[i] < time)
             {
@@ -353,6 +487,36 @@ public class GeneralStageManager : MonoBehaviour
                 float y = Mathf.Lerp(-2.1f, 0f, openTimer[i] / time);
                 gate.transform.position = new Vector3(gate.transform.position.x, y, gate.transform.position.z);
             }
+            // 最後のカメラ移動
+            if (cameraWorkFlag[1] && cameraTimer[i] > 0.5f)
+            {
+                status = GameStatus.play;
+                if (light != null) light.SetActive(false);
+                mainCamera.transform.position = cameraPosi;
+                mainCamera.transform.rotation = Quaternion.Euler(cameraRota);
+                cameraWorkFlag[1] = false;
+                cameraTimer[i] = 0f;
+                if (light != null) light.SetActive(false);
+                if (end) flag = false;
+            }
+            else if (cameraWorkFlag[1] && cameraTimer[i] < 0.5f)
+            {
+                cameraTimer[i] += Time.deltaTime;
+                Vector3 posi = Vector3.Lerp(cameraPoint.transform.position, cameraPosi, cameraTimer[i] / 0.5f);
+                Vector3 rota = Vector3.Lerp(cameraPoint.transform.eulerAngles, cameraRota, cameraTimer[i] / 0.5f);
+                mainCamera.transform.position = posi;
+                mainCamera.transform.rotation = Quaternion.Euler(rota);
+            }
+            else if (cameraWorkFlag[0] && cameraTimer[i] > 0.5f && cameraPoint == null)
+            {
+                status = GameStatus.play;
+                cameraWorkFlag[1] = false;
+                cameraTimer[i] = 0f;
+                if (light != null) light.SetActive(false);
+                openTimer[i] = 0f;
+                if (end) flag = false;
+            }
+            else if (cameraWorkFlag[0] && cameraTimer[i] > 0.5f && cameraPoint == null) cameraTimer[i] += Time.deltaTime;
         }
     }
     // 時間内オブジェクトを出現ギミック

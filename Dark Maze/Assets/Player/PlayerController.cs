@@ -100,7 +100,8 @@ public class PlayerController : MonoBehaviour
                 PlayerControl();
                 PlayerLightControl();
                 PlayerItemUseControl();
-            break;
+                CameraControl();
+                break;
             case 2: // stop
                 break;
             case 3: // menu
@@ -111,8 +112,7 @@ public class PlayerController : MonoBehaviour
                 break;
         }
         PlayerItemSelectControl(); 
-        PlayerAttackControl(); 
-        CameraControl();
+        PlayerAttackControl();         
     }
 
     // PlayerçsìÆä«óùä÷êî

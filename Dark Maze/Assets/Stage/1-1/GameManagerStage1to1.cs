@@ -90,7 +90,7 @@ public class GameManagerStage1to1 : GeneralStageManager
     // 右上エリアの回転ギミック
     public void Gimmick1()
     {
-        if (buttonObjects[0].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[1], -1, 90, 2, 0, true, ref buttonObjects[0].GetComponent<ButtonManager>().buttonFlag);
+        if (buttonObjects[0].GetComponent<ButtonManager>().buttonFlag) PreAreaRotation(areas[1], lightObjects[0], cameraPointObjects[0], -1, 90, 2, 0, true, ref buttonObjects[0].GetComponent<ButtonManager>().buttonFlag);
     }
     // 右下エリアの敵撃破ギミック
     public void Gimmick2()
@@ -98,9 +98,9 @@ public class GameManagerStage1to1 : GeneralStageManager
         if (enterArea[3].enterAreaFlag) Gate(gateObjects[0], false, 2, 0, true, ref enterArea[3].enterAreaFlag);
         if (enemys[0].transform.childCount == 0 && defeatGateFlag[0])
         {
-            ActiveLight(lightObjects[0], 2, 0, false, ref defeatGateFlag[0]);
-            Gate(gateObjects[0], true, 2, 0, false, ref defeatGateFlag[0]);
-            Gate(gateObjects[1], true, 2, 1, true, ref defeatGateFlag[0]);
+            ActiveLight(areaLightObjects[0], 3, 0, false, ref defeatGateFlag[0]);
+            PreGate(gateObjects[0], null, null, true, 3, 0, false, ref defeatGateFlag[0]);
+            PreGate(gateObjects[1], lightObjects[1], cameraPointObjects[1], true, 2, 1, true, ref defeatGateFlag[0]);
         }
     }
     // 左下エリアの敵撃破ギミック
@@ -109,9 +109,9 @@ public class GameManagerStage1to1 : GeneralStageManager
         if (enterArea[2].enterAreaFlag) Gate(gateObjects[1], false, 2, 1, true, ref enterArea[2].enterAreaFlag);
         if (enemys[1].transform.childCount == 0 && defeatGateFlag[1])
         {
-            ActiveLight(lightObjects[1], 2, 1, false, ref defeatGateFlag[0]);
+            ActiveLight(areaLightObjects[1], 2, 1, false, ref defeatGateFlag[1]);
             Gate(gateObjects[1], true, 2, 1, false, ref defeatGateFlag[1]);
-            ActiveObject(buttonObjects[1], 0.1f, 0 ,true, ref defeatGateFlag[1]);
+            ActiveObject(buttonObjects[1], 2, 0 ,true, ref defeatGateFlag[1]);
         }
         if (buttonObjects[1].GetComponent<ButtonManager>().buttonFlag) Gate(gateObjects[2], true, 2, 2, true, ref buttonObjects[1].GetComponent<ButtonManager>().buttonFlag);
     }
