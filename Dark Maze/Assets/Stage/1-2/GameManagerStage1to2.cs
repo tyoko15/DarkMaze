@@ -90,17 +90,17 @@ public class GameManagerStage1to2 : GeneralStageManager
     // 右上エリアの箱を感圧版に置くギミック
     public void Gimmick1()
     {
-        SenceGate(gateObjects[0], buttonObjects[0].GetComponent<ButtonManager>().buttonFlag, 2, 0);
+        PreSenceGate(gateObjects[0], lightObjects[0], cameraPointObjects[0], buttonObjects[0].GetComponent<ButtonManager>().buttonFlag, 2, 0);
     }
     // 左下エリアの回転ギミック
     public void Gimmick2()
     {
-        if (buttonObjects[1].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[2], -1, 90, 2, 0, true, ref buttonObjects[1].GetComponent<ButtonManager>().buttonFlag);
+        if (buttonObjects[1].GetComponent<ButtonManager>().buttonFlag) PreAreaRotation(areas[2], lightObjects[1], cameraPointObjects[1], -1, 90, 2, 0, true, ref buttonObjects[1].GetComponent<ButtonManager>().buttonFlag);
     }
     // 右下エリアの敵撃破＆離れたボタンギミック
     public void Gimmick3()
     {
-        if (enterArea[3].enterAreaFlag) Gate(gateObjects[1], false, 2, 1, true, ref enterArea[3].enterAreaFlag);
+        if (enterArea[3].enterAreaFlag) PreGate(gateObjects[1], lightObjects[2], cameraPointObjects[2], false, 2, 1, true, ref enterArea[3].enterAreaFlag);
         if (enemys[0].transform.childCount == 0 && defeatGateFlag[0])
         {
             ActiveObject(activeObject[0], 2, 0, false, ref defeatGateFlag[0]);

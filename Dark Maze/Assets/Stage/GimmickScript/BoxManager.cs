@@ -8,6 +8,7 @@ public class BoxManager : MonoBehaviour
     float moveTimer;
     int directionNum;
     bool lockFlag;
+    bool buttonFlag;
     bool wallFlag;
     int[] wallDirectionNum = new int[4];
     Vector3 originPosition;
@@ -18,13 +19,12 @@ public class BoxManager : MonoBehaviour
 
     void Update()
     {
-        if (lockFlag)
+        if (lockFlag && !buttonFlag)
         {
             MoveBox(directionNum);
             gameObject.tag = "Untagged";
         }
         else gameObject.tag = "Box";
-
     }
 
     private void OnCollisionEnter(Collision collision)
@@ -67,6 +67,13 @@ public class BoxManager : MonoBehaviour
                 }
             }
             wallFlag = true;
+        }
+        for (int i = 0; i < 10; i++)
+        {
+            if (!lockFlag && other.gameObject.name == $"GroundButton ({i})")
+            {
+                buttonFlag = true;
+            }
         }
     }
     void Direction()
