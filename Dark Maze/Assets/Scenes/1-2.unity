@@ -7196,6 +7196,7 @@ MonoBehaviour:
   hideFlag: 0
   somethingFlag: 1
   senceFlag: 0
+  completeFlag: 0
 --- !u!1 &323030491
 GameObject:
   m_ObjectHideFlags: 0
@@ -8446,6 +8447,7 @@ MonoBehaviour:
   box: {fileID: 369929948}
   player: {fileID: 7297363091828228868}
   moveTime: 0.5
+  completeTime: 3
 --- !u!54 &369929957
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -11818,6 +11820,7 @@ MonoBehaviour:
   rotationTimer:
   - 0
   - 0
+  rotationFlag: 0
   openTimer:
   - 2
   - 0
@@ -20037,6 +20040,7 @@ MonoBehaviour:
   hideFlag: 0
   somethingFlag: 0
   senceFlag: 0
+  completeFlag: 0
 --- !u!1 &1021982117
 GameObject:
   m_ObjectHideFlags: 0
@@ -20718,6 +20722,7 @@ MonoBehaviour:
   hideFlag: 0
   somethingFlag: 0
   senceFlag: 0
+  completeFlag: 0
 --- !u!1 &1045992344
 GameObject:
   m_ObjectHideFlags: 0
@@ -30004,6 +30009,7 @@ MonoBehaviour:
   hideFlag: 0
   somethingFlag: 0
   senceFlag: 1
+  completeFlag: 0
 --- !u!54 &1526717073
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -30990,6 +30996,7 @@ MonoBehaviour:
   box: {fileID: 1579352636}
   player: {fileID: 7297363091828228868}
   moveTime: 2
+  completeTime: 0
 --- !u!65 &1579352642
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -33048,6 +33055,7 @@ MonoBehaviour:
   hideFlag: 0
   somethingFlag: 0
   senceFlag: 1
+  completeFlag: 0
 --- !u!1 &1720122446
 GameObject:
   m_ObjectHideFlags: 0

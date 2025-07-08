@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 public class GameManagerStage1to2 : GeneralStageManager
@@ -90,13 +91,14 @@ public class GameManagerStage1to2 : GeneralStageManager
     // 右上エリアの箱を感圧版に置くギミック
     public void Gimmick1()
     {
-        PreSenceGate(gateObjects[0], lightObjects[0], cameraPointObjects[0], buttonObjects[0].GetComponent<ButtonManager>().buttonFlag, 2, 0);
+        PreSenceGate(gateObjects[0], lightObjects[0], cameraPointObjects[0], buttonObjects[0].GetComponent<ButtonManager>().buttonFlag, buttonObjects[0].GetComponent<ButtonManager>().completeFlag, 2, 0);
     }
     // 左下エリアの回転ギミック
     public void Gimmick2()
     {
         //if (buttonObjects[0].GetComponent<ButtonManager>().buttonFlag) PreAreaRotation(areas[1], lightObjects[0], cameraPointObjects[0], -1, 90, 2, 0, true, ref buttonObjects[0].GetComponent<ButtonManager>().buttonFlag);
-        if (buttonObjects[1].GetComponent<ButtonManager>().buttonFlag) PreAreaRotation(areas[2], lightObjects[1], cameraPointObjects[1], -1, 90, 2, 0, true, ref buttonObjects[1].GetComponent<ButtonManager>().buttonFlag);
+        //if (buttonObjects[1].GetComponent<ButtonManager>().buttonFlag) PreAreaRotation(areas[2], lightObjects[1], cameraPointObjects[1], -1, 90, 2, 0, true, ref buttonObjects[1].GetComponent<ButtonManager>().buttonFlag);
+        if (buttonObjects[1].GetComponent<ButtonManager>().buttonFlag) PreAreaRotation(areas[2], lightObjects[1], cameraPointObjects[1] , -1, 90, 2, 0, true, ref buttonObjects[1].GetComponent<ButtonManager>().buttonFlag);
     }
     // 右下エリアの敵撃破＆離れたボタンギミック
     public void Gimmick3()
@@ -104,15 +106,15 @@ public class GameManagerStage1to2 : GeneralStageManager
         if (enterArea[3].enterAreaFlag) PreGate(gateObjects[1], lightObjects[2], cameraPointObjects[2], false, 2, 1, true, ref enterArea[3].enterAreaFlag);
         if (enemys[0].transform.childCount == 0 && defeatGateFlag[0])
         {
-            ActiveObject(activeObject[0], 2, 0, false, ref defeatGateFlag[0]);
-            ActiveLight(lightObjects[0], 2 , 0, false, ref defeatGateFlag[0]);
-            Gate(gateObjects[1], true, 2, 1, true, ref defeatGateFlag[0]);            
+            PreActiveLight(lightObjects[0], 2 , 0, false, ref defeatGateFlag[0]);
+            PreGate(gateObjects[1], null, null, true, 2, 1, false, ref defeatGateFlag[0]);            
+            PreActiveObject(activeObject[0], lightObjects[3], cameraPointObjects[3], 2, 0, true, ref defeatGateFlag[0]);
         }
-        if (buttonObjects[2].GetComponent<ButtonManager>().buttonFlag) Gate(gateObjects[2], true, 2, 1, true, ref buttonObjects[2].GetComponent<ButtonManager>().buttonFlag);
+        if (buttonObjects[2].GetComponent<ButtonManager>().buttonFlag) PreGate(gateObjects[2],lightObjects[4], cameraPointObjects[4], true, 2, 1, true, ref buttonObjects[2].GetComponent<ButtonManager>().buttonFlag);
     }
     // 右上エリアのゲートオープンギミック
     public void Gimmick4()
     {
-        if (buttonObjects[3].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[2], -1, 180, 2, 0, true, ref buttonObjects[3].GetComponent<ButtonManager>().buttonFlag);
+        if (buttonObjects[3].GetComponent<ButtonManager>().buttonFlag) PreAreaRotation(areas[2], lightObjects[1], cameraPointObjects[1] , -1, 180, 2, 0, true, ref buttonObjects[3].GetComponent<ButtonManager>().buttonFlag);
     }
 }

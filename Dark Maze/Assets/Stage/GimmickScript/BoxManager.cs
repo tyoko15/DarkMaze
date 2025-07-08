@@ -5,7 +5,9 @@ public class BoxManager : MonoBehaviour
     [SerializeField] GameObject box;
     [SerializeField] GameObject player;
     [SerializeField] float moveTime;
+    [SerializeField] float completeTime;
     float moveTimer;
+    float completeTimer;
     int directionNum;
     bool lockFlag;
     bool buttonFlag;
@@ -73,6 +75,8 @@ public class BoxManager : MonoBehaviour
             if (!lockFlag && other.gameObject.name == $"GroundButton ({i})")
             {
                 buttonFlag = true;
+                if (completeTimer > completeTime) other.gameObject.GetComponent<ButtonManager>().completeFlag = true;
+                else if (completeTimer < completeTime) completeTimer += Time.deltaTime;
             }
         }
     }

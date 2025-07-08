@@ -7,6 +7,7 @@ public class ButtonManager : MonoBehaviour
     [SerializeField] bool hideFlag;
     [SerializeField] bool somethingFlag;
     [SerializeField] bool senceFlag;
+    [SerializeField] public bool completeFlag;
     int somethingNum;
     private void Start()
     {
