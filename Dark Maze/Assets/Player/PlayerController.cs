@@ -348,16 +348,16 @@ public class PlayerController : MonoBehaviour
             }
             if (endUseFlag)
             {
-                Instantiate(arrowObject, playerObject.transform.position, Quaternion.identity);                
+                Instantiate(arrowObject, playerObject.transform.position, Quaternion.identity);
                 itemUseFlag = false;
                 endUseFlag = false;
             }
         }
         // 縄
-        else if (canItemFlag[itemSelectNum] &&itemSelectNum == 1)
+        else if (canItemFlag[itemSelectNum] && itemSelectNum == 1)
         {
             itemSelect.GetComponent<Image>().sprite = itemImageSprites[1];
-            if(itemUseFlag)
+            if (itemUseFlag)
             {
                 for (int i = 0; i < ropeTargetObjects.Length; i++)
                 {
@@ -407,7 +407,7 @@ public class PlayerController : MonoBehaviour
                     }
                     else
                     {
-                        if(ropeObject != null) Destroy(ropeObject);
+                        if (ropeObject != null) Destroy(ropeObject);
                         rangeRopeTargetObject = null;
                         ropeObject = null;
                         ropeMoveFlag = false;
@@ -423,7 +423,7 @@ public class PlayerController : MonoBehaviour
                 //進む方向に滑らかに向く。
                 transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 10f);
             }
-            if(endUseFlag)
+            if (endUseFlag)
             {
                 itemUseFlag = false;
                 if (betweenObject != null)
@@ -433,23 +433,23 @@ public class PlayerController : MonoBehaviour
                 }
                 if (ropeMoveFlag)
                 {
-                    if(ropeMoveTimer == 0)
+                    if (ropeMoveTimer == 0)
                     {
                         originPlayerObjectPosition = playerObject.transform.position;
                         float x = rangeRopeTargetPosition.x - playerObject.transform.position.x;
                         float z = rangeRopeTargetPosition.z - playerObject.transform.position.z;
-                        if(Mathf.Abs(x) > Mathf.Abs(z)) // 左右
+                        if (Mathf.Abs(x) > Mathf.Abs(z)) // 左右
                         {
-                            if(x > 0) // 右
+                            if (x > 0) // 右
                             {
                                 rangeRopeTargetPosition.x -= 1.5f;
                             }
-                            else if(x < 0) // 左
+                            else if (x < 0) // 左
                             {
                                 rangeRopeTargetPosition.x += 1.5f;
                             }
                         }
-                        else if(Mathf.Abs(x) < Mathf.Abs(z)) // 前後
+                        else if (Mathf.Abs(x) < Mathf.Abs(z)) // 前後
                         {
                             if (z > 0) // 前
                             {
@@ -461,12 +461,12 @@ public class PlayerController : MonoBehaviour
                             }
                         }
                     }
-                    if(ropeMoveTimer > ropeMoveTime)
+                    if (ropeMoveTimer > ropeMoveTime)
                     {
                         ropeMoveTimer = 0;
                         ropeMoveFlag = false;
                     }
-                    else if(ropeMoveTimer < ropeMoveTime)
+                    else if (ropeMoveTimer < ropeMoveTime)
                     {
                         ropeObject.transform.position = rangeRopeTargetObject.transform.position;
                         float x = Mathf.Lerp(originPlayerObjectPosition.x, rangeRopeTargetPosition.x, ropeMoveTimer / ropeMoveTime);
@@ -499,7 +499,12 @@ public class PlayerController : MonoBehaviour
                 endUseFlag = false;
             }
         }
-        else itemSelect.GetComponent<Image>().sprite = itemImageSprites[3];
+        else
+        {
+            itemSelect.GetComponent<Image>().sprite = itemImageSprites[3];
+            itemUseFlag = false;
+            endUseFlag = false;
+        }
     }
 
     private void OnCollisionStay(Collision collision)

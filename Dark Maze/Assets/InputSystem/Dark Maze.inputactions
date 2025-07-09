@@ -90,7 +90,7 @@
                     "name": "UseItemButton",
                     "type": "Button",
                     "id": "0d989a33-0562-46bd-b03a-d6d5c970d0c8",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
