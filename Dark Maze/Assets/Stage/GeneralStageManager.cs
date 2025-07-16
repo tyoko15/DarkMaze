@@ -50,7 +50,7 @@ public class GeneralStageManager : MonoBehaviour
     // ギミック変数
     public float originDegree;
     [SerializeField] float[] rotationTimer;
-    [SerializeField] bool rotationFlag; 
+    [SerializeField] bool rotationFlag;
 
     [SerializeField] float[] openTimer;
     float nowHeight;
@@ -209,68 +209,129 @@ public class GeneralStageManager : MonoBehaviour
     {
         if (flag)
         {
-            // スタート
-            if (rotationTimer[i] == 0f && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
+            if (cameraPoint)
             {
-                status = GameStatus.stop;
-                originDegree = area.transform.localEulerAngles.y;
-                if (light != null) light.SetActive(true);
-                cameraPosi = mainCamera.transform.position;
-                cameraRota = mainCamera.transform.eulerAngles;
-                cameraWorkStartFlag[i] = true;
+                // スタート
+                if (rotationTimer[i] == 0f && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
+                {
+                    status = GameStatus.stop;
+                    originDegree = area.transform.localEulerAngles.y;
+                    if (light != null) light.SetActive(true);
+                    cameraPosi = mainCamera.transform.position;
+                    cameraRota = mainCamera.transform.eulerAngles;
+                    cameraWorkStartFlag[i] = true;
+                    Debug.Log(light.activeSelf);
+                }
+                // 最初のカメラ移動
+                if (cameraWorkStartFlag[i] && cameraTimer[i] > 0.5f)
+                {
+                    cameraWorkStartFlag[i] = false;
+                    cameraTimer[i] = 0f;
+                    mainCamera.transform.position = cameraPoint.transform.position;
+                    mainCamera.transform.rotation = Quaternion.Euler(cameraPoint.transform.eulerAngles);
+                }
+                else if (cameraWorkStartFlag[i] && cameraTimer[i] < 0.5f)
+                {
+                    cameraTimer[i] += Time.deltaTime;
+                    Vector3 posi = Vector3.Lerp(cameraPosi, cameraPoint.transform.position, cameraTimer[i] / 0.5f);
+                    Vector3 rota = Vector3.Lerp(cameraRota, cameraPoint.transform.eulerAngles, cameraTimer[i] / 0.5f);
+                    mainCamera.transform.position = posi;
+                    mainCamera.transform.rotation = Quaternion.Euler(rota);
+                }
+                // エリア回転
+                if (rotationTimer[i] > time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
+                {
+                    rotationTimer[i] = 0;
+                    area.transform.rotation = Quaternion.Euler(0, originDegree + direction * degree, 0);
+                    cameraWorkEndFlag[i] = true;
+                    cameraPosi = new Vector3(player.transform.position.x, player.transform.position.y + 10f, player.transform.position.z - 2f);
+                    cameraRota = new Vector3(80f, 0f, 0f);
+                }
+                else if (rotationTimer[i] < time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
+                {
+                    rotationTimer[i] += Time.deltaTime;
+                    float y = Mathf.Lerp(originDegree, originDegree + direction * degree, rotationTimer[i] / time);
+                    area.transform.rotation = Quaternion.Euler(0, y, 0);
+                }
+                // 最後のカメラ移動
+                if (cameraWorkEndFlag[i] && cameraTimer[i] > 0.5f)
+                {
+                    status = GameStatus.play;
+                    mainCamera.transform.position = cameraPosi;
+                    mainCamera.transform.rotation = Quaternion.Euler(cameraRota);
+                    cameraPosi = Vector3.zero;
+                    cameraWorkEndFlag[i] = false;
+                    cameraTimer[i] = 0f;
+                    if (light != null) light.SetActive(false);
+                    if (end) 
+                    {
+                        flag = false;
+                        stageNav.RemoveData();
+                        stageNav.BuildNavMesh();
+                    }
+                }
+                else if (cameraWorkEndFlag[i] && cameraTimer[i] < 0.5f)
+                {
+                    cameraTimer[i] += Time.deltaTime;
+                    Vector3 posi = Vector3.Lerp(cameraPoint.transform.position, cameraPosi, cameraTimer[i] / 0.5f);
+                    Vector3 rota = Vector3.Lerp(cameraPoint.transform.eulerAngles, cameraRota, cameraTimer[i] / 0.5f);
+                    mainCamera.transform.position = posi;
+                    mainCamera.transform.rotation = Quaternion.Euler(rota);
+                }
             }
-            // 最初のカメラ移動
-            if (cameraWorkStartFlag[i] && cameraTimer[i] > 0.5f)
+            else
             {
-                cameraWorkStartFlag[i] = false;
-                cameraTimer[i] = 0f;
-                mainCamera.transform.position = cameraPoint.transform.position;
-                mainCamera.transform.rotation = Quaternion.Euler(cameraPoint.transform.eulerAngles);
-            }
-            else if (cameraWorkStartFlag[i] && cameraTimer[i] < 0.5f)
-            {
-                cameraTimer[i] += Time.deltaTime;
-                Vector3 posi = Vector3.Lerp(cameraPosi, cameraPoint.transform.position, cameraTimer[i] / 0.5f);
-                Vector3 rota = Vector3.Lerp(cameraRota, cameraPoint.transform.eulerAngles, cameraTimer[i] / 0.5f);
-                mainCamera.transform.position = posi;
-                mainCamera.transform.rotation = Quaternion.Euler(rota);
-            }
-            // エリア回転
-            if (rotationTimer[i] > time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
-            {
-                rotationTimer[i] = 0;
-                area.transform.rotation = Quaternion.Euler(0, originDegree + direction * degree, 0);
-                cameraWorkEndFlag[i] = true;
-                cameraPosi = new Vector3(player.transform.position.x, player.transform.position.y + 10f, player.transform.position.z - 2f);
-                cameraRota = new Vector3(80f, 0f, 0f);
-            }
-            else if (rotationTimer[i] < time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
-            {
-                rotationTimer[i] += Time.deltaTime;
-                float y = Mathf.Lerp(originDegree, originDegree + direction * degree, rotationTimer[i] / time);
-                area.transform.rotation = Quaternion.Euler(0, y, 0);
-            }
-            // 最後のカメラ移動
-            if (cameraWorkEndFlag[i] && cameraTimer[i] > 0.5f)
-            {
-                status = GameStatus.play;
-                mainCamera.transform.position = cameraPosi;
-                mainCamera.transform.rotation = Quaternion.Euler(cameraRota);
-                cameraPosi = Vector3.zero;
-                cameraWorkEndFlag[i] = false;
-                cameraTimer[i] = 0f;
-                if (light != null) light.SetActive(false);
-                if (end) flag = false;
-                stageNav.RemoveData();
-                stageNav.BuildNavMesh();
-            }
-            else if (cameraWorkEndFlag[i] && cameraTimer[i] < 0.5f)
-            {
-                cameraTimer[i] += Time.deltaTime;
-                Vector3 posi = Vector3.Lerp(cameraPoint.transform.position, cameraPosi, cameraTimer[i] / 0.5f);
-                Vector3 rota = Vector3.Lerp(cameraPoint.transform.eulerAngles, cameraRota, cameraTimer[i] / 0.5f);
-                mainCamera.transform.position = posi;
-                mainCamera.transform.rotation = Quaternion.Euler(rota);
+                // スタート
+                if (rotationTimer[i] == 0f && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
+                {
+                    status = GameStatus.stop;
+                    originDegree = area.transform.localEulerAngles.y;
+                    if (light != null) light.SetActive(true);
+                    cameraWorkStartFlag[i] = true;
+                }
+                // 最初のカメラ移動
+                if (cameraWorkStartFlag[i] && cameraTimer[i] > 0.5f)
+                {
+                    cameraWorkStartFlag[i] = false;
+                    cameraTimer[i] = 0f;
+                }
+                else if (cameraWorkStartFlag[i] && cameraTimer[i] < 0.5f)
+                {
+                    cameraTimer[i] += Time.deltaTime;
+                }
+                // エリア回転
+                if (rotationTimer[i] > time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
+                {
+                    rotationTimer[i] = 0;
+                    area.transform.rotation = Quaternion.Euler(0, originDegree + direction * degree, 0);
+                    cameraWorkEndFlag[i] = true;
+                }
+                else if (rotationTimer[i] < time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
+                {
+                    rotationTimer[i] += Time.deltaTime;
+                    float y = Mathf.Lerp(originDegree, originDegree + direction * degree, rotationTimer[i] / time);
+                    area.transform.rotation = Quaternion.Euler(0, y, 0);
+                }
+                // 最後のカメラ移動
+                if (cameraWorkEndFlag[i] && cameraTimer[i] > 0.5f)
+                {
+                    status = GameStatus.play;
+                    cameraWorkEndFlag[i] = false;
+                    cameraTimer[i] = 0f;
+                    if (light != null) light.SetActive(false);
+                    if (end)
+                    {
+                        flag = false;
+                        stageNav.RemoveData();
+                        stageNav.BuildNavMesh();
+                    }
+                }
+                else if (cameraWorkEndFlag[i] && cameraTimer[i] < 0.5f)
+                {
+                    cameraTimer[i] += Time.deltaTime;
+                }
+                Debug.Log(light.activeSelf);
+
             }
         }
     }

@@ -11348,6 +11348,7 @@ MonoBehaviour:
   - 0
   - 0
   rotationFlag: 0
+  rotationWaitFlag: 
   openTimer:
   - 2
   - 0
@@ -50885,6 +50886,6 @@ SceneRoots:
   - {fileID: 2134310343}
   - {fileID: 519422614}
   - {fileID: 2123928881}
+  - {fileID: 875744111}
   - {fileID: 709851847}
   - {fileID: 1523737421}
-  - {fileID: 875744111}
