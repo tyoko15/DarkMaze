@@ -1,5 +1,6 @@
 using TMPro;
 using Unity.AI.Navigation;
+using Unity.VisualScripting;
 using UnityEditor;
 using UnityEditor.Experimental.GraphView;
 using UnityEngine;
@@ -233,8 +234,10 @@ public class GeneralStageManager : MonoBehaviour
                 else if (cameraWorkStartFlag[i] && cameraTimer[i] < 0.5f)
                 {
                     cameraTimer[i] += Time.deltaTime;
+                    Vector3 caPoRota = cameraPoint.transform.eulerAngles;
+                    caPoRota.y = (caPoRota.y <= 180) ? cameraPoint.transform.eulerAngles.y : (caPoRota.y - 180) * -1f;
                     Vector3 posi = Vector3.Lerp(cameraPosi, cameraPoint.transform.position, cameraTimer[i] / 0.5f);
-                    Vector3 rota = Vector3.Lerp(cameraRota, cameraPoint.transform.eulerAngles, cameraTimer[i] / 0.5f);
+                    Vector3 rota = Vector3.Lerp(cameraRota, caPoRota, cameraTimer[i] / 0.5f);
                     mainCamera.transform.position = posi;
                     mainCamera.transform.rotation = Quaternion.Euler(rota);
                 }
@@ -244,8 +247,6 @@ public class GeneralStageManager : MonoBehaviour
                     rotationTimer[i] = 0;
                     area.transform.rotation = Quaternion.Euler(0, originDegree + direction * degree, 0);
                     cameraWorkEndFlag[i] = true;
-                    cameraPosi = new Vector3(player.transform.position.x, player.transform.position.y + 10f, player.transform.position.z - 2f);
-                    cameraRota = new Vector3(80f, 0f, 0f);
                 }
                 else if (rotationTimer[i] < time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
                 {
@@ -273,8 +274,10 @@ public class GeneralStageManager : MonoBehaviour
                 else if (cameraWorkEndFlag[i] && cameraTimer[i] < 0.5f)
                 {
                     cameraTimer[i] += Time.deltaTime;
+                    Vector3 caPoRota = cameraPoint.transform.eulerAngles;
+                    caPoRota.y = (caPoRota.y <= 180) ? cameraPoint.transform.eulerAngles.y : (caPoRota.y - 180) * -1f;
                     Vector3 posi = Vector3.Lerp(cameraPoint.transform.position, cameraPosi, cameraTimer[i] / 0.5f);
-                    Vector3 rota = Vector3.Lerp(cameraPoint.transform.eulerAngles, cameraRota, cameraTimer[i] / 0.5f);
+                    Vector3 rota = Vector3.Lerp(caPoRota, cameraRota, cameraTimer[i] / 0.5f);
                     mainCamera.transform.position = posi;
                     mainCamera.transform.rotation = Quaternion.Euler(rota);
                 }
@@ -637,8 +640,10 @@ public class GeneralStageManager : MonoBehaviour
                 {
                     cameraWorkStartFlag[i] = false;
                     cameraTimer[i] = 0f;
-                    if(cameraPoint.transform.eulerAngles.y >= 180f) mainCamera.transform.position = cameraPoint.transform.position;
-                    mainCamera.transform.rotation = Quaternion.Euler(cameraPoint.transform.eulerAngles);
+                    mainCamera.transform.position = cameraPoint.transform.position;
+                    Vector3 caPoRota = cameraPoint.transform.eulerAngles; 
+                    caPoRota.y = (caPoRota.y <= 180) ? cameraPoint.transform.eulerAngles.y : (caPoRota.y - 180) * -1f;
+                    cameraPoint.transform.eulerAngles = caPoRota;
                 }
                 else if (cameraWorkStartFlag[i] && cameraTimer[i] < 0.5f)
                 {
@@ -656,8 +661,6 @@ public class GeneralStageManager : MonoBehaviour
                     openTimer[i] = 0f;
                     gate.transform.position = new Vector3(gate.transform.position.x, -2.1f, gate.transform.position.z);
                     gate.SetActive(false);
-                    cameraPosi = new Vector3(player.transform.position.x, player.transform.position.y + 10f, player.transform.position.z - 2f);
-                    cameraRota = new Vector3(80f, 0f, 0f);
                     cameraWorkEndFlag[i] = true;
                 }
                 else if (openTimer[i] < time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
@@ -775,8 +778,10 @@ public class GeneralStageManager : MonoBehaviour
                 else if (cameraWorkStartFlag[i] && cameraTimer[i] < 0.5f)
                 {
                     cameraTimer[i] += Time.deltaTime;
+                    Vector3 caPoRota = cameraPoint.transform.eulerAngles;
+                    caPoRota.y = (caPoRota.y <= 180) ? cameraPoint.transform.eulerAngles.y : (caPoRota.y - 180) * -1f;
                     Vector3 posi = Vector3.Lerp(cameraPosi, cameraPoint.transform.position, cameraTimer[i] / 0.5f);
-                    Vector3 rota = Vector3.Lerp(cameraRota, cameraPoint.transform.eulerAngles, cameraTimer[i] / 0.5f);
+                    Vector3 rota = Vector3.Lerp(cameraRota, caPoRota, cameraTimer[i] / 0.5f);
                     mainCamera.transform.position = posi;
                     mainCamera.transform.rotation = Quaternion.Euler(rota);
                 }
@@ -795,8 +800,6 @@ public class GeneralStageManager : MonoBehaviour
                 {
                     status = GameStatus.stop;
                     openTimer[i] += Time.deltaTime;
-                    Vector3 caPoRota = cameraPoint.transform.eulerAngles;
-                    caPoRota.y = (caPoRota.y <= 180) ? cameraPoint.transform.eulerAngles.y : (caPoRota.y - 180) * -1f;
                     float y = Mathf.Lerp(-2.1f, 0f, openTimer[i] / time);
                     gate.transform.position = new Vector3(gate.transform.position.x, y, gate.transform.position.z);
                 }
@@ -815,8 +818,10 @@ public class GeneralStageManager : MonoBehaviour
                 else if (cameraWorkEndFlag[i] && cameraTimer[i] < 0.5f)
                 {
                     cameraTimer[i] += Time.deltaTime;
+                    Vector3 caPoRota = cameraPoint.transform.eulerAngles;
+                    caPoRota.y = (caPoRota.y <= 180) ? cameraPoint.transform.eulerAngles.y : (caPoRota.y - 180) * -1f;
                     Vector3 posi = Vector3.Lerp(cameraPoint.transform.position, cameraPosi, cameraTimer[i] / 0.5f);
-                    Vector3 rota = Vector3.Lerp(cameraPoint.transform.eulerAngles, cameraRota, cameraTimer[i] / 0.5f);
+                    Vector3 rota = Vector3.Lerp(caPoRota, cameraRota, cameraTimer[i] / 0.5f);
                     mainCamera.transform.position = posi;
                     mainCamera.transform.rotation = Quaternion.Euler(rota);
                 }

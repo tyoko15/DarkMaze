@@ -103,7 +103,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: efb148d0e95071c47925827677036be8, type: 3}
       propertyPath: m_Name
-      value: Slope (1)
+      value: Slope (0)
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: efb148d0e95071c47925827677036be8, type: 3}
       propertyPath: m_Layer
