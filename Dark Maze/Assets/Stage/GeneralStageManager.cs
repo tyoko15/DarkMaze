@@ -221,7 +221,6 @@ public class GeneralStageManager : MonoBehaviour
                     cameraPosi = mainCamera.transform.position;
                     cameraRota = mainCamera.transform.eulerAngles;
                     cameraWorkStartFlag[i] = true;
-                    Debug.Log(light.activeSelf);
                 }
                 // Å‰‚ÌƒJƒƒ‰ˆÚ“®
                 if (cameraWorkStartFlag[i] && cameraTimer[i] > 0.5f)
