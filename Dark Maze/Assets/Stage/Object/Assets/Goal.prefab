@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &1659284554474888023
+--- !u!1 &1132835617215322823
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,41 +8,8 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 2536211672689062198}
-  m_Layer: 0
-  m_Name: Goal
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &2536211672689062198
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1659284554474888023}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 9060888757599723406}
-  - {fileID: 7631984217312020671}
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &5636175471420629168
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 7631984217312020671}
-  - component: {fileID: 6898583249399580109}
+  - component: {fileID: 7085454205168684251}
+  - component: {fileID: 7029385651393469013}
   m_Layer: 0
   m_Name: Light
   m_TagString: Untagged
@@ -50,28 +17,28 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &7631984217312020671
+--- !u!4 &7085454205168684251
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5636175471420629168}
+  m_GameObject: {fileID: 1132835617215322823}
   serializedVersion: 2
   m_LocalRotation: {x: 0.7071068, y: -0, z: -0, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 2536211672689062198}
+  m_Father: {fileID: 8442479470441870356}
   m_LocalEulerAnglesHint: {x: 90, y: 0, z: 0}
---- !u!108 &6898583249399580109
+--- !u!108 &7029385651393469013
 Light:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5636175471420629168}
+  m_GameObject: {fileID: 1132835617215322823}
   m_Enabled: 1
   serializedVersion: 11
   m_Type: 0
@@ -130,13 +97,13 @@ Light:
   m_LightUnit: 1
   m_LuxAtDistance: 1
   m_EnableSpotReflector: 1
---- !u!1001 &8805671061215688805
+--- !u!1001 &8260462790390207487
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 2536211672689062198}
+    m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: 62631010dcad77846a653c98df7c1d49, type: 3}
       propertyPath: m_LocalPosition.x
@@ -180,31 +147,52 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 62631010dcad77846a653c98df7c1d49, type: 3}
       propertyPath: m_Name
-      value: GoalObject
+      value: Goal
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: -8679921383154817045, guid: 62631010dcad77846a653c98df7c1d49, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 7085454205168684251}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 62631010dcad77846a653c98df7c1d49, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 8935793640200484209}
+      addedObject: {fileID: 2469741181296185660}
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 62631010dcad77846a653c98df7c1d49, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 4759548943969068761}
+      addedObject: {fileID: 5015259700341164788}
   m_SourcePrefab: {fileID: 100100000, guid: 62631010dcad77846a653c98df7c1d49, type: 3}
---- !u!1 &8571879499090593076 stripped
+--- !u!4 &8442479470441870356 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 62631010dcad77846a653c98df7c1d49, type: 3}
+  m_PrefabInstance: {fileID: 8260462790390207487}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &9106954602062245550 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: 62631010dcad77846a653c98df7c1d49, type: 3}
-  m_PrefabInstance: {fileID: 8805671061215688805}
+  m_PrefabInstance: {fileID: 8260462790390207487}
   m_PrefabAsset: {fileID: 0}
---- !u!65 &8935793640200484209
+--- !u!114 &2469741181296185660
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9106954602062245550}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2ad08ca1d8aeecc429789e7628894fb4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  isGoalFlag: 0
+--- !u!65 &5015259700341164788
 BoxCollider:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8571879499090593076}
+  m_GameObject: {fileID: 9106954602062245550}
   m_Material: {fileID: 0}
   m_IncludeLayers:
     serializedVersion: 2
@@ -218,22 +206,4 @@ BoxCollider:
   m_Enabled: 1
   serializedVersion: 3
   m_Size: {x: 2, y: 0.19999999, z: 2}
-  m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &4759548943969068761
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8571879499090593076}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2ad08ca1d8aeecc429789e7628894fb4, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  isGoalFlag: 0
---- !u!4 &9060888757599723406 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 62631010dcad77846a653c98df7c1d49, type: 3}
-  m_PrefabInstance: {fileID: 8805671061215688805}
-  m_PrefabAsset: {fileID: 0}
+  m_Center: {x: 0, y: 0.1, z: 0}

@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using UnityEditor.Experimental.GraphView;
 
 public class PlayerController : MonoBehaviour
 {
@@ -60,7 +61,10 @@ public class PlayerController : MonoBehaviour
     bool endUseFlag;
     Vector3 itemUseDirection;
     [Header("弓矢詳細")]
+    [SerializeField] GameObject arrowSpawer;
+    [SerializeField] GameObject arrowPrefab;
     [SerializeField] GameObject arrowObject;
+    [SerializeField] bool arrowAnimeFlag;
     [Header("縄詳細")]
     [SerializeField] LayerMask woodLayer;
     bool betweenObjectFlag;
@@ -88,6 +92,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb.useGravity = false;
+
     }
 
     void Update()
@@ -101,8 +106,11 @@ public class PlayerController : MonoBehaviour
                 PlayerLightControl();
                 PlayerItemUseControl();
                 CameraControl();
+                PlayerAttackControl();
+                if (arrowAnimeFlag) ArrowAnime();
                 break;
             case 2: // stop
+                PlayerAttackControl();
                 break;
             case 3: // menu
                 break;
@@ -112,7 +120,7 @@ public class PlayerController : MonoBehaviour
                 break;
         }
         PlayerItemSelectControl(); 
-        PlayerAttackControl();         
+                
     }
 
     // Player行動管理関数
@@ -340,15 +348,72 @@ public class PlayerController : MonoBehaviour
         if (canItemFlag[itemSelectNum] && itemSelectNum == 0)
         {
             itemSelect.GetComponent<Image>().sprite = itemImageSprites[0];
-            if (itemUseFlag)
+            if (itemUseFlag && !arrowAnimeFlag)
             {
+                Ray ray = new Ray(new Vector3(playerObject.transform.position.x, playerObject.transform.position.y + 1f, playerObject.transform.position.z), playerObject.transform.forward);
+                RaycastHit hit;
+                if (Physics.SphereCast(ray.origin, 0.2f, ray.direction, out hit, 30f))
+                {
+                    if (!hit.collider.isTrigger)
+                    {
+                        if (hit.collider.tag == "Button")
+                        {
+                            Debug.DrawRay(ray.origin, ray.direction * 30f, Color.green);
+                            betweenObjectFlag = false;
+                        }
+                        else if (hit.collider.tag != "Button")
+                        {
+                            Debug.DrawRay(ray.origin, ray.direction * 30f, Color.red);
+                            betweenObjectFlag = true;
+                            arrowAnimeFlag = false;
+                        }
+                    }
+                    else
+                    {
+                        if (hit.collider.tag != "Button")
+                        {
+                            Debug.DrawRay(ray.origin, ray.direction * 30f, Color.red);
+                            betweenObjectFlag = false;
+                            if (betweenObject == null)
+                            {
+                                betweenObject = hit.collider.gameObject;
+                                betweenObject.SetActive(false);
+                                arrowAnimeFlag = false;
+                            }
+                            else
+                            {
+                                betweenObject.SetActive(true);
+                                betweenObject = hit.collider.gameObject;
+                                betweenObject.SetActive(false);
+                                arrowAnimeFlag = false;
+                            }
+                        }
+                    }
+                }
                 Quaternion rotation = Quaternion.LookRotation(itemUseDirection);
                 //進む方向に滑らかに向く。
                 transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 10f);
             }
             if (endUseFlag)
             {
-                Instantiate(arrowObject, playerObject.transform.position, Quaternion.identity);
+                Ray ray = new Ray(new Vector3(playerObject.transform.position.x, playerObject.transform.position.y + 1f, playerObject.transform.position.z), playerObject.transform.forward);
+                RaycastHit hit;
+                if (Physics.SphereCast(ray.origin, 0.2f, ray.direction, out hit, 30f))
+                {
+                    if (!hit.collider.isTrigger && hit.collider.tag == "Button")
+                    {
+                        Debug.DrawRay(ray.origin, ray.direction * 30f, Color.green);
+                        betweenObjectFlag = false;
+                        arrowAnimeFlag = true;
+                    }
+                }
+                if (betweenObject)
+                {
+                    betweenObject.SetActive(true);
+                    betweenObject = null;
+                    betweenObjectFlag = false;
+                }
+                arrowObject = Instantiate(arrowPrefab, arrowSpawer.transform.position, Quaternion.identity);
                 itemUseFlag = false;
                 endUseFlag = false;
             }
@@ -370,28 +435,42 @@ public class PlayerController : MonoBehaviour
                         {
                             if (hit.collider.gameObject.tag != "Wood")
                             {
-                                Debug.DrawRay(ray.origin, ray.direction * 15f, Color.red);
+                                Debug.DrawRay(ray.origin, ray.direction * 30f, Color.red);
                                 betweenObjectFlag = true;
                             }
                             else if (hit.collider.gameObject.tag == "Wood")
                             {
-                                Debug.DrawRay(ray.origin, ray.direction * 15f, Color.green);
+                                Debug.DrawRay(ray.origin, ray.direction * 30f, Color.green);
                                 betweenObjectFlag = false;
                             }
                         }
                         else
                         {
-                            Debug.DrawRay(ray.origin, ray.direction * 15f, Color.green);
-                            betweenObjectFlag = false;
-                            if (betweenObject == null)
+                            if (hit.collider.gameObject.tag != "Wood" && hit.collider.gameObject.tag != "Rope")
                             {
-                                betweenObject = hit.collider.gameObject;
-                                betweenObject.SetActive(false);
+                                Debug.DrawRay(ray.origin, ray.direction * 30f, Color.red);
+                                betweenObjectFlag = true;
+                                if (betweenObject == null)
+                                {
+                                    betweenObject = hit.collider.gameObject;
+                                    betweenObject.SetActive(false);
+                                }
+                                else
+                                {
+                                    betweenObject.SetActive(true);
+                                    betweenObject = hit.collider.gameObject;
+                                    betweenObject.SetActive(false);
+                                }
+                            }
+                            else if (hit.collider.gameObject.tag == "Wood" || hit.collider.gameObject.tag == "Rope")
+                            {
+                                Debug.DrawRay(ray.origin, ray.direction * 30f, Color.green);
+                                betweenObjectFlag = false;
                             }
                         }
                     }
                     // woodを検知
-                    if (Physics.SphereCast(ray.origin, 0.2f, ray.direction, out hit, 15f, woodLayer) && !betweenObjectFlag)
+                    if (Physics.SphereCast(ray.origin, 0.2f, ray.direction, out hit, 30f, woodLayer) && !betweenObjectFlag)
                     {
                         if (hit.collider.gameObject == ropeTargetObjects[i])
                         {
@@ -412,7 +491,7 @@ public class PlayerController : MonoBehaviour
                         ropeObject = null;
                         ropeMoveFlag = false;
                     }
-                }
+                }              
                 if (rangeRopeTargetObject != null)
                 {
                     rangeRopeTargetPosition = rangeRopeTargetObject.transform.position;
@@ -422,6 +501,11 @@ public class PlayerController : MonoBehaviour
                 Quaternion rotation = Quaternion.LookRotation(itemUseDirection);
                 //進む方向に滑らかに向く。
                 transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 10f);
+            }
+            else if(!itemUseFlag && betweenObject)
+            {
+                betweenObject.SetActive(true);
+                betweenObject = null;
             }
             if (endUseFlag)
             {
@@ -507,6 +591,21 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    void ArrowAnime()
+    {
+        if (!arrowObject)
+        {
+            status = 1;
+            arrowAnimeFlag = false;
+        }
+        else if(arrowObject)
+        {
+            status = 2;
+            Vector3 position = new Vector3(arrowObject.transform.position.x, arrowObject.transform.position.y + 10f, arrowObject.transform.position.z - 2f);
+            mainCamera.transform.position = position;
+        }
+    }
+
     private void OnCollisionStay(Collision collision)
     {
         if(collision.gameObject.tag == "Wall")
@@ -522,6 +621,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    // InputAction管理関数
     public void InputPlayerControl(InputAction.CallbackContext context)
     {
         if(!itemSelectFlag && (!itemUseFlag || !endUseFlag))
@@ -547,7 +647,7 @@ public class PlayerController : MonoBehaviour
 
     public void InputPlayerAttackButton(InputAction.CallbackContext context)
     {
-        if(context.started && !attackFlag) attackFlag = true;
+        if(context.started && status == 1 && !attackFlag) attackFlag = true;
     }
 
     public void InputPlayerSelectItemButton(InputAction.CallbackContext context)
@@ -582,6 +682,6 @@ public class PlayerController : MonoBehaviour
     }
     public void InputPlayerUseItemControl(InputAction.CallbackContext context)
     {
-        if(itemUseFlag) itemUseDirection = new Vector3(context.ReadValue<Vector2>().x, 0f, context.ReadValue<Vector2>().y);
+        if(itemUseFlag && (context.ReadValue<Vector2>().x != 0 || context.ReadValue<Vector2>().y != 0)) itemUseDirection = new Vector3(context.ReadValue<Vector2>().x, 0f, context.ReadValue<Vector2>().y);
     }
 }

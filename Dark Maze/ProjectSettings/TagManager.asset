@@ -12,6 +12,8 @@ TagManager:
   - Wall
   - Arrow
   - Wood
+  - Button
+  - Rope
   layers:
   - Default
   - TransparentFX

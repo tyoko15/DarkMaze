@@ -2356,6 +2356,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fadeManagerObject: {fileID: 8267548131005766601, guid: 4640189f3bb3f43458f839336d723fa6, type: 3}
+  fadeManager: {fileID: 0}
+  fadeFlag: 0
   status: 0
   playerController: {fileID: 1463182958482302446}
   player: {fileID: 5322147827670787992}
@@ -2371,10 +2373,16 @@ MonoBehaviour:
   - {fileID: 5687928699123578313}
   gateObjects:
   - {fileID: 914575455}
+  activeObject: []
+  areaLightObjects: []
   lightObjects: []
+  mainCamera: {fileID: 974020058}
+  cameraPointObjects: []
   enemys: []
   startTime: 0.1
+  originDegree: 0
   rotationTimer: []
+  rotationFlag: 0
   openTimer: []
   limitActiveObTime: 5
   limitActiveObTimer:
@@ -2390,6 +2398,7 @@ MonoBehaviour:
   defeatGateFlag: 
   playUI: {fileID: 6542944055025121433}
   menuUI: {fileID: 8703409995835343181}
+  startMenuFlag: 0
   startMenuTime: 0.2
   menuTexts:
   - {fileID: 861965772496013603}
@@ -4502,6 +4511,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1385115466}
   m_Mesh: {fileID: 10209, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1406878254
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1406878255}
+  m_Layer: 0
+  m_Name: Spawer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1406878255
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1406878254}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2053776986155426233}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1407956199
 GameObject:
   m_ObjectHideFlags: 0
@@ -11996,7 +12036,10 @@ MonoBehaviour:
   selectObject: {fileID: 8178955602544027343}
   itemSelectNum: 0
   itemTime: 0.2
-  arrowObject: {fileID: 4029604668275548159, guid: b7dbc8765ed41964eb3d84d70b568a6d, type: 3}
+  arrowSpawer: {fileID: 1406878254}
+  arrowPrefab: {fileID: 4029604668275548159, guid: b7dbc8765ed41964eb3d84d70b568a6d, type: 3}
+  arrowObject: {fileID: 0}
+  arrowAnimeFlag: 0
   woodLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -14519,6 +14562,7 @@ MonoBehaviour:
   hideFlag: 0
   somethingFlag: 1
   senceFlag: 0
+  completeFlag: 0
 --- !u!1 &2041717891974161114
 GameObject:
   m_ObjectHideFlags: 0
@@ -14600,6 +14644,7 @@ Transform:
   - {fileID: 9001812941924716145}
   - {fileID: 3355928197198134880}
   - {fileID: 9023621892231195622}
+  - {fileID: 1406878255}
   m_Father: {fileID: 4123282326670572117}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &2055768846396615226

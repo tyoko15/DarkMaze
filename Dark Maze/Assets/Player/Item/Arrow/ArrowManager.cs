@@ -4,23 +4,24 @@ public class ArrowManager : MonoBehaviour
 {
     [SerializeField] GameObject arrowObject;
     [SerializeField] GameObject playerObject;
+    [SerializeField] GameObject spawerObject;
     [SerializeField] Rigidbody rb;
     [SerializeField] BoxCollider boxCollider;
     [SerializeField] float speed;
     [SerializeField] Vector3 position;
+    [SerializeField] Vector3 direction;
     [SerializeField] Vector3 rotate;
     bool stopFlag;
+    public bool hitFlag;
     [SerializeField] float lostTime;
     float lostTimer;
     void Start()
     {
         playerObject = GameObject.Find("Player");
-        position = new Vector3(playerObject.transform.position.x, playerObject.transform.position.y + 1f, playerObject.transform.position.z);
+        spawerObject = GameObject.Find("Spawer");
+        direction = (spawerObject.transform.position - playerObject.transform.position).normalized;
         rotate = new Vector3(playerObject.transform.eulerAngles.x, playerObject.transform.eulerAngles.y, playerObject.transform.eulerAngles.z);
-        arrowObject.transform.position = position;
-        position = playerObject.transform.forward;
         arrowObject.transform.rotation = Quaternion.Euler(rotate);
-        boxCollider.isTrigger = false;
     }
 
     void Update()
@@ -33,9 +34,10 @@ public class ArrowManager : MonoBehaviour
         if (!stopFlag)
         {
             float z = speed * Time.deltaTime;
-            Vector3 force = position * z;
+            Vector3 force = direction * z;
 
-            rb.AddForce(force, ForceMode.Impulse);
+            //rb.AddForce(force, ForceMode.Impulse);
+            rb.linearVelocity += force;
             if (lostTimer > lostTime)
             {
                 Destroy(arrowObject);
@@ -43,10 +45,12 @@ public class ArrowManager : MonoBehaviour
             else if (lostTimer < lostTime)
             {
                 lostTimer += Time.deltaTime;
-            }        
+            }
         }
         else
-        {            
+        {
+            arrowObject.transform.position = position;
+            boxCollider.isTrigger = false;
             if (lostTimer > lostTime)
             {
                 Destroy(arrowObject);
@@ -60,44 +64,12 @@ public class ArrowManager : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject == playerObject)
-        {
-            boxCollider.isTrigger = true;
-        }
-        if (collision.gameObject.tag == "Wall")
+        if (collision.gameObject.tag == "Button")
         {
             stopFlag = true;
-            lostTimer = 0;
-            rb.isKinematic = true;
+            hitFlag = true;
         }
-        if(collision.gameObject.tag == "Arrow" && collision.gameObject.GetComponent<ArrowManager>().lostTimer > lostTimer) Destroy(collision.gameObject);
-    }
-    private void OnCollisionStay(Collision collision)
-    {
-        if(collision.gameObject == playerObject) boxCollider.isTrigger = true;
-    }
-    private void OnCollisionExit(Collision collision)
-    {
-        //if (collision.gameObject == playerObject)
-        //{
-        //    boxCollider.isTrigger = false;
-        //}
-    }
-
-    public void OnTriggerEnter(Collider other)
-    {
-        if (other.gameObject.tag == "Wall") 
-        {
-            stopFlag = true;
-            lostTimer = 0;
-            rb.isKinematic = true;
-        }
-    }
-    public void OnTriggerExit(Collider other)
-    {
-        if(other.gameObject == playerObject)
-        {
-            boxCollider.isTrigger = false;
-        }
+        else stopFlag = true;
+        position = arrowObject.transform.position;
     }
 }

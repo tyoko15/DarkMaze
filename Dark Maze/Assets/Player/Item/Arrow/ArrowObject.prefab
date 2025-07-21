@@ -50,11 +50,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   arrowObject: {fileID: 4029604668275548159}
   playerObject: {fileID: 0}
+  spawerObject: {fileID: 0}
   rb: {fileID: 909408433132849564}
   boxCollider: {fileID: 4576535782575244975}
   speed: 100
   position: {x: 0, y: 0, z: 0}
+  direction: {x: 0, y: 0, z: 0}
   rotate: {x: 0, y: 0, z: 0}
+  hitFlag: 0
   lostTime: 1
 --- !u!33 &7656694702925094867
 MeshFilter:
@@ -124,7 +127,7 @@ BoxCollider:
     serializedVersion: 2
     m_Bits: 0
   m_LayerOverridePriority: 0
-  m_IsTrigger: 1
+  m_IsTrigger: 0
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3

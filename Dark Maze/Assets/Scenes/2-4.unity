@@ -3267,6 +3267,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   fadeManagerObject: {fileID: 8267548131005766601, guid: 4640189f3bb3f43458f839336d723fa6, type: 3}
+  fadeManager: {fileID: 0}
+  fadeFlag: 0
   status: 0
   playerController: {fileID: 7807770700086149779}
   player: {fileID: 3587278129267704037}
@@ -3285,19 +3287,25 @@ MonoBehaviour:
   - {fileID: 863021069}
   - {fileID: 1025991849}
   - {fileID: 400522144}
+  activeObject: []
+  areaLightObjects: []
   lightObjects:
   - {fileID: 117215798534369176}
   - {fileID: 679773008}
   - {fileID: 340188468}
   - {fileID: 210391703}
+  mainCamera: {fileID: 1473284255}
+  cameraPointObjects: []
   enemys:
   - {fileID: 9206201987073847580}
   - {fileID: 748317293848835268}
   - {fileID: 4241490873257670185}
   - {fileID: 1042656531922265864}
   startTime: 0.1
+  originDegree: 0
   rotationTimer:
   - 0
+  rotationFlag: 0
   openTimer:
   - 0
   - 0
@@ -3321,6 +3329,7 @@ MonoBehaviour:
   defeatGateFlag: 00000000
   playUI: {fileID: 2511240303083397092}
   menuUI: {fileID: 61988768184346160}
+  startMenuFlag: 0
   startMenuTime: 0.5
   menuTexts:
   - {fileID: 8350468097802710622}
@@ -5965,6 +5974,37 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1926036295}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1991348509
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1991348510}
+  m_Layer: 0
+  m_Name: Spawer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1991348510
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1991348509}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: -0, y: 1, z: 1}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 7247690903219996356}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2066036153
 GameObject:
   m_ObjectHideFlags: 0
@@ -38793,6 +38833,7 @@ Transform:
   - {fileID: 358139656707467532}
   - {fileID: 6234712351004596509}
   - {fileID: 373477156988669083}
+  - {fileID: 1991348510}
   m_Father: {fileID: 4696221272234843432}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!33 &7248168913094640215
@@ -41551,7 +41592,10 @@ MonoBehaviour:
   selectObject: {fileID: 690739570311643570}
   itemSelectNum: 0
   itemTime: 0.2
-  arrowObject: {fileID: 4029604668275548159, guid: b7dbc8765ed41964eb3d84d70b568a6d, type: 3}
+  arrowSpawer: {fileID: 1991348509}
+  arrowPrefab: {fileID: 4029604668275548159, guid: b7dbc8765ed41964eb3d84d70b568a6d, type: 3}
+  arrowObject: {fileID: 0}
+  arrowAnimeFlag: 0
   woodLayer:
     serializedVersion: 2
     m_Bits: 256
@@ -46861,6 +46905,7 @@ MonoBehaviour:
   hideFlag: 1
   somethingFlag: 1
   senceFlag: 0
+  completeFlag: 0
 --- !u!65 &9110301071868928763
 BoxCollider:
   m_ObjectHideFlags: 0

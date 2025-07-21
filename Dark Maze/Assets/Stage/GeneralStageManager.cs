@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using Unity.AI.Navigation;
 using Unity.VisualScripting;
@@ -218,7 +219,7 @@ public class GeneralStageManager : MonoBehaviour
                     status = GameStatus.stop;
                     originDegree = area.transform.localEulerAngles.y;
                     if (light != null) light.SetActive(true);
-                    cameraPosi = mainCamera.transform.position;
+                    cameraPosi = new Vector3(player.transform.position.x, player.transform.position.y + 10f, player.transform.position.z - 2f);
                     cameraRota = mainCamera.transform.eulerAngles;
                     cameraWorkStartFlag[i] = true;
                 }
@@ -245,6 +246,8 @@ public class GeneralStageManager : MonoBehaviour
                 {
                     rotationTimer[i] = 0;
                     area.transform.rotation = Quaternion.Euler(0, originDegree + direction * degree, 0);
+                    cameraPosi = new Vector3(player.transform.position.x, player.transform.position.y + 10f, player.transform.position.z - 2f);
+                    cameraRota = new Vector3(80f, 0f, 0f);
                     cameraWorkEndFlag[i] = true;
                 }
                 else if (rotationTimer[i] < time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
@@ -257,7 +260,7 @@ public class GeneralStageManager : MonoBehaviour
                 if (cameraWorkEndFlag[i] && cameraTimer[i] > 0.5f)
                 {
                     status = GameStatus.play;
-                    mainCamera.transform.position = cameraPosi;
+                    mainCamera.transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 10f, player.transform.position.z - 2f);
                     mainCamera.transform.rotation = Quaternion.Euler(cameraRota);
                     cameraPosi = Vector3.zero;
                     cameraWorkEndFlag[i] = false;
@@ -306,6 +309,8 @@ public class GeneralStageManager : MonoBehaviour
                 {
                     rotationTimer[i] = 0;
                     area.transform.rotation = Quaternion.Euler(0, originDegree + direction * degree, 0);
+                    cameraPosi = new Vector3(player.transform.position.x, player.transform.position.y + 10f, player.transform.position.z - 2f);
+                    cameraRota = new Vector3(80f, 0f, 0f);
                     cameraWorkEndFlag[i] = true;
                 }
                 else if (rotationTimer[i] < time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
@@ -332,8 +337,6 @@ public class GeneralStageManager : MonoBehaviour
                 {
                     cameraTimer[i] += Time.deltaTime;
                 }
-                Debug.Log(light.activeSelf);
-
             }
         }
     }
@@ -627,32 +630,32 @@ public class GeneralStageManager : MonoBehaviour
             {
                 if (openTimer[i] == 0 && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
                 {
-                    status = GameStatus.stop;
-                    gate.SetActive(true);
-                    if (light != null) light.SetActive(true);
-                    cameraPosi = mainCamera.transform.position;
-                    cameraRota = mainCamera.transform.eulerAngles;
-                    cameraWorkStartFlag[i] = true;
+                     status = GameStatus.stop;
+                     gate.SetActive(true);
+                     if (light != null) light.SetActive(true);
+                     cameraPosi = new Vector3(player.transform.position.x, player.transform.position.y + 10f, player.transform.position.z - 2f);
+                     cameraRota = mainCamera.transform.eulerAngles;
+                     cameraWorkStartFlag[i] = true;
                 }
                 // 最初のカメラ移動
                 if (cameraWorkStartFlag[i] && cameraTimer[i] > 0.5f)
                 {
-                    cameraWorkStartFlag[i] = false;
-                    cameraTimer[i] = 0f;
-                    mainCamera.transform.position = cameraPoint.transform.position;
-                    Vector3 caPoRota = cameraPoint.transform.eulerAngles; 
-                    caPoRota.y = (caPoRota.y <= 180) ? cameraPoint.transform.eulerAngles.y : (caPoRota.y - 180) * -1f;
-                    cameraPoint.transform.eulerAngles = caPoRota;
+                     cameraWorkStartFlag[i] = false;
+                     cameraTimer[i] = 0f;
+                     mainCamera.transform.position = cameraPoint.transform.position;
+                     Vector3 caPoRota = cameraPoint.transform.eulerAngles; 
+                     caPoRota.y = (caPoRota.y <= 180) ? cameraPoint.transform.eulerAngles.y : (caPoRota.y - 180) * -1f;
+                     cameraPoint.transform.eulerAngles = caPoRota;
                 }
                 else if (cameraWorkStartFlag[i] && cameraTimer[i] < 0.5f)
                 {
-                    cameraTimer[i] += Time.deltaTime;
-                    Vector3 caPoRota = cameraPoint.transform.eulerAngles;
-                    caPoRota.y = (caPoRota.y <= 180) ? cameraPoint.transform.eulerAngles.y : (caPoRota.y - 180) * -1f;
-                    Vector3 posi = Vector3.Lerp(cameraPosi, cameraPoint.transform.position, cameraTimer[i] / 0.5f);
-                    Vector3 rota = Vector3.Lerp(cameraRota, caPoRota, cameraTimer[i] / 0.5f);
-                    mainCamera.transform.position = posi;
-                    mainCamera.transform.rotation = Quaternion.Euler(rota);
+                     cameraTimer[i] += Time.deltaTime;
+                     Vector3 caPoRota = cameraPoint.transform.eulerAngles;
+                     caPoRota.y = (caPoRota.y <= 180) ? cameraPoint.transform.eulerAngles.y : (caPoRota.y - 180) * -1f;
+                     Vector3 posi = Vector3.Lerp(cameraPosi, cameraPoint.transform.position, cameraTimer[i] / 0.5f);
+                     Vector3 rota = Vector3.Lerp(cameraRota, caPoRota, cameraTimer[i] / 0.5f);
+                     mainCamera.transform.position = posi;
+                     mainCamera.transform.rotation = Quaternion.Euler(rota);
                 }
                 // GateOpen
                 if (openTimer[i] > time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
@@ -673,7 +676,7 @@ public class GeneralStageManager : MonoBehaviour
                 {
                     status = GameStatus.play;
                     if (light != null) light.SetActive(false);
-                    mainCamera.transform.position = cameraPosi;
+                    mainCamera.transform.position = new Vector3(player.transform.position.x, player.transform.position.y + 10f, player.transform.position.z - 2f);
                     mainCamera.transform.rotation = Quaternion.Euler(cameraRota);
                     cameraWorkEndFlag[i] = false;
                     cameraTimer[i] = 0f;
@@ -762,7 +765,7 @@ public class GeneralStageManager : MonoBehaviour
                     status = GameStatus.stop;
                     gate.SetActive(true);
                     if (light != null) light.SetActive(true);
-                    cameraPosi = mainCamera.transform.position;
+                    cameraPosi = new Vector3(player.transform.position.x, player.transform.position.y + 10f, player.transform.position.z - 2f);
                     cameraRota = mainCamera.transform.eulerAngles;
                     cameraWorkStartFlag[i] = true;
                 }
@@ -789,15 +792,10 @@ public class GeneralStageManager : MonoBehaviour
                 {
                     openTimer[i] = 0f;
                     gate.transform.position = new Vector3(gate.transform.position.x, 0f, gate.transform.position.z);
-                    gate.SetActive(true);
-                    if (light != null) light.SetActive(false);
-                    cameraPosi = new Vector3(player.transform.position.x, player.transform.position.y + 10f, player.transform.position.z - 2f);
-                    cameraRota = new Vector3(80f, 0f, 0f);
                     cameraWorkEndFlag[i] = true;
                 }
                 else if (openTimer[i] < time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
                 {
-                    status = GameStatus.stop;
                     openTimer[i] += Time.deltaTime;
                     float y = Mathf.Lerp(-2.1f, 0f, openTimer[i] / time);
                     gate.transform.position = new Vector3(gate.transform.position.x, y, gate.transform.position.z);
@@ -964,29 +962,109 @@ public class GeneralStageManager : MonoBehaviour
     {
         if(cameraPoint == null)
         {
-            if (activeObTimer[i] == 0)
+            if (activeObTimer[i] == 0 && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
             {
                 status = GameStatus.stop;
                 activeOb.SetActive(true);
+                if(activeOb.GetComponent<MeshRenderer>())
+                {
+                    Material[] activeMaterials = new Material[activeOb.GetComponent<MeshRenderer>().materials.Length];
+                    for (int n = 0; n < activeMaterials.Length; n++)
+                    {
+                        activeMaterials[n] = activeOb.GetComponent<MeshRenderer>().materials[n];                        
+                        Color a = activeMaterials[n].color;
+                        a.a = 0f;
+                        activeOb.GetComponent<MeshRenderer>().materials[n].color = a;
+                    }
+                }
+                else
+                {
+                    Material[] activeMaterials = new Material[activeOb.transform.childCount];
+                    for (int n = 0; n < activeMaterials.Length; n++)
+                    {
+                        activeMaterials[n] = activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().material;
+                        Color a = activeMaterials[n].color;
+                        a.a = 0f;
+                        activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().material.color = a;
+                    }
+                }
                 if (light != null) light.SetActive(true);
+                cameraWorkStartFlag[i] = true;
             }
-            if (activeObTimer[i] > time)
+            // 最初のカメラ移動
+            if (cameraWorkStartFlag[i] && cameraTimer[i] > 0.5f)
+            {
+                cameraWorkStartFlag[i] = false;
+                cameraTimer[i] = 0f;
+            }
+            else if (cameraWorkStartFlag[i] && cameraTimer[i] < 0.5f)
+            {
+                cameraTimer[i] += Time.deltaTime;
+            }
+            if (activeObTimer[i] > time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
+            {
+                if (activeOb.GetComponent<MeshRenderer>())
+                {
+                    Material[] activeMaterials = new Material[activeOb.GetComponent<MeshRenderer>().materials.Length];
+                    for (int n = 0; n < activeMaterials.Length; n++)
+                    {
+                        activeMaterials[n] = activeOb.GetComponent<MeshRenderer>().materials[n];
+                        Color a = activeMaterials[n].color;
+                        a.a = 1f;
+                        activeOb.GetComponent<MeshRenderer>().materials[n].color = a;
+                    }
+                }
+                else
+                {
+                    Material[] activeMaterials = new Material[activeOb.transform.childCount];
+                    for (int n = 0; n < activeMaterials.Length; n++)
+                    {
+                        activeMaterials[n] = activeOb.GetComponent<MeshRenderer>().materials[n];
+                        Color a = activeMaterials[n].color;
+                        a.a = 1f;
+                        activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().material.color = a;
+                    }
+                }
+                activeObTimer[i] = time;
+            }
+            else if (activeObTimer[i] < time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
+            {
+                activeObTimer[i] += Time.deltaTime;
+                if (activeOb.GetComponent<MeshRenderer>())
+                {
+                    Material[] activeMaterials = new Material[activeOb.GetComponent<MeshRenderer>().materials.Length];
+                    for (int n = 0; n < activeMaterials.Length; n++)
+                    {
+                        activeMaterials[n] = activeOb.GetComponent<MeshRenderer>().materials[n];
+                        Color a = activeMaterials[n].color;
+                        a.a = Mathf.Lerp(0f, 1f, activeObTimer[i] / time);
+                        activeOb.GetComponent<MeshRenderer>().materials[n].color = a;
+                    }
+                }
+                else
+                {
+                    Material[] activeMaterials = new Material[activeOb.transform.childCount];
+                    for (int n = 0; n < activeMaterials.Length; n++)
+                    {
+                        activeMaterials[n] = activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().material;
+                        Color a = activeMaterials[n].color;
+                        a.a = Mathf.Lerp(0f, 1f, activeObTimer[i] / time);
+                        activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().material.color = a;
+                    }
+                }
+            }
+            // 最後のカメラ移動
+            if (cameraWorkEndFlag[i] && cameraTimer[i] > 0.5f)
             {
                 status = GameStatus.play;
-                Color color = activeOb.GetComponent<MeshRenderer>().material.color;
-                color.a = 1f;
-                if(activeOb.GetComponent<MeshRenderer>()) activeOb.GetComponent<MeshRenderer>().material.color = color;
-                activeObTimer[i] = 0f;
+                cameraTimer[i] = 0f;
+                cameraWorkEndFlag[i] = true;
                 if (end) flag = false;
                 if (light != null) light.SetActive(false);
             }
-            else if (activeObTimer[i] < time)
+            else if (cameraWorkEndFlag[i] && cameraTimer[i] < 0.5f)
             {
-                activeObTimer[i] += Time.deltaTime;
-                Color color = activeOb.GetComponent<MeshRenderer>().material.color;
-                float a = Mathf.Lerp(0f, 1f, activeObTimer[i] / time);
-                color.a = a;
-                activeOb.GetComponent<MeshRenderer>().material.color = color;
+                cameraTimer[i] += Time.deltaTime;
             }
         }
         else if(cameraPoint != null)
@@ -995,8 +1073,30 @@ public class GeneralStageManager : MonoBehaviour
             {
                 status = GameStatus.stop;
                 activeOb.SetActive(true);
+                if (activeOb.GetComponent<MeshRenderer>())
+                {
+                    Material[] activeMaterials = new Material[activeOb.GetComponent<MeshRenderer>().materials.Length];
+                    for (int n = 0; n < activeMaterials.Length; n++)
+                    {
+                        activeMaterials[n] = activeOb.GetComponent<MeshRenderer>().materials[n];
+                        Color a = activeMaterials[n].color;
+                        a.a = 0f;
+                        activeOb.GetComponent<MeshRenderer>().materials[n].color = a;
+                    }
+                }
+                else
+                {
+                    Material[] activeMaterials = new Material[activeOb.transform.childCount];
+                    for (int n = 0; n < activeMaterials.Length; n++)
+                    {
+                        activeMaterials[n] = activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().material;
+                        Color a = activeMaterials[n].color;
+                        a.a = 0f;
+                        activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().material.color = a;
+                    }
+                }
                 if (light != null) light.SetActive(true);
-                cameraPosi = mainCamera.transform.position;
+                cameraPosi = new Vector3(player.transform.position.x, player.transform.position.y + 10f, player.transform.position.z - 2f);
                 cameraRota = mainCamera.transform.eulerAngles;
                 cameraWorkStartFlag[i] = true;
             }
@@ -1020,24 +1120,59 @@ public class GeneralStageManager : MonoBehaviour
             }
             if (activeObTimer[i] > time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
             {
-                Color color = Color.white;
-                if (activeOb.GetComponent<MeshRenderer>()) color = activeOb.GetComponent<MeshRenderer>().material.color;
-                color.a = 1f;
-                if (activeOb.GetComponent<MeshRenderer>()) activeOb.GetComponent<MeshRenderer>().material.color = color;
+                if (activeOb.GetComponent<MeshRenderer>())
+                {
+                    Material[] activeMaterials = new Material[activeOb.GetComponent<MeshRenderer>().materials.Length];
+                    for (int n = 0; n < activeMaterials.Length; n++)
+                    {
+                        activeMaterials[n] = activeOb.GetComponent<MeshRenderer>().materials[n];
+                        Color a = activeMaterials[n].color;
+                        a.a = 1f;
+                        activeOb.GetComponent<MeshRenderer>().materials[n].color = a;
+                    }
+                }
+                else
+                {
+                    Material[] activeMaterials = new Material[activeOb.transform.childCount];
+                    for (int n = 0; n < activeMaterials.Length; n++)
+                    {
+                        activeMaterials[n] = activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().material;
+                        Color a = activeMaterials[n].color;
+                        a.a = 1f;
+                        activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().material.color = a;
+                    }
+                }
                 activeObTimer[i] = 0f;
                 cameraWorkEndFlag[i] = true;
             }
             else if (activeObTimer[i] < time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
             {
                 activeObTimer[i] += Time.deltaTime;
-                Color color = Color.white;
-                if (activeOb.GetComponent<MeshRenderer>()) color = activeOb.GetComponent<MeshRenderer>().material.color;
-                float a = Mathf.Lerp(0f, 1f, activeObTimer[i] / time);
-                color.a = a;
-                if (activeOb.GetComponent<MeshRenderer>()) activeOb.GetComponent<MeshRenderer>().material.color = color;
+                if (activeOb.GetComponent<MeshRenderer>())
+                {
+                    Material[] activeMaterials = new Material[activeOb.GetComponent<MeshRenderer>().materials.Length];
+                    for (int n = 0; n < activeMaterials.Length; n++)
+                    {
+                        activeMaterials[n] = activeOb.GetComponent<MeshRenderer>().materials[n];
+                        Color a = activeMaterials[n].color;
+                        a.a = Mathf.Lerp(0f, 1f, activeObTimer[i] / time);
+                        activeOb.GetComponent<MeshRenderer>().materials[n].color = a;
+                    }
+                }
+                else
+                {
+                    Material[] activeMaterials = new Material[activeOb.transform.childCount];
+                    for (int n = 0; n < activeMaterials.Length; n++)
+                    {
+                        activeMaterials[n] = activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().material;
+                        Color a = activeMaterials[n].color;
+                        a.a = Mathf.Lerp(0f, 1f, activeObTimer[i] / time);
+                        activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().material.color = a;
+                    }
+                }
             }
             // 最後のカメラ移動
-            if (cameraWorkEndFlag[i] && cameraTimer[i] > 0.5f && cameraPoint != null)
+            if (cameraWorkEndFlag[i] && cameraTimer[i] > 0.5f)
             {
                 status = GameStatus.play;
                 if (light != null) light.SetActive(false);
@@ -1047,7 +1182,7 @@ public class GeneralStageManager : MonoBehaviour
                 cameraTimer[i] = 0f;
                 if(end) flag = false;
             }
-            else if (cameraWorkEndFlag[i] && cameraTimer[i] < 0.5f && cameraPoint != null)
+            else if (cameraWorkEndFlag[i] && cameraTimer[i] < 0.5f)
             {
                 cameraTimer[i] += Time.deltaTime;
                 Vector3 caPoRota = cameraPoint.transform.eulerAngles;
@@ -1058,7 +1193,6 @@ public class GeneralStageManager : MonoBehaviour
                 mainCamera.transform.rotation = Quaternion.Euler(rota);
             }
         }
-
     }
     public void ActiveLight(GameObject lightOb, float time, int i, bool end, ref bool flag)
     {
