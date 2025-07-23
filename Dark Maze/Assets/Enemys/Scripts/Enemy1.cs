@@ -85,6 +85,11 @@ public class Enemy1 : MonoBehaviour
         {
             //collision.gameObject.GetComponent<PlayerController>().;
         }
+        else if(collision.gameObject.tag == "Arrow" && !isDamageFlag)
+        {
+            isDamageFlag = true;
+            EnemyDamage();
+        }
     }
     private void OnTriggerEnter(Collider other)
     {

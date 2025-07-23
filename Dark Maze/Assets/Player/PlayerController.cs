@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using UnityEditor.Experimental.GraphView;
+using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class PlayerController : MonoBehaviour
 {
@@ -163,10 +164,24 @@ public class PlayerController : MonoBehaviour
         if (!itemSelectFlag && !itemUseFlag && !endUseFlag && !onSandFlag)
         {
             // çsìÆ
-            Vector3 playerPosition = playerObject.transform.position;
-            if (onLight == 1) playerPosition += new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime) * 0.1f;
-            else playerPosition += new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime);
-            playerObject.transform.position = playerPosition;
+            if (arrowObject)
+            {
+                float arrowDistance = Vector2.Distance(new Vector2(arrowObject.transform.position.x, arrowObject.transform.position.z), new Vector2(playerObject.transform.position.x, playerObject.transform.position.z));
+                if (arrowDistance > 3f || arrowObject.GetComponent<ArrowManager>().stopFlag)
+                {
+                    Vector3 playerPosition = playerObject.transform.position;
+                    if (onLight == 1) playerPosition += new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime) * 0.1f;
+                    else playerPosition += new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime);
+                    playerObject.transform.position = playerPosition;
+                }
+            }
+            else
+            {
+                Vector3 playerPosition = playerObject.transform.position;
+                if (onLight == 1) playerPosition += new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime) * 0.1f;
+                else playerPosition += new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime);
+                playerObject.transform.position = playerPosition;
+            }
             //êiÇﬁï˚å¸Ç…ääÇÁÇ©Ç…å¸Ç≠ÅB
             transform.forward = Vector3.Slerp(transform.forward, new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime), Time.deltaTime * 10f);
         }
@@ -414,6 +429,12 @@ public class PlayerController : MonoBehaviour
                     betweenObjectFlag = false;
                 }
                 arrowObject = Instantiate(arrowPrefab, arrowSpawer.transform.position, Quaternion.identity);
+                if(arrowAnimeFlag)
+                {
+                    arrowObject.GetComponent<ArrowManager>().speed = 10f;
+                    arrowObject.GetComponent<ArrowManager>().lostTime = 10f;
+                }
+                itemUseDirection = Vector3.zero;
                 itemUseFlag = false;
                 endUseFlag = false;
             }
@@ -603,6 +624,7 @@ public class PlayerController : MonoBehaviour
             status = 2;
             Vector3 position = new Vector3(arrowObject.transform.position.x, arrowObject.transform.position.y + 10f, arrowObject.transform.position.z - 2f);
             mainCamera.transform.position = position;
+            if (arrowObject.GetComponent<ArrowManager>().hitFlag) arrowObject.GetComponent<ArrowManager>().lostTime = 1f;
         }
     }
 

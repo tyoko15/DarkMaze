@@ -7,13 +7,13 @@ public class ArrowManager : MonoBehaviour
     [SerializeField] GameObject spawerObject;
     [SerializeField] Rigidbody rb;
     [SerializeField] BoxCollider boxCollider;
-    [SerializeField] float speed;
+    [SerializeField] public float speed;
     [SerializeField] Vector3 position;
     [SerializeField] Vector3 direction;
     [SerializeField] Vector3 rotate;
-    bool stopFlag;
+    public bool stopFlag;
     public bool hitFlag;
-    [SerializeField] float lostTime;
+    [SerializeField] public float lostTime;
     float lostTimer;
     void Start()
     {

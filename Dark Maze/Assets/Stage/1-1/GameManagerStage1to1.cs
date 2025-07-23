@@ -106,13 +106,13 @@ public class GameManagerStage1to1 : GeneralStageManager
     // ç∂â∫ÉGÉäÉAÇÃìGåÇîjÉMÉ~ÉbÉN
     public void Gimmick3()
     {
-        if (enterArea[2].enterAreaFlag) PreGate(gateObjects[1], lightObjects[3], null, false, 2, 1, true, ref enterArea[2].enterAreaFlag);
+        if (enterArea[2].enterAreaFlag) PreGate(gateObjects[1], lightObjects[3], cameraPointObjects[3], false, 2, 1, true, ref enterArea[2].enterAreaFlag);
         if (enemys[1].transform.childCount == 0 && defeatGateFlag[1])
         {
             PreActiveLight(areaLightObjects[1], 1.5f, 1, false, ref defeatGateFlag[1]);
             PreGate(gateObjects[1], lightObjects[3], null, true, 2, 1, false, ref defeatGateFlag[1]);
-            PreActiveObject(buttonObjects[1],lightObjects[4], cameraPointObjects[3], 2, 0 ,true, ref defeatGateFlag[1]);
+            PreActiveObject(buttonObjects[1],lightObjects[4], cameraPointObjects[4], 2, 0 ,true, ref defeatGateFlag[1]);
         }
-        if (buttonObjects[1].GetComponent<ButtonManager>().buttonFlag) PreGate(gateObjects[2],lightObjects[5], cameraPointObjects[4], true, 2, 2, true, ref buttonObjects[1].GetComponent<ButtonManager>().buttonFlag);
+        if (buttonObjects[1].GetComponent<ButtonManager>().buttonFlag) PreGate(gateObjects[2],lightObjects[5], cameraPointObjects[5], true, 2, 2, true, ref buttonObjects[1].GetComponent<ButtonManager>().buttonFlag);
     }
 }
