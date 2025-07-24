@@ -1976,7 +1976,7 @@ MonoBehaviour:
   activeObject: []
   areaLightObjects:
   - {fileID: 3844033520747919875}
-  - {fileID: 7375413828236421060}
+  - {fileID: 432472431618810479}
   lightObjects:
   - {fileID: 497111907}
   - {fileID: 1371230122}
@@ -2010,6 +2010,7 @@ MonoBehaviour:
   limitActiveObTime: 0
   limitActiveObTimer: []
   activeObTimer:
+  - 0
   - 0
   - 0
   activeLightTimer:

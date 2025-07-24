@@ -89,17 +89,17 @@ public class GameManagerStage2to3 : GeneralStageManager
     // 右下エリア回転ギミック
     public void Gimmick1()
     {
-        if (buttonObjects[0].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[3], 1, 90, 2, 0, true, ref buttonObjects[0].GetComponent<ButtonManager>().buttonFlag);
+        if (enemys[0].transform.childCount == 0 && defeatGateFlag[0]) PreActiveLight(areaLightObjects[0], 2, 0, false, ref defeatGateFlag[0]);
+        if (buttonObjects[0].GetComponent<ButtonManager>().buttonFlag) PreAreaRotation(areas[3], lightObjects[0], cameraPointObjects[0], 1, 90, 2, 0, true, ref buttonObjects[0].GetComponent<ButtonManager>().buttonFlag);
     }
     // 
     public void Gimmick2()
     {
-        if (buttonObjects[1].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[1], 1, 90, 2, 1, true, ref buttonObjects[1].GetComponent<ButtonManager>().buttonFlag);
+        if (buttonObjects[1].GetComponent<ButtonManager>().buttonFlag) PreAreaRotation(areas[1], lightObjects[1], cameraPointObjects[1], 1, 90, 2, 1, true, ref buttonObjects[1].GetComponent<ButtonManager>().buttonFlag);
     }
     // 
     public void Gimmick3()
     {
-        if (buttonObjects[2].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[1], -1, 90, 2, 1, true, ref buttonObjects[2].GetComponent<ButtonManager>().buttonFlag);
-
+        if (buttonObjects[2].GetComponent<ButtonManager>().buttonFlag) PreAreaRotation(areas[1], lightObjects[1], cameraPointObjects[1], -1, 90, 2, 1, true, ref buttonObjects[2].GetComponent<ButtonManager>().buttonFlag);
     }
 }
