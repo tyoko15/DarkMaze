@@ -1,13 +1,8 @@
-using System;
 using TMPro;
 using Unity.AI.Navigation;
-using Unity.VisualScripting;
-using UnityEditor;
-using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using static Unity.IO.LowLevel.Unsafe.AsyncReadManagerMetrics;
 
 public class GeneralStageManager : MonoBehaviour
 {
@@ -44,11 +39,11 @@ public class GeneralStageManager : MonoBehaviour
     float startTimer;
 
     // cameraWorkÇÃïœêî
-    float[] cameraTimer = new float[5];
+    float[] cameraTimer = new float[10];
     Vector3 cameraPosi;
     Vector3 cameraRota;
-    bool[] cameraWorkStartFlag = new bool[5];
-    bool[] cameraWorkEndFlag = new bool[5];
+    bool[] cameraWorkStartFlag = new bool[10];
+    bool[] cameraWorkEndFlag = new bool[10];
     // ÉMÉ~ÉbÉNïœêî
     public float originDegree;
     [SerializeField] float[] rotationTimer;

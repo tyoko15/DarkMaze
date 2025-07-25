@@ -17,7 +17,7 @@ public class GoalManager : MonoBehaviour
         {
             
             float distance = Vector2.Distance(new Vector2(goalObject.transform.position.x, goalObject.transform.position.z), new Vector2(playerObject.transform.position.x, playerObject.transform.position.z));
-            if (distance < 0.3f) isGoalFlag = true;
+            if (distance < 0.6f) isGoalFlag = true;
         }
     }
 

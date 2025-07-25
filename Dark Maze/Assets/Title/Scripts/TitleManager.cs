@@ -1,6 +1,5 @@
 using UnityEngine;
 using TMPro;
-using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
 public class TitleManager : MonoBehaviour
