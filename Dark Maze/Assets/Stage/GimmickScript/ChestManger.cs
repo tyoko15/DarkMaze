@@ -3,6 +3,7 @@ using UnityEngine;
 public class ChestManger : MonoBehaviour
 {
     [SerializeField] GameObject chestObject;
+    GameObject chestTopObject;
     [SerializeField] GameObject player;
     [SerializeField] int itemNum;
     bool openFlag;
@@ -11,7 +12,8 @@ public class ChestManger : MonoBehaviour
     [SerializeField] bool hideFlag;
     void Start()
     {
-        if(hideFlag) chestObject.SetActive(false);
+        if (hideFlag) chestObject.SetActive(false);
+        if (chestObject.transform.childCount > 1) chestTopObject = chestObject.transform.GetChild(0).gameObject;
     }
 
     void Update()
@@ -30,6 +32,15 @@ public class ChestManger : MonoBehaviour
             else if(openedTimer < openedTime)
             {
                 openedTimer += Time.deltaTime;
+                if (chestTopObject != null)
+                {
+                    if (openedTimer > openedTime * 0.5f) chestTopObject.transform.eulerAngles = new Vector3(290f, 180f, 0f);
+                    else if (openedTimer < openedTime * 0.5f)
+                    {
+                        float x = Mathf.Lerp(360f, 290f, openedTimer / (openedTime * 0.5f));
+                        chestTopObject.transform.eulerAngles = new Vector3(x, 180f, 0f);
+                    }
+                }
             }
         }
     }
