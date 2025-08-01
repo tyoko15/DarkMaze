@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 195e0b5089c831b47b44015b0ca4a7f2
+guid: 0b02d4a06bcebf84da03d94f7174a1f2
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -7,8 +7,13 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: DarkMaze
-    second: {fileID: 2100000, guid: d755843d730890e44a9e18c205c4c350, type: 2}
+      name: Crystal
+    second: {fileID: 2100000, guid: 530f9f4527cc0514abb425803c85af32, type: 2}
+  - first:
+      type: UnityEngine:Material
+      assembly: UnityEngine.CoreModule
+      name: Stand
+    second: {fileID: 2100000, guid: 04d935d0cd4c0254f8379f6d6edc64ab, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0

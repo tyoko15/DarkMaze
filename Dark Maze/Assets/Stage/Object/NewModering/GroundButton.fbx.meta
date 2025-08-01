@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 195e0b5089c831b47b44015b0ca4a7f2
+guid: b248ee79c16a83049b27ad2357a0b453
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -8,7 +8,7 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: DarkMaze
-    second: {fileID: 2100000, guid: d755843d730890e44a9e18c205c4c350, type: 2}
+    second: {fileID: 2100000, guid: fc02682e988408343a60021b9e8d653e, type: 2}
   materials:
     materialImportMode: 2
     materialName: 0
