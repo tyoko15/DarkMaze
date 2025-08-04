@@ -128,6 +128,16 @@ public class PlayerController : MonoBehaviour
         // ’n–Ê‚ª»‚Ìê‡
         Ray ray = new Ray(playerObject.transform.position, -playerObject.transform.up);
         RaycastHit hit;
+        // Î–Ê‚Ìê‡d—Í‚ğ‰º‚°‚é
+        if (Physics.Raycast(ray, out hit, 0.01f))
+        {
+            if (playerObject.transform.position.y < 1.9f)
+            {
+                if (hit.normal.y < 0.8f) gravity.y = -3f;
+                else gravity.y = -10f;
+            }
+            else gravity.y = -10f;
+        }
         for (int i = 0; i < playerObject.transform.parent.childCount; i++)
         {
             for (int j = 0; j < 4; j++)
