@@ -105,6 +105,7 @@ public class GameManagerStage2to1 : GeneralStageManager
     public void Gimmick2()
     {
         if (buttonObjects[1].GetComponent<ButtonManager>().buttonFlag && buttonObjects[2].GetComponent<ButtonManager>().buttonFlag) PreActiveObject(buttonObjects[3], lightObjects[3], cameraPointObjects[3], 2, 1, true, ref buttonObjects[2].GetComponent<ButtonManager>().buttonFlag);        
+        if (!buttonObjects[2].GetComponent<ButtonManager>().buttonFlag && buttonObjects[3].activeSelf && buttonObjects[3].GetComponent<MeshRenderer>().materials[1].color.a == 1f) buttonObjects[1].GetComponent<ButtonManager>().buttonFlag = false;
         if (buttonObjects[3].GetComponent<ButtonManager>().buttonFlag) PreAreaRotation(areas[3], lightObjects[4], cameraPointObjects[4], 1, 90, 2, 1, true, ref buttonObjects[3].GetComponent<ButtonManager>().buttonFlag);
     }
     // 右上エリアの敵撃破で扉開放ギミック
