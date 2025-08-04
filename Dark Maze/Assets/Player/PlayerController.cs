@@ -1,8 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
-using UnityEditor.Experimental.GraphView;
-using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class PlayerController : MonoBehaviour
 {
@@ -140,9 +138,9 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
-        if (Physics.Raycast(ray, out hit, 0.1f, sandLayer) && !ropeMoveFlag) onSandFlag = true;
+        if (Physics.Raycast(ray, out hit, 0.001f) && !ropeMoveFlag && hit.collider.gameObject.layer == 7) onSandFlag = true;
         // çªÇÃââèo
-        if(onSandFlag)
+        if (onSandFlag)
         {
             playerObject.GetComponent<Collider>().enabled = false;
             if(sandTimer == 0) originPosition = playerObject.transform.position;
@@ -151,7 +149,7 @@ public class PlayerController : MonoBehaviour
                 playerObject.GetComponent<Collider>().enabled = true;
                 sandTimer = 0;
                 onSandFlag = false;
-                playerObject.transform.position = new Vector3(respawnPositions[playerPosiNum].transform.position.x, respawnPositions[playerPosiNum].transform.position.y + 2f, respawnPositions[playerPosiNum].transform.position.z);
+                playerObject.transform.position = new Vector3(respawnPositions[playerPosiNum].transform.position.x, respawnPositions[playerPosiNum].transform.position.y + 2.5f, respawnPositions[playerPosiNum].transform.position.z);
             }
             else if(sandTimer < sandTime)
             {
@@ -331,6 +329,7 @@ public class PlayerController : MonoBehaviour
     }
     void PlayerItemUseControl()
     {
+        if (!itemUseFlag) itemUseDirection = playerObject.transform.forward;
         if(getItemFlag)
         {
             if(clearStageNum == 1) canItemFlag[0] = true;
@@ -434,7 +433,6 @@ public class PlayerController : MonoBehaviour
                     arrowObject.GetComponent<ArrowManager>().speed = 10f;
                     arrowObject.GetComponent<ArrowManager>().lostTime = 10f;
                 }
-                itemUseDirection = Vector3.zero;
                 itemUseFlag = false;
                 endUseFlag = false;
             }
