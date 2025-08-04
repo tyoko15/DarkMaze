@@ -86,6 +86,6 @@ public class GameManagerStage2to2 : GeneralStageManager
     // 
     public void Gimmick1()
     {
-        if (buttonObjects[0].GetComponent<ButtonManager>().buttonFlag) LimitActiveObject(gateObjects[0], 0, true, ref buttonObjects[0].GetComponent<ButtonManager>().buttonFlag);
+        if (buttonObjects[0].GetComponent<ButtonManager>().buttonFlag) LimitActiveObject(gateObjects[0], lightObjects[0], 0, true, ref buttonObjects[0].GetComponent<ButtonManager>().buttonFlag);
     }
 }

@@ -98,7 +98,7 @@ public class GameManagerStage2to4 : GeneralStageManager
     // 
     public void Gimmick2()
     {
-        if (enterArea[2].enterAreaFlag) PreGate(gateObjects[0], lightObjects[1], cameraPointObjects[1], false, 2, 2, true, ref enterArea[2].enterAreaFlag);
+        //if (enterArea[2].enterAreaFlag) PreGate(gateObjects[0], lightObjects[1], cameraPointObjects[1], false, 2, 2, true, ref enterArea[2].enterAreaFlag);
         if (enemys[2].transform.childCount == 0 && defeatGateFlag[2])
         {
             PreActiveLight(areaLightObjects[2], 2, 2, false, ref defeatGateFlag[2]);
@@ -109,7 +109,7 @@ public class GameManagerStage2to4 : GeneralStageManager
     // 
     public void Gimmick3()
     {
-        if (enterArea[3].enterAreaFlag) PreGate(gateObjects[2], lightObjects[1], cameraPointObjects[3], false, 2, 2, true, ref enterArea[3].enterAreaFlag);
+        //if (enterArea[3].enterAreaFlag) PreGate(gateObjects[2], lightObjects[1], cameraPointObjects[3], false, 2, 2, true, ref enterArea[3].enterAreaFlag);
         if (enemys[3].transform.childCount == 0 && defeatGateFlag[3])
         {
             PreActiveLight(areaLightObjects[3], 2, 3, false, ref defeatGateFlag[3]);

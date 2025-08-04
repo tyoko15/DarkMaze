@@ -1,28 +1,26 @@
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.InputSystem.Composites;
-using UnityEngine.UI;
 
 public class ButtonManager : MonoBehaviour
 {
     [SerializeField] public bool buttonFlag;
     [SerializeField] bool hideFlag;
+    bool activeFlag;
     [SerializeField] bool somethingFlag;
     [SerializeField] bool senceFlag;
     [SerializeField] public bool completeFlag;
     int somethingNum;
 
     bool moderingFlag;
+    bool groundButtonFlag;
     GameObject buttonObject;
     GameObject buttonLight;
     // Crystal‚ÌOn Off 0.On 1.Off
     [SerializeField] Color[] buttonCrystalColors;
-    // 0.Stand 1.Crystal
+    // 0.Crystal 1.Stand
     Material[] buttonMaterials;
 
     private void Start()
     {
-        if(hideFlag) gameObject.SetActive(false);
         buttonObject = gameObject;
         if (buttonObject.GetComponent<MeshRenderer>())
         {             
@@ -34,30 +32,57 @@ public class ButtonManager : MonoBehaviour
                 buttonLight = buttonObject.transform.GetChild(0).gameObject;
                 buttonLight.SetActive(false);
             }
+            if (materialCount == 1)
+            {
+                groundButtonFlag = true;
+            }
+            if (hideFlag)
+            {
+                for (int i = 0; i < materialCount; i++)
+                {
+                    Color c = buttonMaterials[i].color;
+                    c.a = 0;
+                    buttonMaterials[i].color = c;
+                    buttonObject.GetComponent<MeshRenderer>().materials[i] = buttonMaterials[i];
+                }
+            }
             moderingFlag = true;
         }
+        if (hideFlag) 
+        {
+            activeFlag = false;
+            gameObject.SetActive(false);            
+        }
+        else activeFlag = true;
     }
 
     void Update()
     {
         if (moderingFlag)
         {
-            if (buttonFlag) 
+            if (!groundButtonFlag)
             {
-                buttonMaterials[1].color = buttonCrystalColors[0];
-                buttonLight.SetActive(true);
-            }            
-            else            
-            {
-                buttonMaterials[1].color = buttonCrystalColors[1];
-                buttonLight.SetActive(false);
-            }            
+                if (buttonFlag)
+                {
+                    buttonMaterials[0].color = buttonCrystalColors[0];
+                    buttonLight.SetActive(true);
+                }
+                else
+                {
+                    buttonMaterials[0].color = buttonCrystalColors[1];
+                    buttonLight.SetActive(false);
+                }
+            }         
+        }
+        if (!activeFlag)
+        {
+            if (buttonObject.GetComponent<MeshRenderer>().materials[1].color.a == 1f) activeFlag = true;
         }
     }
 
     private void OnTriggerEnter(Collider collision)
     {
-        if (!senceFlag)
+        if (!senceFlag && activeFlag)
         {
             if (somethingFlag && (collision.gameObject.tag == "Attack" || collision.gameObject.tag == "Arrow") && !buttonFlag)
             {

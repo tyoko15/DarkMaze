@@ -688,18 +688,18 @@ public class GeneralStageManager : MonoBehaviour
                     mainCamera.transform.rotation = Quaternion.Euler(rota);
                 }
             }
-            else if(!end && cameraPoint == null)
+            else if (cameraPoint == null)
             {
                 if (openTimer[i] == 0 && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
                 {
-                    status = GameStatus.stop;
-                    if (light != null) light.SetActive(true);
+                    gate.SetActive(true);
                     cameraWorkStartFlag[i] = true;
                 }
+                // 最初のカメラ移動
                 if (cameraWorkStartFlag[i] && cameraTimer[i] > 0.5f)
                 {
-                    cameraTimer[i] = 0;
                     cameraWorkStartFlag[i] = false;
+                    cameraTimer[i] = 0f;
                 }
                 else if (cameraWorkStartFlag[i] && cameraTimer[i] < 0.5f)
                 {
@@ -708,46 +708,30 @@ public class GeneralStageManager : MonoBehaviour
                 if (openTimer[i] > time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
                 {
                     gate.transform.position = new Vector3(gate.transform.position.x, -2.1f, gate.transform.position.z);
-                    openTimer[i] = 0;
+                    gate.SetActive(true);
+                    openTimer[i] = 0f;
                     cameraWorkEndFlag[i] = true;
                 }
                 else if (openTimer[i] < time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
-                {
-                    openTimer[i] += Time.deltaTime;
-                    float y = Mathf.Lerp(0, -2.1f, openTimer[i] / time);
-                    gate.transform.position = new Vector3(gate.transform.position.x, y, gate.transform.position.z);
-                }
-                if (cameraWorkEndFlag[i] && cameraTimer[i] > 0.5f)
-                {
-                    status = GameStatus.play;
-                    if(light) light.SetActive(false);
-                    cameraTimer[i] = 0;
-                    cameraWorkEndFlag[i] = false;
-                }
-                else if (cameraWorkEndFlag[i] && cameraTimer[i] < 0.5f)
-                {
-                    cameraTimer[i] += Time.deltaTime;
-                }
-            }
-            else if (end && cameraPoint == null)
-            {
-                if (openTimer[i] == 0) gate.SetActive(true);
-                if (openTimer[i] > time)
-                {
-                    status = GameStatus.play;
-                    gate.transform.position = new Vector3(gate.transform.position.x, -2.1f, gate.transform.position.z);
-                    gate.SetActive(false);
-                    openTimer[i] = 0f;
-                    if (light != null) light.SetActive(false);
-                    if (end) flag = false;
-                }
-                else if (openTimer[i] < time)
                 {
                     status = GameStatus.stop;
                     if (light != null) light.SetActive(true);
                     openTimer[i] += Time.deltaTime;
                     float y = Mathf.Lerp(0f, -2.1f, openTimer[i] / time);
                     gate.transform.position = new Vector3(gate.transform.position.x, y, gate.transform.position.z);
+                }
+                // 最後のカメラ移動
+                if (cameraWorkEndFlag[i] && cameraTimer[i] > 0.5f)
+                {
+                    status = GameStatus.play;
+                    cameraWorkEndFlag[i] = false;
+                    cameraTimer[i] = 0f;
+                    if (light != null) light.SetActive(false);
+                    if (end) flag = false;
+                }
+                else if (cameraWorkEndFlag[i] && cameraTimer[i] < 0.5f)
+                {
+                    cameraTimer[i] += Time.deltaTime;
                 }
             }
         }
@@ -799,7 +783,6 @@ public class GeneralStageManager : MonoBehaviour
                 if (cameraWorkEndFlag[i] && cameraTimer[i] > 0.5f)
                 {
                     status = GameStatus.play;
-                    if (light != null) light.SetActive(false);
                     mainCamera.transform.position = cameraPosi;
                     mainCamera.transform.rotation = Quaternion.Euler(cameraRota);
                     cameraWorkEndFlag[i] = false;
@@ -818,35 +801,50 @@ public class GeneralStageManager : MonoBehaviour
                     mainCamera.transform.rotation = Quaternion.Euler(rota);
                 }
             }
-            else if(!end && cameraPoint == null)
+            else if (cameraPoint == null)
             {
-                if (openTimer[i] < time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
+                if (openTimer[i] == 0 && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
                 {
-                    float t = Mathf.InverseLerp(0, time, openTimer[i]);
-                    float y = Mathf.Lerp(-2.1f, 0f, t);
-                    gate.transform.position = new Vector3(gate.transform.position.x, y, gate.transform.position.z);
+                    gate.SetActive(true);
+                    cameraWorkStartFlag[i] = true;
                 }
-                else if (openTimer[i] > time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i]) gate.transform.position = new Vector3(gate.transform.position.x, 0f, gate.transform.position.z);
-            }
-            else if(end && cameraPoint == null)
-            {
-                if (openTimer[i] == 0) gate.SetActive(true);
-                if (openTimer[i] > time)
+                // 最初のカメラ移動
+                if (cameraWorkStartFlag[i] && cameraTimer[i] > 0.5f)
                 {
-                    status = GameStatus.play;
+                    cameraWorkStartFlag[i] = false;
+                    cameraTimer[i] = 0f;
+                }
+                else if (cameraWorkStartFlag[i] && cameraTimer[i] < 0.5f)
+                {
+                    cameraTimer[i] += Time.deltaTime;
+                }
+                if (openTimer[i] > time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
+                {
                     gate.transform.position = new Vector3(gate.transform.position.x, 0f, gate.transform.position.z);
                     gate.SetActive(true);
-                    openTimer[i] = 0f; 
-                    if(light != null) light.SetActive(false);
-                    if (end) flag = false;
+                    openTimer[i] = 0f;
+                    cameraWorkEndFlag[i] = true;
                 }
-                else if (openTimer[i] < time)
+                else if (openTimer[i] < time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
                 {
                     status = GameStatus.stop;
                     if (light != null) light.SetActive(true);
                     openTimer[i] += Time.deltaTime;
                     float y = Mathf.Lerp(-2.1f, 0f, openTimer[i] / time);
                     gate.transform.position = new Vector3(gate.transform.position.x, y, gate.transform.position.z);
+                }
+                // 最後のカメラ移動
+                if (cameraWorkEndFlag[i] && cameraTimer[i] > 0.5f)
+                {
+                    status = GameStatus.play;
+                    cameraWorkEndFlag[i] = false;
+                    cameraTimer[i] = 0f;
+                    if (light != null) light.SetActive(false);
+                    if (end) flag = false;
+                }
+                else if (cameraWorkEndFlag[i] && cameraTimer[i] < 0.5f)
+                {
+                    cameraTimer[i] += Time.deltaTime;
                 }
             }
         }
@@ -1086,49 +1084,97 @@ public class GeneralStageManager : MonoBehaviour
         }
     }
     // 時間内オブジェクトを出現ギミック
-    public void LimitActiveObject(GameObject activeOb, int i, bool end, ref bool flag)
+    public void LimitActiveObject(GameObject activeOb, GameObject light, int i, bool end, ref bool flag)
     {
-        if (limitActiveObTimer[i] == 0)
+        int activeObParentCount = activeOb.transform.childCount;
+        Material[] activeObMaterials = new Material[activeObParentCount];
+
+        if (limitActiveObTimer[i] == 0 && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
         {
-            Color color = activeOb.GetComponent<MeshRenderer>().material.color;
-            color.a = 0f;
-            activeOb.GetComponent<MeshRenderer>().material.color = color;
+            for (int n = 0; n < activeObParentCount; n++)
+            {
+                activeObMaterials[n] = activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().materials[0];
+                Color color = activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().materials[0].color;
+                color.a = 0f;
+                activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().materials[0].color = color;
+            }
             activeOb.SetActive(true);
+            if (light != null) light.SetActive(true);
+            cameraWorkStartFlag[i] = true;
         }
-        if (limitActiveObTimer[i] > limitActiveObTime)
+        if (cameraWorkStartFlag[i] && cameraTimer[i] > 0.5f)
         {
+            cameraTimer[i] = 0f;
+            cameraWorkStartFlag[i] = false;
+        }
+        else if (cameraWorkStartFlag[i] && cameraTimer[i] < 0.5f)
+        {
+            cameraTimer[i] += Time.deltaTime;
+        }
+        if (limitActiveObTimer[i] > limitActiveObTime && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
+        {
+            for (int n = 0; n < activeObParentCount; n++)
+            {
+                activeObMaterials[n] = activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().materials[0];
+                Color color = activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().materials[0].color;
+                color.a = 0f;
+                activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().materials[0].color = color;
+            }
             activeOb.SetActive(false);
             limitActiveObTimer[i] = 0;
-            if (end) flag = false;
-            endFadeInFlag = false;
+            cameraWorkEndFlag[i] = true;
         }
-        else if (limitActiveObTimer[i] < limitActiveObTime)
+        else if (limitActiveObTimer[i] < limitActiveObTime && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
         {
             // FadeIn
             if (limitActiveObTimer[i] < 0.2f && !endFadeInFlag)
             {
-                Color color = activeOb.GetComponent<MeshRenderer>().material.color;
-                float a = Mathf.Lerp(0f, 1f, limitActiveObTimer[i] / limitActiveObTime);
-                color.a = a;
-                activeOb.GetComponent<MeshRenderer>().material.color = color;
+                for (int n = 0; n < activeObParentCount; n++)
+                {
+                    activeObMaterials[n] = activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().materials[0];
+                    Color color = activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().materials[0].color;
+                    float a = Mathf.Lerp(0f, 1f, limitActiveObTimer[i] / limitActiveObTime);
+                    color.a = a;
+                    activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().materials[0].color = color;
+                }
             }
             else if (limitActiveObTimer[i] > 0.2f && !endFadeInFlag)
             {
-                Color color = activeOb.GetComponent<MeshRenderer>().material.color;
-                color.a = 1f;
-                activeOb.GetComponent<MeshRenderer>().material.color = color;
+                for (int n = 0; n < activeObParentCount; n++)
+                {
+                    activeObMaterials[n] = activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().materials[0];
+                    Color color = activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().materials[0].color;
+                    color.a = 1f;
+                    activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().materials[0].color = color;
+                }
                 endFadeInFlag = true;
             }
             // FadeOut
             if (limitActiveObTimer[i] > limitActiveObTime - 0.2f)
             {
-                Color color = activeOb.GetComponent<MeshRenderer>().material.color;
-                float a = Mathf.Lerp(1f, 0f, limitActiveObTimer[i] / limitActiveObTime);
-                color.a = a;
-                activeOb.GetComponent<MeshRenderer>().material.color = color;
+                for (int n = 0; n < activeObParentCount; n++)
+                {
+                    activeObMaterials[n] = activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().materials[0];
+                    Color color = activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().materials[0].color;
+                    float a = Mathf.Lerp(1f, 0f, limitActiveObTimer[i] / limitActiveObTime);
+                    color.a = a;
+                    activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().materials[0].color = color;
+                }
             }
             limitActiveObTimer[i] += Time.deltaTime;
         }
+        if (cameraWorkEndFlag[i] && cameraTimer[i] > 0.5f)
+        {
+            cameraTimer[i] = 0f;
+            if (light != null) light.SetActive(false);
+            if (end) flag = false;
+            endFadeInFlag = false;
+            cameraWorkEndFlag[i] = false;
+        }
+        else if (cameraWorkEndFlag[i] && cameraTimer[i] < 0.5f)
+        {
+            cameraTimer[i] += Time.deltaTime;
+        }       
     }
     public void PreLimitActiveObject(GameObject activeOb, GameObject light, int i, bool end, ref bool flag)
     {
