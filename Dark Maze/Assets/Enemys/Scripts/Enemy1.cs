@@ -7,6 +7,7 @@ public class Enemy1 : MonoBehaviour
     [SerializeField] GameObject player;
     [SerializeField] GameObject[] wanderPoints;
     [SerializeField] int wanderPointNum;
+    [SerializeField] Animator animator;
     [SerializeField] float trackingRange;
     [SerializeField] float trackingSpeed;
     [SerializeField] float wanderingSpeed;
@@ -31,6 +32,7 @@ public class Enemy1 : MonoBehaviour
         // Lightì‡
         if (moveFlag)
         {
+            animator.SetBool("Move", true);
             // í«ê’íÜ
             if (trackFlag)
             {
@@ -41,7 +43,8 @@ public class Enemy1 : MonoBehaviour
                     agent.speed = trackingSpeed;
                 }
                 float trackDistance = Vector3.Distance(agent.transform.position, player.transform.position);
-                
+                if (trackDistance < 1f) animator.SetBool("Attack", true);
+                else animator.SetBool("Attack", false);
                 if (trackDistance > trackingRange) trackFlag = false;
             }
             // úpújíÜ
@@ -64,9 +67,19 @@ public class Enemy1 : MonoBehaviour
             }
         }
         // LightäO
-        else if (!moveFlag) agent.isStopped = true;
+        else if (!moveFlag)
+        {
+            agent.isStopped = true;
+            animator.SetBool("Move", false);
+            animator.SetBool("Attack", false);
+        }
         // StaníÜ
-        else if (stanFlag) agent.isStopped = true;
+        else if (stanFlag)
+        {
+            agent.isStopped = true;
+            animator.SetBool("Move", false);
+            animator.SetBool("Attack", false);
+        }
     }
 
     void EnemyDamage()

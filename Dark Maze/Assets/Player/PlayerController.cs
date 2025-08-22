@@ -159,7 +159,7 @@ public class PlayerController : MonoBehaviour
                 playerObject.GetComponent<Collider>().enabled = true;
                 sandTimer = 0;
                 onSandFlag = false;
-                playerObject.transform.position = new Vector3(respawnPositions[playerPosiNum].transform.position.x, respawnPositions[playerPosiNum].transform.position.y + 2.5f, respawnPositions[playerPosiNum].transform.position.z);
+                playerObject.transform.position = new Vector3(respawnPositions[playerPosiNum].transform.position.x, respawnPositions[playerPosiNum].transform.position.y + 3f, respawnPositions[playerPosiNum].transform.position.z);
             }
             else if(sandTimer < sandTime)
             {
@@ -303,7 +303,7 @@ public class PlayerController : MonoBehaviour
                     else if (itemTimer[i] < itemTime)
                     {
                         itemTimer[i] += Time.deltaTime;
-                        float x = Mathf.Lerp(-150f, i * -175f -350f, itemTimer[i] / itemTime);
+                        float x = Mathf.Lerp(-120f, i * -175f -350f, itemTimer[i] / itemTime);
                         itemSlots[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(x, itemSlots[i].GetComponent<RectTransform>().anchoredPosition.y);
                     }
                 }
