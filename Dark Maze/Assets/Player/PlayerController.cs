@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
+using Unity.VisualScripting;
 
 public class PlayerController : MonoBehaviour
 {
@@ -17,6 +18,18 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float playerSpeed;
     bool[] controlFlag = new bool[4];
     [SerializeField] public int clearStageNum;
+    [Header("HP情報")]
+    [SerializeField] float maxPlayerHp;
+    [SerializeField] public float playerHp;
+    public float beforeHP;
+    public float afterHP;
+    public float enemyDamage;
+    public bool damageFlag;
+    bool farstDamageFlag;
+    [SerializeField] float damageTime;
+    float damageTimer;
+    [SerializeField] Image playerHpGauge;
+    [SerializeField] Image playerDamageGauge;
     [Header("Camera情報")]
     [SerializeField] GameObject mainCamera;
     [Header("プレイヤーのライト情報")]
@@ -91,7 +104,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb.useGravity = false;
-
+        playerHp = maxPlayerHp;
     }
 
     void Update()
@@ -102,6 +115,7 @@ public class PlayerController : MonoBehaviour
             break;
             case 1: // play
                 PlayerControl();
+                HPControl();
                 PlayerLightControl();
                 PlayerItemUseControl();
                 CameraControl();
@@ -209,6 +223,43 @@ public class PlayerController : MonoBehaviour
             else mainCamera.transform.position = new Vector3(playerObject.transform.position.x, playerObject.transform.position.y + 10f, playerObject.transform.position.z - 2f);
         }
         else mainCamera.transform.position = new Vector3(playerObject.transform.position.x, playerObject.transform.position.y + 10f, playerObject.transform.position.z - 2f);
+    }
+
+    void HPControl()
+    {
+        if (damageFlag)
+        {
+            damageTimer += Time.deltaTime;
+            if (!farstDamageFlag)
+            {
+                beforeHP = playerHp;
+                afterHP = playerHp - enemyDamage;
+                farstDamageFlag = true;
+                float v = Mathf.InverseLerp(0f, maxPlayerHp, beforeHP);
+                playerDamageGauge.fillAmount = v;
+            }
+            if (damageTimer > damageTime)
+            {
+                playerHp = afterHP;
+                damageTimer = 0;
+                beforeHP = 0f;
+                afterHP = 0f;
+                damageFlag = false;
+                farstDamageFlag = false;
+            }
+            else if (damageTimer < damageTime)
+            {
+                float v = Mathf.Lerp(beforeHP, afterHP, damageTimer / damageTime);
+                v = Mathf.InverseLerp(0f, maxPlayerHp, v);
+                playerHpGauge.fillAmount = v;
+            }
+        }
+        else
+        {
+            float v = Mathf.InverseLerp(0f, maxPlayerHp, playerHp);
+            playerHpGauge.fillAmount = v;
+            playerDamageGauge.fillAmount = v;
+        }
     }
 
     void PlayerLightControl()
