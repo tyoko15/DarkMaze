@@ -62,6 +62,7 @@ MonoBehaviour:
   moveFlag: 0
   stanFlag: 0
   enemyHP: 2
+  enemyDamage: 10
   isDamageFlag: 0
 --- !u!54 &3354349886950343879
 Rigidbody:

@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using Unity.VisualScripting;
+using TMPro;
 
 public class PlayerController : MonoBehaviour
 {
@@ -20,7 +21,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] public int clearStageNum;
     [Header("HP情報")]
     [SerializeField] float maxPlayerHp;
-    [SerializeField] public float playerHp;
+    [SerializeField] public float playerHP;
     public float beforeHP;
     public float afterHP;
     public float enemyDamage;
@@ -30,6 +31,7 @@ public class PlayerController : MonoBehaviour
     float damageTimer;
     [SerializeField] Image playerHpGauge;
     [SerializeField] Image playerDamageGauge;
+    [SerializeField] TextMeshProUGUI playerHpText;
     [Header("Camera情報")]
     [SerializeField] GameObject mainCamera;
     [Header("プレイヤーのライト情報")]
@@ -104,7 +106,7 @@ public class PlayerController : MonoBehaviour
     void Start()
     {
         rb.useGravity = false;
-        playerHp = maxPlayerHp;
+        playerHP = maxPlayerHp;
     }
 
     void Update()
@@ -232,15 +234,16 @@ public class PlayerController : MonoBehaviour
             damageTimer += Time.deltaTime;
             if (!farstDamageFlag)
             {
-                beforeHP = playerHp;
-                afterHP = playerHp - enemyDamage;
+                beforeHP = playerHP;
+                afterHP = playerHP - enemyDamage;
                 farstDamageFlag = true;
-                float v = Mathf.InverseLerp(0f, maxPlayerHp, beforeHP);
-                playerDamageGauge.fillAmount = v;
+                float v = Mathf.InverseLerp(0f, maxPlayerHp, afterHP);
+                playerHpGauge.fillAmount = v;
+                playerHpText.text = $"{playerHP - enemyDamage} / {maxPlayerHp}";
             }
             if (damageTimer > damageTime)
             {
-                playerHp = afterHP;
+                playerHP = afterHP;
                 damageTimer = 0;
                 beforeHP = 0f;
                 afterHP = 0f;
@@ -251,14 +254,15 @@ public class PlayerController : MonoBehaviour
             {
                 float v = Mathf.Lerp(beforeHP, afterHP, damageTimer / damageTime);
                 v = Mathf.InverseLerp(0f, maxPlayerHp, v);
-                playerHpGauge.fillAmount = v;
+                playerDamageGauge.fillAmount = v;
             }
         }
         else
         {
-            float v = Mathf.InverseLerp(0f, maxPlayerHp, playerHp);
+            float v = Mathf.InverseLerp(0f, maxPlayerHp, playerHP);
             playerHpGauge.fillAmount = v;
             playerDamageGauge.fillAmount = v;
+            playerHpText.text = $"{playerHP} / {maxPlayerHp}";
         }
     }
 

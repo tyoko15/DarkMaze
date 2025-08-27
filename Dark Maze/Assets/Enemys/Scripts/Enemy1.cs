@@ -15,7 +15,8 @@ public class Enemy1 : MonoBehaviour
     public bool stanFlag;
     bool trackFlag;
 
-    [SerializeField] float enemyHP;    
+    [SerializeField] float enemyHP;
+    [SerializeField] float enemyDamage;
     [SerializeField] bool isDamageFlag;
     void Start()
     {
@@ -40,7 +41,6 @@ public class Enemy1 : MonoBehaviour
                 agent.destination = player.transform.position;
                 agent.speed = trackingSpeed;
                 float trackDistance = Vector2.Distance(new Vector2(player.transform.position.x, player.transform.position.z), new Vector2(transform.position.x, transform.position.z));
-                Debug.Log("í«ê’" + trackDistance);
                 if (trackDistance < 1f) animator.SetBool("Attack", true);
                 else animator.SetBool("Attack", false);
                 if (trackDistance > trackingRange) trackFlag = false;
@@ -59,7 +59,6 @@ public class Enemy1 : MonoBehaviour
                     agent.destination = wanderPoints[wanderPointNum].transform.position;
                 }
                 float trackDistance = Vector2.Distance(new Vector2(player.transform.position.x, player.transform.position.z), new Vector2(transform.position.x, transform.position.z));
-                Debug.Log("úpúj" + trackDistance); 
                 if (trackDistance < trackingRange) trackFlag = true;
             }
         }
@@ -93,7 +92,8 @@ public class Enemy1 : MonoBehaviour
     {
         if(collision.gameObject.tag == "Player")
         {
-            //collision.gameObject.GetComponent<PlayerController>().;
+            collision.gameObject.GetComponent<PlayerController>().damageFlag = true;
+            collision.gameObject.GetComponent<PlayerController>().enemyDamage = enemyDamage;
         }
         else if(collision.gameObject.tag == "Arrow" && !isDamageFlag)
         {

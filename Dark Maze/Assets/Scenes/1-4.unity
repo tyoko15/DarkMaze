@@ -2383,6 +2383,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: beb02284d3b3ed243a05d6464a3a4a17, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  stageNum: 4
   fadeManagerObject: {fileID: 8267548131005766601, guid: 4640189f3bb3f43458f839336d723fa6, type: 3}
   fadeManager: {fileID: 0}
   fadeFlag: 0
@@ -2471,13 +2472,23 @@ MonoBehaviour:
   defeatGateFlag: 00000000
   playUI: {fileID: 1333912714}
   menuUI: {fileID: 1108786616}
-  startMenuFlag: 0
-  startMenuTime: 0.2
+  overUI: {fileID: 0}
+  clearUI: {fileID: 0}
+  fadeMenuFlag: 0
+  fadeMenuTime: 0.2
+  fadeOverFlag: 0
+  fadeOverTime: 0.2
+  fadeClearFlag: 0
+  fadeClearTime: 0.2
   menuTexts:
   - {fileID: 493586926}
   - {fileID: 333689127}
   - {fileID: 1989424207}
+  overTexts: []
+  clearTexts: []
   menuFlag: 0
+  overFlag: 0
+  clearFlag: 0
   enterFlag: 0
   menuSelectNum: 0
 --- !u!114 &1030517239

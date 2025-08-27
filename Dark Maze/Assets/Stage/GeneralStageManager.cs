@@ -1,3 +1,4 @@
+using JetBrains.Annotations;
 using TMPro;
 using Unity.AI.Navigation;
 using UnityEngine;
@@ -6,6 +7,7 @@ using UnityEngine.SceneManagement;
 
 public class GeneralStageManager : MonoBehaviour
 {
+    [SerializeField] public int stageNum;
     [SerializeField] public GameObject fadeManagerObject;
     public FadeManager fadeManager;
     public bool fadeFlag;
@@ -61,14 +63,26 @@ public class GeneralStageManager : MonoBehaviour
     [SerializeField] public EnterArea[] enterArea;
     [SerializeField] public bool[] defeatGateFlag;
 
-    [Header("Input情報")]
+    [Header("UI情報")]
     [SerializeField] public GameObject playUI;
     [SerializeField] public GameObject menuUI;
-    public bool startMenuFlag;
-    [SerializeField] public float startMenuTime = 0.2f;
-    float startMenuTimer;
+    [SerializeField] public GameObject overUI;
+    [SerializeField] public GameObject clearUI;
+    public bool fadeMenuFlag;
+    [SerializeField] public float fadeMenuTime = 0.2f;
+    float fadeMenuTimer;    
+    public bool fadeOverFlag;
+    [SerializeField] public float fadeOverTime = 0.2f;
+    float fadeOverTimer;    
+    public bool fadeClearFlag;
+    [SerializeField] public float fadeClearTime = 0.2f;
+    float fadeClearTimer;
     [SerializeField] public GameObject[] menuTexts;
+    [SerializeField] public GameObject[] overTexts;
+    [SerializeField] public GameObject[] clearTexts;
     [SerializeField] public bool menuFlag;
+    [SerializeField] public bool overFlag;
+    [SerializeField] public bool clearFlag;
     [SerializeField] public bool enterFlag;
     [SerializeField] public int menuSelectNum;
 
@@ -82,6 +96,34 @@ public class GeneralStageManager : MonoBehaviour
         defeatGateFlag = new bool[enemys.Length];
         menuTexts = new GameObject[3];
     }
+
+    public void StartData()
+    {
+        GetUIandPlayer();
+        GameObject fade = GameObject.Find("FadeManager");
+        if (fade == null)
+        {
+            fade = Instantiate(fadeManagerObject);
+            fade.gameObject.name = "FadeManager";
+            fadeManager = fade.GetComponent<FadeManager>();
+            fadeManager.AfterFade();
+        }
+        else if (fade != null) fadeManager = fade.GetComponent<FadeManager>();
+        fadeManager.fadeOutFlag = true;
+        fadeFlag = true;
+
+        for (int i = 0; i < defeatGateFlag.Length; i++)
+        {
+            defeatGateFlag[i] = true;
+        }
+        if (GameObject.Find("DataManager") != null)
+        {
+            int dataNum = GameObject.Find("DataManager").GetComponent<DataManager>().useDataNum;
+            player.GetComponent<PlayerController>().clearStageNum = GameObject.Find("DataManager").GetComponent<DataManager>().data[dataNum].clearStageNum;
+        }
+        else if (GameObject.Find("DataManager") == null) player.GetComponent<PlayerController>().clearStageNum = stageNum - 1;
+    }
+
     public void StartAnime()
     {
         if (fadeFlag)
@@ -105,6 +147,27 @@ public class GeneralStageManager : MonoBehaviour
             else if (startTimer < startTime) startTimer += Time.deltaTime;
         }
     }
+    public void EndAnime()
+    {
+        if (fadeFlag)
+        {
+            if (fadeManager.fadeIntervalFlag && fadeManager.endFlag) fadeFlag = false;
+            fadeManager.FadeControl();
+        }
+        else
+        {
+            if (GameObject.Find("DataManager") != null)
+            {
+                DataManager dataManager = GameObject.Find("DataManager").GetComponent<DataManager>();
+                int dataNum = dataManager.useDataNum;
+                if (dataManager.data[dataNum].clearStageNum == stageNum - 1) dataManager.data[dataNum].clearStageNum = stageNum;
+                dataManager.data[dataNum].selectStageNum = stageNum - 1;
+                dataManager.SaveData(dataManager.useDataNum, dataManager.data[dataManager.useDataNum].playerName, dataManager.data[dataNum].clearStageNum, dataManager.data[dataNum].selectStageNum);
+            }
+            SceneManager.LoadScene("StageSelect");
+        }
+    }
+
     public void Goal()
     {
         if (goalObject.GetComponent<GoalManager>().isGoalFlag)
@@ -1502,21 +1565,65 @@ public class GeneralStageManager : MonoBehaviour
         }
     }
 
-    // メニュー関数
-    public void MenuControl()
+    public void GetUIandPlayer()
     {
-        if (startMenuFlag)
+        GameObject playerSet = GameObject.Find("Player (Set)");
+        player = playerSet.transform.GetChild(1).gameObject;
+        playerController = playerSet.transform.GetChild(1).GetComponent<PlayerController>();
+
+        playUI = playerSet.transform.GetChild(0).transform.GetChild(0).gameObject;
+        menuUI = playerSet.transform.GetChild(0).transform.GetChild(1).gameObject;
+        overUI = playerSet.transform.GetChild(0).transform.GetChild(2).gameObject;
+        clearUI = playerSet.transform.GetChild(0).transform.GetChild(3).gameObject;
+
+        menuTexts = new GameObject[3];
+        menuTexts[0] = menuUI.transform.GetChild(2).gameObject;
+        menuTexts[1] = menuUI.transform.GetChild(3).gameObject;
+        menuTexts[2] = menuUI.transform.GetChild(4).gameObject;
+        overTexts = new GameObject[2];
+        overTexts[0] = overUI.transform.GetChild(2).gameObject;
+        overTexts[1] = overUI.transform.GetChild(3).gameObject;
+        clearTexts = new GameObject[2];
+        clearTexts[0] = clearUI.transform.GetChild(2).gameObject;
+        clearTexts[1] = clearUI.transform.GetChild(3).gameObject;
+    }
+    // メニュー関数
+    public void MenuUIControl()
+    {
+        if (fadeMenuFlag && menuSelectNum == 0)
         {
-            if (startMenuTimer > startMenuTime)
+            if (fadeMenuTimer > fadeMenuTime)
             {
                 menuUI.GetComponent<RectTransform>().localScale = new Vector3(1f, 1f, 1f);
-                startMenuTimer = 0;
-                startMenuFlag = false;
+                fadeMenuTimer = 0;
+                fadeMenuFlag = false;
             }
-            else if (startMenuTimer < startMenuTime)
+            else if (fadeMenuTimer < fadeMenuTime)
             {
-                startMenuTimer += Time.deltaTime;
-                float scale = Mathf.Lerp(0f, 1f, startMenuTimer / startMenuTime);
+                fadeMenuTimer += Time.deltaTime;
+                float scale = Mathf.Lerp(0f, 1f, fadeMenuTimer / fadeMenuTime);
+                menuUI.GetComponent<RectTransform>().localScale = new Vector3(scale, scale, 1f);
+            }
+        }
+        else if (fadeMenuFlag && menuSelectNum == 2)
+        {
+            if (fadeMenuTimer > fadeMenuTime)
+            {
+                menuUI.GetComponent<RectTransform>().localScale = new Vector3(0f, 0f, 0f);
+                fadeMenuTimer = 0;
+                fadeMenuFlag = false;
+
+                menuSelectNum = 0;
+                playUI.SetActive(true);
+                menuUI.SetActive(false);
+                menuSelectNum = 0;
+                for (int i = 0; i < menuTexts.Length; i++) TextAnime(menuTexts[i], false);
+                menuFlag = false;
+            }
+            else if (fadeMenuTimer < fadeMenuTime)
+            {
+                fadeMenuTimer += Time.deltaTime;
+                float scale = Mathf.Lerp(1f, 0f, fadeMenuTimer / fadeMenuTime);
                 menuUI.GetComponent<RectTransform>().localScale = new Vector3(scale, scale, 1f);
             }
         }
@@ -1536,7 +1643,12 @@ public class GeneralStageManager : MonoBehaviour
                 }
                 else
                 {
-                    if (menuSelectNum == 0) SceneManager.LoadScene("1-1");
+                    if (menuSelectNum == 0)
+                    {
+                        int fieldNum = stageNum / 5;
+                        int number = stageNum % 5;
+                        SceneManager.LoadScene($"{fieldNum + 1}-{number}");
+                    }
                     else if (menuSelectNum == 1)
                     {
                         if (GameObject.Find("DataManager") != null)
@@ -1549,16 +1661,17 @@ public class GeneralStageManager : MonoBehaviour
                     }
                     else if (menuSelectNum == 2)
                     {
-                        playUI.SetActive(true);
-                        menuUI.SetActive(false);
-                        menuSelectNum = 0;
-                        for (int i = 0; i < menuTexts.Length; i++) TextAnime(menuTexts[i], false);
-                        menuFlag = false;
+                        fadeMenuFlag = true;
                     }
                     enterFlag = false;
                 }
             }
         }
+    }
+    // ゲームオーバー関数
+    public void OverUIControl()
+    {
+
     }
     public void TextAnime(GameObject textOb, bool flag)
     {
@@ -1574,7 +1687,7 @@ public class GeneralStageManager : MonoBehaviour
         if (context.started && !menuFlag && status == GameStatus.play)
         {
             menuFlag = true;
-            startMenuFlag = true;
+            fadeMenuFlag = true;
             playUI.SetActive(false);
             menuUI.SetActive(true);
             menuUI.GetComponent<RectTransform>().localScale = new Vector3(0f, 0f, 0f);

@@ -5,29 +5,7 @@ public class GameManagerStage2to2 : GeneralStageManager
 {
     void Start()
     {
-        GameObject fade = GameObject.Find("FadeManager");
-        if (fade == null)
-        {
-            fade = Instantiate(fadeManagerObject);
-            fade.gameObject.name = "FadeManager";
-            fadeManager = fade.GetComponent<FadeManager>();
-            fadeManager.AfterFade();
-        }
-        else if (fade != null) fadeManager = fade.GetComponent<FadeManager>();
-        fadeManager.fadeOutFlag = true;
-        fadeFlag = true;
-
-        for (int i = 0; i < defeatGateFlag.Length; i++)
-        {
-            defeatGateFlag[i] = true;
-        }
-        //openTimer[0] = 2f;
-        if (GameObject.Find("DataManager") != null)
-        {
-            int dataNum = GameObject.Find("DataManager").GetComponent<DataManager>().useDataNum;
-            player.GetComponent<PlayerController>().clearStageNum = GameObject.Find("DataManager").GetComponent<DataManager>().data[dataNum].clearStageNum;
-        }
-        else if (GameObject.Find("DataManager") == null) player.GetComponent<PlayerController>().clearStageNum = 6;
+        StartData();
     }
 
     void Update()
@@ -50,7 +28,7 @@ public class GameManagerStage2to2 : GeneralStageManager
                 playerController.status = 2;
                 break;
             case GameStatus.menu:
-                MenuControl();
+                MenuUIControl();
                 if (!menuFlag) status = GameStatus.play;
                 playerController.status = 3;
                 break;
@@ -61,26 +39,6 @@ public class GameManagerStage2to2 : GeneralStageManager
                 playerController.status = 5;
                 EndAnime();
                 break;
-        }
-    }
-    void EndAnime()
-    {
-        if (fadeFlag)
-        {
-            if (fadeManager.fadeIntervalFlag && fadeManager.endFlag) fadeFlag = false;
-            fadeManager.FadeControl();
-        }
-        else
-        {
-            if (GameObject.Find("DataManager") != null)
-            {
-                DataManager dataManager = GameObject.Find("DataManager").GetComponent<DataManager>();
-                int dataNum = dataManager.useDataNum;
-                if (dataManager.data[dataNum].clearStageNum == 6) dataManager.data[dataNum].clearStageNum = 7;
-                dataManager.data[dataNum].selectStageNum = 6;
-                dataManager.SaveData(dataManager.useDataNum, dataManager.data[dataManager.useDataNum].playerName, dataManager.data[dataNum].clearStageNum, dataManager.data[dataNum].selectStageNum);
-            }
-            SceneManager.LoadScene("StageSelect");
         }
     }
     // 
