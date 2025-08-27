@@ -578,6 +578,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8981066294722036156}
     - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
+      propertyPath: gameManager
+      value: 
+      objectReference: {fileID: 1001537018}
+    - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
       propertyPath: 'wanderPoints.Array.data[0]'
       value: 
       objectReference: {fileID: 4164484542751497820}
@@ -8795,6 +8799,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 8981066294722036156}
+    - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
+      propertyPath: gameManager
+      value: 
+      objectReference: {fileID: 1001537018}
     - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
       propertyPath: 'wanderPoints.Array.data[0]'
       value: 

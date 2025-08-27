@@ -1,8 +1,11 @@
 using UnityEngine;
 using UnityEngine.AI;
+using static GeneralStageManager;
 
 public class Enemy1 : MonoBehaviour
 {
+    [SerializeField] GeneralStageManager gameManager;
+    [SerializeField] int enemyStatus;
     [SerializeField] NavMeshAgent agent;
     [SerializeField] GameObject player;
     [SerializeField] GameObject[] wanderPoints;
@@ -18,6 +21,7 @@ public class Enemy1 : MonoBehaviour
     [SerializeField] float enemyHP;
     [SerializeField] float enemyDamage;
     [SerializeField] bool isDamageFlag;
+    [SerializeField] bool isAttackFlag;
     void Start()
     {
         
@@ -25,7 +29,26 @@ public class Enemy1 : MonoBehaviour
 
     void Update()
     {
-        EnemyControl();
+        switch (gameManager.status) 
+        {
+            case GameStatus.start: // start
+                break;
+            case GameStatus.play: // play
+                EnemyControl();
+                break;
+            case GameStatus.stop: // stop
+                agent.isStopped = true;
+                break;
+            case GameStatus.menu: // menu
+                agent.isStopped = true;
+                break;
+            case GameStatus.over: // over
+                agent.isStopped = true;
+                break;
+            case GameStatus.clear: // clear
+                agent.isStopped = true;
+                break;
+        }        
     }
 
     void EnemyControl()
@@ -41,9 +64,16 @@ public class Enemy1 : MonoBehaviour
                 agent.destination = player.transform.position;
                 agent.speed = trackingSpeed;
                 float trackDistance = Vector2.Distance(new Vector2(player.transform.position.x, player.transform.position.z), new Vector2(transform.position.x, transform.position.z));
-                if (trackDistance < 1f) animator.SetBool("Attack", true);
-                else animator.SetBool("Attack", false);
-                if (trackDistance > trackingRange) trackFlag = false;
+                if (trackDistance < 1f)
+                {
+                    animator.SetBool("Attack", true);
+                    isAttackFlag = true;
+                }
+                else
+                {
+                    animator.SetBool("Attack", false);
+                    isAttackFlag = false;
+                }
             }
             // œpœj’†
             else
@@ -90,7 +120,7 @@ public class Enemy1 : MonoBehaviour
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Player")
+        if(collision.gameObject.tag == "Player" && isAttackFlag)
         {
             collision.gameObject.GetComponent<PlayerController>().damageFlag = true;
             collision.gameObject.GetComponent<PlayerController>().enemyDamage = enemyDamage;
@@ -99,6 +129,18 @@ public class Enemy1 : MonoBehaviour
         {
             isDamageFlag = true;
             EnemyDamage();
+        }
+    }
+    private void OnCollisionStay(Collision collision)
+    {
+        if(collision.gameObject.tag == "Player" && isAttackFlag)
+        {
+            PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
+            if (!playerController.damageFlag)
+            {
+                playerController.enemyDamage = enemyDamage;
+                playerController.damageFlag = true;
+            }
         }
     }
     private void OnTriggerEnter(Collider other)

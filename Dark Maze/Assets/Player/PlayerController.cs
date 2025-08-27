@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
-using Unity.VisualScripting;
 using TMPro;
 
 public class PlayerController : MonoBehaviour
@@ -134,8 +133,7 @@ public class PlayerController : MonoBehaviour
             case 5: // clear
                 break;
         }
-        PlayerItemSelectControl(); 
-                
+        PlayerItemSelectControl();                 
     }
 
     // Player行動管理関数
@@ -211,7 +209,6 @@ public class PlayerController : MonoBehaviour
         }
         rb.AddForce(gravity, ForceMode.Acceleration);
     }
-
     void CameraControl()
     {
         if(canItemFlag[itemSelectNum] && itemSelectNum == 1)
@@ -226,7 +223,6 @@ public class PlayerController : MonoBehaviour
         }
         else mainCamera.transform.position = new Vector3(playerObject.transform.position.x, playerObject.transform.position.y + 10f, playerObject.transform.position.z - 2f);
     }
-
     void HPControl()
     {
         if (damageFlag)
@@ -239,7 +235,7 @@ public class PlayerController : MonoBehaviour
                 farstDamageFlag = true;
                 float v = Mathf.InverseLerp(0f, maxPlayerHp, afterHP);
                 playerHpGauge.fillAmount = v;
-                playerHpText.text = $"{playerHP - enemyDamage} / {maxPlayerHp}";
+                playerHpText.text = $"HP : {playerHP - enemyDamage} / {maxPlayerHp}";
             }
             if (damageTimer > damageTime)
             {
@@ -262,10 +258,9 @@ public class PlayerController : MonoBehaviour
             float v = Mathf.InverseLerp(0f, maxPlayerHp, playerHP);
             playerHpGauge.fillAmount = v;
             playerDamageGauge.fillAmount = v;
-            playerHpText.text = $"{playerHP} / {maxPlayerHp}";
+            playerHpText.text = $"HP : {playerHP} / {maxPlayerHp}";
         }
     }
-
     void PlayerLightControl()
     {
         // 最拡大した際、インターバル終了時
@@ -274,14 +269,14 @@ public class PlayerController : MonoBehaviour
             onLight = 0;
             lightRangeMinRange = playerLightRange;
             lightMaxIntervalTimer = 0;
-            lightMaxIntervalTimerGauge.fillAmount = 1f;
+            lightMaxIntervalTimerGauge.fillAmount = 0f;
             lightRangeObject.tag = "LightRange";
         }
         // 最拡大した際、インターバル中
         else if (onLight == 2 && lightMaxIntervalTimer < lightMaxIntervalTime)
         {
             lightMaxIntervalTimer += Time.deltaTime;
-            float normal = Mathf.InverseLerp(5f, 0f, lightMaxIntervalTimer);
+            float normal = Mathf.InverseLerp(lightMaxIntervalTime, 0f, lightMaxIntervalTimer);
             lightMaxIntervalTimerGauge.fillAmount = normal;
         }
             // 最拡大
@@ -296,13 +291,19 @@ public class PlayerController : MonoBehaviour
         if (onLight == 0 && playerLightRange > 30f)
         {
             lightShrinkTimer += Time.deltaTime;
+            float ratio = Mathf.InverseLerp(30f, 180f, lightRangeMinRange);
+            lightShrinkTime = Mathf.Lerp(0f, lightSpreadTime, ratio);
             playerLightRange = Mathf.Lerp(lightRangeMinRange, 30f, lightShrinkTimer / lightShrinkTime);
+            lightMaxIntervalTimerGauge.enabled = false;
         }
         // 拡大中
         else if (onLight == 1 && playerLightRange < 180f)
         {
             lightSpreadTimer += Time.deltaTime;
             playerLightRange = Mathf.Lerp(30f, 180f, lightSpreadTimer / lightSpreadTime);
+            lightMaxIntervalTimerGauge.enabled = true;
+            float nor = Mathf.InverseLerp(30f, 180f, playerLightRange);
+            lightMaxIntervalTimerGauge.fillAmount = nor;
         }
         // 最縮小
         else if (onLight == 0 && playerLightRange == 30f)
@@ -314,11 +315,10 @@ public class PlayerController : MonoBehaviour
         }
         playerLight.spotAngle = playerLightRange;
         
-        float normalized = Mathf.InverseLerp(30f, 180f, playerLightRange);
+        float normalized = Mathf.InverseLerp(30f, 180f, playerLightRange);        
         lightGauge.fillAmount = normalized;
         lightRangeObject.transform.localScale = new Vector3(Mathf.Lerp(2.75f, 17.25f, normalized), 0.1f, Mathf.Lerp(2.75f, 17.25f, normalized));
     }
-
     void PlayerAttackControl()
     {
         if (attackFlag)
@@ -339,7 +339,6 @@ public class PlayerController : MonoBehaviour
         }
         else sword.SetActive(false);
     }
-
     void PlayerItemSelectControl()
     {
         // 選択

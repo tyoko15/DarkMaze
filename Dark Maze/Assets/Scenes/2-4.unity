@@ -1698,6 +1698,10 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
+      propertyPath: gameManager
+      value: 
+      objectReference: {fileID: 1280718332}
+    - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
       propertyPath: 'wanderPoints.Array.data[0]'
       value: 
       objectReference: {fileID: 943762580444275682}
@@ -2239,6 +2243,10 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
+      propertyPath: gameManager
+      value: 
+      objectReference: {fileID: 1280718332}
+    - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
       propertyPath: 'wanderPoints.Array.data[0]'
       value: 
       objectReference: {fileID: 5284460956779006464}
@@ -2520,6 +2528,10 @@ PrefabInstance:
       propertyPath: enemyHP
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
+      propertyPath: gameManager
+      value: 
+      objectReference: {fileID: 1280718332}
     - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
       propertyPath: 'wanderPoints.Array.data[0]'
       value: 
@@ -2807,6 +2819,10 @@ PrefabInstance:
       propertyPath: enemyHP
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
+      propertyPath: gameManager
+      value: 
+      objectReference: {fileID: 1280718332}
     - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
       propertyPath: 'wanderPoints.Array.data[0]'
       value: 
@@ -3433,6 +3449,10 @@ PrefabInstance:
       value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
+      propertyPath: gameManager
+      value: 
+      objectReference: {fileID: 1280718332}
+    - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
       propertyPath: 'wanderPoints.Array.data[0]'
       value: 
       objectReference: {fileID: 5284460956779006464}
@@ -3749,6 +3769,10 @@ PrefabInstance:
       propertyPath: enemyHP
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
+      propertyPath: gameManager
+      value: 
+      objectReference: {fileID: 1280718332}
     - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
       propertyPath: 'wanderPoints.Array.data[0]'
       value: 
@@ -4635,6 +4659,10 @@ PrefabInstance:
       propertyPath: enemyHP
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
+      propertyPath: gameManager
+      value: 
+      objectReference: {fileID: 1280718332}
     - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
       propertyPath: 'wanderPoints.Array.data[0]'
       value: 
@@ -5588,6 +5616,10 @@ PrefabInstance:
       propertyPath: enemyHP
       value: 6
       objectReference: {fileID: 0}
+    - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
+      propertyPath: gameManager
+      value: 
+      objectReference: {fileID: 1280718332}
     - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
       propertyPath: 'wanderPoints.Array.data[0]'
       value: 
