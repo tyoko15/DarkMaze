@@ -413,7 +413,7 @@ MonoBehaviour:
   - {fileID: 5075483317640923747, guid: 6d8df7d08b9915a42a6060699bbe34cc, type: 3}
   animator: {fileID: 4221843132623322273}
   destroyFlag: 0
-  destroyTime: 2
+  destroyTime: 1
 --- !u!65 &6456895607355022529
 BoxCollider:
   m_ObjectHideFlags: 0

@@ -123,7 +123,7 @@ public class Enemy1 : MonoBehaviour
         if(collision.gameObject.tag == "Player" && isAttackFlag)
         {
             collision.gameObject.GetComponent<PlayerController>().damageFlag = true;
-            collision.gameObject.GetComponent<PlayerController>().enemyDamage = enemyDamage;
+            collision.gameObject.GetComponent<PlayerController>().damageAmount = enemyDamage;
         }
         else if(collision.gameObject.tag == "Arrow" && !isDamageFlag)
         {
@@ -138,7 +138,7 @@ public class Enemy1 : MonoBehaviour
             PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
             if (!playerController.damageFlag)
             {
-                playerController.enemyDamage = enemyDamage;
+                playerController.damageAmount = enemyDamage;
                 playerController.damageFlag = true;
             }
         }

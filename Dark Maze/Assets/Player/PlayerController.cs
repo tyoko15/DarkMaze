@@ -16,24 +16,26 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float playerHorizontal;
     [SerializeField] float playerVertical;
     [SerializeField] float playerSpeed;
-    bool[] controlFlag = new bool[4];
     [SerializeField] public int clearStageNum;
+    bool errorFlag;
     [Header("HP情報")]
     [SerializeField] float maxPlayerHp;
     [SerializeField] public float playerHP;
     public float beforeHP;
     public float afterHP;
-    public float enemyDamage;
+    public float damageAmount;
     public bool damageFlag;
     bool farstDamageFlag;
     [SerializeField] float damageTime;
     float damageTimer;
+    public float recoveryAmount;
     public bool recoveryFlag;
     bool farstRecoveryFlag;
     [SerializeField] float recoveryTime;
     float recoveryTimer;
     [SerializeField] Image playerHpGauge;
     [SerializeField] Image playerDamageGauge;
+    [SerializeField] Image playerRecoveryGauge;
     [SerializeField] TextMeshProUGUI playerHpText;
     [Header("Camera情報")]
     [SerializeField] GameObject mainCamera;
@@ -58,7 +60,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float attackTime;
     float attackTimer;
     [Header("プレイヤーのアイテム情報")]
-
+    [SerializeField] int maxArrowCount;
+    public int arrowCount;
     [Header("アイテム選択情報")]
     bool getItemFlag;
     [SerializeField] public bool[] canItemFlag;
@@ -67,6 +70,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Sprite[] itemImageSprites;
     [SerializeField] GameObject itemSelect;
     [SerializeField] GameObject selectObject;
+    [SerializeField] GameObject itemCountText;
     [SerializeField] int itemSelectNum;
     bool itemSelectFlag;
     bool startSelectFlag;
@@ -110,6 +114,8 @@ public class PlayerController : MonoBehaviour
     {
         rb.useGravity = false;
         playerHP = maxPlayerHp;
+        itemCountText.SetActive(false);
+        arrowCount = maxArrowCount;
     }
 
     void Update()
@@ -143,6 +149,7 @@ public class PlayerController : MonoBehaviour
     // Player行動管理関数
     void PlayerControl()
     {
+        if (playerObject.transform.position.y < -1f) playerObject.transform.position = new Vector3(playerObject.transform.position.x, playerObject.transform.position.y + 3f, playerObject.transform.position.z);
         // 地面が砂の場合
         Ray ray = new Ray(playerObject.transform.position, -playerObject.transform.up);
         RaycastHit hit;
@@ -171,8 +178,13 @@ public class PlayerController : MonoBehaviour
         if (onSandFlag)
         {
             playerObject.GetComponent<Collider>().enabled = false;
-            if(sandTimer == 0) originPosition = playerObject.transform.position;
-            if(sandTimer > sandTime)
+            if (sandTimer == 0)
+            {
+                originPosition = playerObject.transform.position;
+                damageFlag = true;
+                damageAmount = 5;
+            }
+            if (sandTimer > sandTime)
             {
                 playerObject.GetComponent<Collider>().enabled = true;
                 sandTimer = 0;
@@ -234,19 +246,20 @@ public class PlayerController : MonoBehaviour
             damageTimer += Time.deltaTime;
             if (!farstDamageFlag)
             {
+                playerDamageGauge.enabled = true;
                 beforeHP = playerHP;
-                afterHP = playerHP - enemyDamage;
+                afterHP = playerHP - damageAmount;
                 farstDamageFlag = true;
                 float v = Mathf.InverseLerp(0f, maxPlayerHp, afterHP);
                 playerHpGauge.fillAmount = v;
-                playerHpText.text = $"HP : {playerHP - enemyDamage} / {maxPlayerHp}";
+                playerHpText.text = $"HP : {afterHP} / {maxPlayerHp}";
             }
             if (damageTimer > damageTime)
             {
                 playerHP = afterHP;
-                damageTimer = 0;
                 beforeHP = 0f;
                 afterHP = 0f;
+                damageTimer = 0;
                 damageFlag = false;
                 farstDamageFlag = false;
             }
@@ -260,21 +273,45 @@ public class PlayerController : MonoBehaviour
         else if (recoveryFlag)
         {
             recoveryTimer += Time.deltaTime;
+            if (!farstRecoveryFlag)
+            {
+                playerRecoveryGauge.enabled = true;
+                farstRecoveryFlag = true;
+                beforeHP = playerHP;
+                afterHP = playerHP + recoveryAmount;
+                if (afterHP > 100f)
+                {
+                    afterHP = 100f;
+                    farstRecoveryFlag = false;
+                    recoveryFlag = false;
+                }
+                float v = Mathf.InverseLerp(0f, maxPlayerHp, afterHP);
+                playerRecoveryGauge.fillAmount = v;
+                playerHpText.text = $"HP : {afterHP} / {maxPlayerHp}";
+            }
             if (recoveryTimer > recoveryTime)
             {
+                playerHP = afterHP;
+                beforeHP = 0f;
+                afterHP = 0f;
                 recoveryTimer = 0;
                 recoveryFlag = false;
+                farstRecoveryFlag = false;
             }
             else if (recoveryTimer < recoveryTime)
             {
-
+                float v = Mathf.Lerp(beforeHP, afterHP, recoveryTimer / recoveryTime);
+                v = Mathf.InverseLerp(0f, maxPlayerHp, v);
+                playerHpGauge.fillAmount = v;
             }
         }
         else if (!damageFlag && !recoveryFlag)
         {
+            playerDamageGauge.enabled = false;
+            playerRecoveryGauge.enabled = false;
             float v = Mathf.InverseLerp(0f, maxPlayerHp, playerHP);
             playerHpGauge.fillAmount = v;
-            playerDamageGauge.fillAmount = v;
+            playerRecoveryGauge.fillAmount = v;
             playerHpText.text = $"HP : {playerHP} / {maxPlayerHp}";
         }
     }
@@ -374,7 +411,7 @@ public class PlayerController : MonoBehaviour
                     else if (itemTimer[i] < itemTime)
                     {
                         itemTimer[i] += Time.deltaTime;
-                        float x = Mathf.Lerp(-120f, i * -175f -350f, itemTimer[i] / itemTime);
+                        float x = Mathf.Lerp(-125f, i * -175f -350f, itemTimer[i] / itemTime);
                         itemSlots[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(x, itemSlots[i].GetComponent<RectTransform>().anchoredPosition.y);
                     }
                 }
@@ -394,14 +431,14 @@ public class PlayerController : MonoBehaviour
                     if (itemTimer[i] > itemTime)
                     {
                         itemTimer[i] = 0;
-                        itemSlots[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(-150f, itemSlots[i].GetComponent<RectTransform>().anchoredPosition.y);
+                        itemSlots[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(-125f, itemSlots[i].GetComponent<RectTransform>().anchoredPosition.y);
                         endSelectFlag = true;
                         itemSlots[i].GetComponent<RectTransform>().sizeDelta = new Vector2(150f, 150f);
                     }
                     else if (itemTimer[i] < itemTime)
                     {
                         itemTimer[i] += Time.deltaTime;
-                        float x = Mathf.Lerp(i * -175f - 350f, -150f, itemTimer[i] / itemTime);
+                        float x = Mathf.Lerp(i * -175f - 350f, -125f, itemTimer[i] / itemTime);
                         itemSlots[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(x, itemSlots[i].GetComponent<RectTransform>().anchoredPosition.y);
                     }
                 }
@@ -443,7 +480,14 @@ public class PlayerController : MonoBehaviour
         if (canItemFlag[itemSelectNum] && itemSelectNum == 0)
         {
             itemSelect.GetComponent<Image>().sprite = itemImageSprites[0];
-            if (itemUseFlag && !arrowAnimeFlag)
+            itemCountText.SetActive(true);
+            TextMeshProUGUI countText = itemCountText.transform.GetChild(0).GetComponent<TextMeshProUGUI>();
+            countText.text = arrowCount.ToString("00");
+            if (arrowCount == maxArrowCount) countText.color = new Color(0f, 0.75f, 0f);
+            else if (arrowCount == 0) countText.color = Color.red;
+            else countText.color = Color.black;
+
+            if (itemUseFlag && !arrowAnimeFlag && arrowCount > 0)
             {
                 Ray ray = new Ray(new Vector3(playerObject.transform.position.x, playerObject.transform.position.y + 1f, playerObject.transform.position.z), playerObject.transform.forward);
                 RaycastHit hit;
@@ -489,8 +533,9 @@ public class PlayerController : MonoBehaviour
                 //進む方向に滑らかに向く。
                 transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 10f);
             }
-            if (endUseFlag)
+            if (endUseFlag && arrowCount > 0)
             {
+                arrowCount--;
                 Ray ray = new Ray(new Vector3(playerObject.transform.position.x, playerObject.transform.position.y + 1f, playerObject.transform.position.z), playerObject.transform.forward);
                 RaycastHit hit;
                 if (Physics.SphereCast(ray.origin, 0.2f, ray.direction, out hit, 30f))
@@ -522,6 +567,7 @@ public class PlayerController : MonoBehaviour
         else if (canItemFlag[itemSelectNum] && itemSelectNum == 1)
         {
             itemSelect.GetComponent<Image>().sprite = itemImageSprites[1];
+            itemCountText.SetActive(false);
             if (itemUseFlag)
             {
                 for (int i = 0; i < ropeTargetObjects.Length; i++)
@@ -673,6 +719,7 @@ public class PlayerController : MonoBehaviour
         else if (canItemFlag[itemSelectNum] && itemSelectNum == 2)
         {
             itemSelect.GetComponent<Image>().sprite = itemImageSprites[2];
+            itemCountText.SetActive(false);
             if (itemUseFlag)
             {
 
@@ -697,12 +744,13 @@ public class PlayerController : MonoBehaviour
         // Heart
         if (itemNum == 0)
         {
-
+            recoveryFlag = true;
         }
         // Arrow
         else if (itemNum == 1)
         {
-
+            arrowCount += 5;
+            if (arrowCount > maxArrowCount) arrowCount = maxArrowCount;
         }
     }
     void ArrowAnime()
