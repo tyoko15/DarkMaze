@@ -28,6 +28,10 @@ public class PlayerController : MonoBehaviour
     bool farstDamageFlag;
     [SerializeField] float damageTime;
     float damageTimer;
+    public bool recoveryFlag;
+    bool farstRecoveryFlag;
+    [SerializeField] float recoveryTime;
+    float recoveryTimer;
     [SerializeField] Image playerHpGauge;
     [SerializeField] Image playerDamageGauge;
     [SerializeField] TextMeshProUGUI playerHpText;
@@ -253,7 +257,20 @@ public class PlayerController : MonoBehaviour
                 playerDamageGauge.fillAmount = v;
             }
         }
-        else
+        else if (recoveryFlag)
+        {
+            recoveryTimer += Time.deltaTime;
+            if (recoveryTimer > recoveryTime)
+            {
+                recoveryTimer = 0;
+                recoveryFlag = false;
+            }
+            else if (recoveryTimer < recoveryTime)
+            {
+
+            }
+        }
+        else if (!damageFlag && !recoveryFlag)
         {
             float v = Mathf.InverseLerp(0f, maxPlayerHp, playerHP);
             playerHpGauge.fillAmount = v;
@@ -674,6 +691,20 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    public void GetItemControl(int itemNum)
+    {
+        Debug.Log($"Get{itemNum}");
+        // Heart
+        if (itemNum == 0)
+        {
+
+        }
+        // Arrow
+        else if (itemNum == 1)
+        {
+
+        }
+    }
     void ArrowAnime()
     {
         if (!arrowObject)

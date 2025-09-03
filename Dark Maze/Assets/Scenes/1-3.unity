@@ -3628,6 +3628,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1076361131}
     - target: {fileID: 2880329463882600666, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
+      propertyPath: arrowPrefab
+      value: 
+      objectReference: {fileID: 6256882474430641331, guid: 75dd184bd52debe449d19205bd7a184b, type: 3}
+    - target: {fileID: 2880329463882600666, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
       propertyPath: lightMaxIntervalTimerGauge
       value: 
       objectReference: {fileID: 1933924620}
