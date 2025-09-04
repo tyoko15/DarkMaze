@@ -4655,7 +4655,7 @@ MonoBehaviour:
   fadeFlag: 0
   fadeIntervalTime: 5
   fadeIntervalTimer: 0
-  totalClearNum: 9
+  totalClearNum: 1
   clearFieldNum: 0
   clearStageNum: 0
   selectUI: {fileID: 200657923}

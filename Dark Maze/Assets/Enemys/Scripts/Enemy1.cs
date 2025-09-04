@@ -100,12 +100,15 @@ public class Enemy1 : MonoBehaviour
             animator.SetBool("Attack", false);
         }
         // Stan’†
-        else if (stanFlag)
+        if (stanFlag)
         {
+            Debug.Log("a");
             agent.isStopped = true;
+            animator.SetBool("Down", true);
             animator.SetBool("Move", false);
             animator.SetBool("Attack", false);
         }
+        else if (!stanFlag) animator.SetBool("Down", false);
     }
 
     void EnemyDamage()

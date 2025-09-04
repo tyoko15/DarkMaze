@@ -71,12 +71,16 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject itemSelect;
     [SerializeField] GameObject selectObject;
     [SerializeField] GameObject itemCountText;
+    [SerializeField] GameObject itemIntervalObject;
     [SerializeField] int itemSelectNum;
     bool itemSelectFlag;
     bool startSelectFlag;
     bool endSelectFlag = true;
     [SerializeField] float itemTime;
     float[] itemTimer = new float[3];
+    bool itemIntervalFlag;
+    [SerializeField] float itemIntervalTime;
+    float itemIntervalTimer;
     [Header("アイテム使用情報")]
     bool itemUseFlag;
     bool endUseFlag;
@@ -447,6 +451,21 @@ public class PlayerController : MonoBehaviour
     }
     void PlayerItemUseControl()
     {
+        if (itemIntervalFlag)
+        {
+            if (itemIntervalTimer > itemIntervalTime)
+            {
+                itemIntervalTimer = 0f;
+                itemIntervalFlag = false;
+            }
+            else if (itemIntervalTimer < itemIntervalTime)
+            {
+                itemIntervalTimer += Time.deltaTime;
+                float v = Mathf.Lerp(1f, 0f, itemIntervalTimer / itemIntervalTime);
+                itemIntervalObject.GetComponent<Image>().fillAmount = v;
+            }
+        }
+
         if (!itemUseFlag) itemUseDirection = playerObject.transform.forward;
         if(getItemFlag)
         {
@@ -533,6 +552,7 @@ public class PlayerController : MonoBehaviour
                 //進む方向に滑らかに向く。
                 transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 10f);
             }
+            else if (itemUseFlag && !arrowAnimeFlag && arrowCount == 0) itemUseFlag = false;
             if (endUseFlag && arrowCount > 0)
             {
                 arrowCount--;
@@ -554,14 +574,16 @@ public class PlayerController : MonoBehaviour
                     betweenObjectFlag = false;
                 }
                 arrowObject = Instantiate(arrowPrefab, arrowSpawer.transform.position, Quaternion.identity);
-                if(arrowAnimeFlag)
+                if (arrowAnimeFlag)
                 {
                     arrowObject.GetComponent<ArrowManager>().speed = 10f;
                     arrowObject.GetComponent<ArrowManager>().lostTime = 10f;
                 }
                 itemUseFlag = false;
                 endUseFlag = false;
+                itemIntervalFlag = true;
             }
+            else if (endUseFlag && arrowCount == 0) endUseFlag = false;
         }
         // 縄
         else if (canItemFlag[itemSelectNum] && itemSelectNum == 1)
@@ -695,6 +717,7 @@ public class PlayerController : MonoBehaviour
                     {
                         ropeMoveTimer = 0;
                         ropeMoveFlag = false;
+                        itemIntervalFlag = true;
                     }
                     else if (ropeMoveTimer < ropeMoveTime)
                     {
@@ -740,7 +763,6 @@ public class PlayerController : MonoBehaviour
 
     public void GetItemControl(int itemNum)
     {
-        Debug.Log($"Get{itemNum}");
         // Heart
         if (itemNum == 0)
         {
@@ -840,8 +862,8 @@ public class PlayerController : MonoBehaviour
     }
     public void InputPlayerUseItemButton(InputAction.CallbackContext context)
     {
-        if(context.started && status == 1 && !itemSelectFlag) itemUseFlag = true;
-        if (context.canceled && status == 1 && !itemSelectFlag) endUseFlag = true;
+        if(context.started && status == 1 && !itemSelectFlag && !itemIntervalFlag) itemUseFlag = true;
+        if (context.canceled && status == 1 && !itemSelectFlag && !itemIntervalFlag) endUseFlag = true;
     }
     public void InputPlayerUseItemControl(InputAction.CallbackContext context)
     {
