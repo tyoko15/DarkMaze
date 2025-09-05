@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Rendering;
 using static GeneralStageManager;
 
 public class Enemy1 : MonoBehaviour
@@ -16,6 +17,9 @@ public class Enemy1 : MonoBehaviour
     [SerializeField] float wanderingSpeed;
     public bool moveFlag;
     public bool stanFlag;
+    [SerializeField] GameObject confusionObject;
+    [SerializeField] float stanTime;
+    float stanTimer;
     bool trackFlag;
 
     [SerializeField] float enemyHP;
@@ -102,13 +106,26 @@ public class Enemy1 : MonoBehaviour
         // Stan’†
         if (stanFlag)
         {
-            Debug.Log("a");
+            confusionObject.SetActive(true);
             agent.isStopped = true;
             animator.SetBool("Down", true);
             animator.SetBool("Move", false);
             animator.SetBool("Attack", false);
+            if (stanTimer > stanTime)
+            {
+                stanFlag = false;
+                stanTimer = 0;
+            }
+            else if (stanTimer < stanTime)
+            {
+                stanTimer += Time.deltaTime;
+            }
         }
-        else if (!stanFlag) animator.SetBool("Down", false);
+        else if (!stanFlag)
+        {
+            confusionObject.SetActive(false);
+            animator.SetBool("Down", false);
+        }
     }
 
     void EnemyDamage()
