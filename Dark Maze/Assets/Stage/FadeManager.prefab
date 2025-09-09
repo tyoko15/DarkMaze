@@ -1017,7 +1017,7 @@ MonoBehaviour:
   fadeInFlag: 0
   fadeOutSecond: 1
   fadeOutFlag: 0
-  fadeIntervalSecond: 5
+  fadeIntervalSecond: 2
   fadeIntervalTimer: 0
   fadeIntervalFlag: 0
   fadeBannerObject: {fileID: 4361489176844274872}
