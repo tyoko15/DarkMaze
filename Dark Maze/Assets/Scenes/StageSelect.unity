@@ -411,10 +411,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ef9ca7249f61eaa4e917b5d49d19ca7f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  dataManager: {fileID: 0}
   playerInput: {fileID: 249696766}
   stageGroup: {fileID: 1584663777}
   selectObject: {fileID: 572805886}
   returnButton: {fileID: 2100434680}
+  fadeManagerObject: {fileID: 8267548131005766601, guid: 4640189f3bb3f43458f839336d723fa6, type: 3}
+  totalClearNum: 5
+  clearFieldNum: 0
+  clearStageNum: 0
   selectReturnFlag: 0
   selectStageNum: 0
   selectMoveTime: 0.2

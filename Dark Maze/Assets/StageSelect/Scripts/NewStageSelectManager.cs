@@ -1,8 +1,10 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.SceneManagement;
 
 public class NewStageSelectManager : MonoBehaviour
 {
+    [SerializeField] DataManager dataManager;
     [Header("Input関連")]
     [SerializeField] PlayerInput playerInput;
     InputAction selectAction;
@@ -12,7 +14,16 @@ public class NewStageSelectManager : MonoBehaviour
     GameObject[] stageImageObjects;
     [SerializeField] GameObject selectObject;
     [SerializeField] GameObject returnButton;
+    [Header("Fade関連")]
+    [SerializeField] GameObject fadeManagerObject;
+    FadeManager fadeManager;
+    bool fadeFlag;
+    bool startFadeFlag;
+    bool endFadeFlag;
 
+    [SerializeField] int totalClearNum;
+    [SerializeField] int clearFieldNum;
+    [SerializeField] int clearStageNum;
 
     [Header("動きのパラメーター")]
     [SerializeField] bool selectReturnFlag;
@@ -29,16 +40,79 @@ public class NewStageSelectManager : MonoBehaviour
     float returnMoveTimer;
     Vector2 selectVector;
 
+    bool enterFlag;
+
+
     void Start()
     {
         GetStageObject();
         selectObject.transform.GetChild(0).GetComponent<RectTransform>().localScale *= 1.2f;
         selectAction = playerInput.actions.FindAction("Move");
         enterAciton = playerInput.actions.FindAction("Enter");
+
+        GameObject fade = GameObject.Find("FadeManager");
+        if (fade == null)
+        {
+            fade = Instantiate(fadeManagerObject);
+            fade.gameObject.name = "FadeManager";
+            fadeManager = fade.GetComponent<FadeManager>();
+        }
+        else if (fade != null) fadeManager = fade.GetComponent<FadeManager>();
+        fadeManager.AfterFade();
+        fadeFlag = true;
+        fadeManager.fadeOutFlag = true;
+        startFadeFlag = true;
+
+        GameObject DataMana = GameObject.Find("DataManager");
+        if (DataMana != null)
+        {
+            dataManager = DataMana.GetComponent<DataManager>();
+            LoadClearStage();
+        }
+        else
+        {
+            //dataManager.SaveData(dataManager.useDataNum, dataManager.name, totalClearNum);
+            clearFieldNum = totalClearNum / 5;
+            clearStageNum = totalClearNum % 5;
+        }
     }
 
     void Update()
     {
+        // フェイドイン終了時
+        if (fadeManager.endFlag && fadeManager.fadeInFlag)
+        {
+            fadeManager.fadeInFlag = false;
+            fadeManager.endFlag = false;
+            fadeManager.fadeIntervalFlag = true;
+            fadeFlag = false;
+        }        
+        // フェイドインターバル終了時
+        else if (endFadeFlag && fadeManager.fadeIntervalFlag && fadeManager.endFlag)
+        {
+            endFadeFlag = false;
+            fadeManager.fadeIntervalFlag = false;
+            fadeManager.endFlag = false;
+            int fieldNum = selectStageNum / 5;
+            int stageNum = selectStageNum % 5;
+            if (selectReturnFlag) SceneManager.LoadScene(0);
+            else SceneManager.LoadScene($"{fieldNum + 1}-{stageNum + 1}");
+            
+            //SceneManager.LoadScene($"{fieldNum + 1}-{stageSelectManagers[fieldNum].selectNum + 1}");
+            //Debug.Log($"{FieldNum + 1}-{stageSelectManager[FieldNum].selectNum + 1}");
+            fadeFlag = false;
+            enterFlag = false;
+        }
+        // フェイドアウト終了時
+        else if (startFadeFlag && fadeManager.fadeOutFlag && fadeManager.endFlag)
+        {
+            startFadeFlag = false;
+            fadeManager.fadeOutFlag = false;
+            fadeManager.endFlag = false;
+            fadeFlag = false;
+        }
+
+        if (startFadeFlag || endFadeFlag) fadeManager.FadeControl();
         selectControl();
     }
 
@@ -49,13 +123,22 @@ public class NewStageSelectManager : MonoBehaviour
     }
 
     void selectControl()
-    {        
+    {
         // Enterの取得
-        //if (enterAciton.started && selectReturnFlag)
-        //{
+        if (enterAciton.ReadValue<float>() > 0 && !fadeFlag)
+        {
+            enterFlag = true;
+        }
 
-        //} 
-        if (!returnMoveFlag)
+        if (enterFlag)
+        {
+            endFadeFlag = true;
+            fadeManager.fadeInFlag = true;
+            fadeFlag = true;
+            enterFlag = false;
+        }
+
+        if (!returnMoveFlag && !fadeFlag)
         {
             if (selectAction.ReadValue<Vector2>().x != 0)
             {
@@ -89,7 +172,7 @@ public class NewStageSelectManager : MonoBehaviour
             } 
         }
 
-        if (!selectReturnFlag)
+        if (!selectReturnFlag && !fadeFlag)
         {
             if (selectAction.ReadValue<Vector2>().y > 0 && !selectMoveFlag)
             {
@@ -98,7 +181,12 @@ public class NewStageSelectManager : MonoBehaviour
                 selectStageNum++;
                 if (selectStageNum == 5) changeStageFlag = true;
                 else if (selectStageNum == 10) changeStageFlag = true;
-                if (selectStageNum > 14)
+                if (selectStageNum > totalClearNum)
+                {
+                    selectStageNum = totalClearNum;
+                    selectMoveFlag = false;
+                }
+                else if (selectStageNum > 14)
                 {
                     selectStageNum = 14;
                     selectMoveFlag = false;
@@ -182,5 +270,15 @@ public class NewStageSelectManager : MonoBehaviour
                 }
             }
         }
+    }
+
+    void LoadClearStage()
+    {
+        totalClearNum = dataManager.data[dataManager.useDataNum].clearStageNum;
+        clearFieldNum = totalClearNum / 5;
+        clearStageNum = totalClearNum % 5;
+        int dateNum = dataManager.useDataNum;
+        int selectFieldNum = dataManager.data[dateNum].selectStageNum / 5;
+        int selectStageNum = dataManager.data[dateNum].selectStageNum % 5;
     }
 }

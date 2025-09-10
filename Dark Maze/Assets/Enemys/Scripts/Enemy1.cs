@@ -57,52 +57,6 @@ public class Enemy1 : MonoBehaviour
 
     void EnemyControl()
     {
-        // Lightì‡
-        if (moveFlag)
-        {
-            animator.SetBool("Move", true);
-            // í«ê’íÜ
-            if (trackFlag)
-            {
-                if (agent.isStopped) agent.isStopped = false;
-                agent.destination = player.transform.position;
-                agent.speed = trackingSpeed;
-                float trackDistance = Vector2.Distance(new Vector2(player.transform.position.x, player.transform.position.z), new Vector2(transform.position.x, transform.position.z));
-                if (trackDistance < 1f)
-                {
-                    animator.SetBool("Attack", true);
-                    isAttackFlag = true;
-                }
-                else
-                {
-                    animator.SetBool("Attack", false);
-                    isAttackFlag = false;
-                }
-            }
-            // úpújíÜ
-            else
-            {
-                if (agent.isStopped) agent.isStopped = false;
-                agent.destination = wanderPoints[wanderPointNum].transform.position;
-                agent.speed = wanderingSpeed;
-                float wanderPointsDistance = Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z), new Vector3(wanderPoints[wanderPointNum].transform.position.x, 0, wanderPoints[wanderPointNum].transform.position.z));
-                if (wanderPointsDistance < 0.5f)
-                {
-                    wanderPointNum++;
-                    if (wanderPointNum == wanderPoints.Length) wanderPointNum = 0;                                       
-                    agent.destination = wanderPoints[wanderPointNum].transform.position;
-                }
-                float trackDistance = Vector2.Distance(new Vector2(player.transform.position.x, player.transform.position.z), new Vector2(transform.position.x, transform.position.z));
-                if (trackDistance < trackingRange) trackFlag = true;
-            }
-        }
-        // LightäO
-        else if (!moveFlag)
-        {
-            agent.isStopped = true;
-            animator.SetBool("Move", false);
-            animator.SetBool("Attack", false);
-        }
         // StaníÜ
         if (stanFlag)
         {
@@ -125,7 +79,53 @@ public class Enemy1 : MonoBehaviour
         {
             confusionObject.SetActive(false);
             animator.SetBool("Down", false);
-        }
+            // Lightì‡
+            if (moveFlag)
+            {
+                animator.SetBool("Move", true);
+                // í«ê’íÜ
+                if (trackFlag)
+                {
+                    if (agent.isStopped) agent.isStopped = false;
+                    agent.destination = player.transform.position;
+                    agent.speed = trackingSpeed;
+                    float trackDistance = Vector2.Distance(new Vector2(player.transform.position.x, player.transform.position.z), new Vector2(transform.position.x, transform.position.z));
+                    if (trackDistance < 1f)
+                    {
+                        animator.SetBool("Attack", true);
+                        isAttackFlag = true;
+                    }
+                    else
+                    {
+                        animator.SetBool("Attack", false);
+                        isAttackFlag = false;
+                    }
+                }
+                // úpújíÜ
+                else
+                {
+                    if (agent.isStopped) agent.isStopped = false;
+                    agent.destination = wanderPoints[wanderPointNum].transform.position;
+                    agent.speed = wanderingSpeed;
+                    float wanderPointsDistance = Vector3.Distance(new Vector3(transform.position.x, 0, transform.position.z), new Vector3(wanderPoints[wanderPointNum].transform.position.x, 0, wanderPoints[wanderPointNum].transform.position.z));
+                    if (wanderPointsDistance < 0.5f)
+                    {
+                        wanderPointNum++;
+                        if (wanderPointNum == wanderPoints.Length) wanderPointNum = 0;
+                        agent.destination = wanderPoints[wanderPointNum].transform.position;
+                    }
+                    float trackDistance = Vector2.Distance(new Vector2(player.transform.position.x, player.transform.position.z), new Vector2(transform.position.x, transform.position.z));
+                    if (trackDistance < trackingRange) trackFlag = true;
+                }
+            }
+            // LightäO
+            else if (!moveFlag)
+            {
+                agent.isStopped = true;
+                animator.SetBool("Move", false);
+                animator.SetBool("Attack", false);
+            }
+        }            
     }
 
     void EnemyDamage()

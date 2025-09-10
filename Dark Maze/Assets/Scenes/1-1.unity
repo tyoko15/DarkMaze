@@ -339,7 +339,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &232992982
 Light:
   m_ObjectHideFlags: 0
@@ -9490,22 +9490,6 @@ PrefabInstance:
     - target: {fileID: 8273060156760522186, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
       propertyPath: m_IsTrigger
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8617153246708673753, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
-      propertyPath: m_Color.b
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 8617153246708673753, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
-      propertyPath: m_Color.g
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8617153246708673753, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
-      propertyPath: m_Enabled
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 8617153246708673753, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
-      propertyPath: m_FillAmount
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9212233892112901566, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
       propertyPath: m_LocalPosition.x
