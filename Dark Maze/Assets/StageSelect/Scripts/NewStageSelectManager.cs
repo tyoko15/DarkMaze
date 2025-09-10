@@ -3,27 +3,38 @@ using UnityEngine.InputSystem;
 
 public class NewStageSelectManager : MonoBehaviour
 {
+    [Header("Input関連")]
     [SerializeField] PlayerInput playerInput;
     InputAction selectAction;
+    InputAction enterAciton;
+    [Header("StageImage関連")]
     [SerializeField] GameObject stageGroup;
-    [SerializeField] GameObject[] stageImageObjects;
-
+    GameObject[] stageImageObjects;
     [SerializeField] GameObject selectObject;
-    [SerializeField] bool selectMoveFlag;
-    
-    [SerializeField] Vector2 selectVector;
+    [SerializeField] GameObject returnButton;
+
+
+    [Header("動きのパラメーター")]
+    [SerializeField] bool selectReturnFlag;
     [SerializeField] int selectStageNum;
     [SerializeField] float selectMoveTime;
     float selectMoveTimer;
-
     bool changeStageFlag;
     [SerializeField] float changeStageTime;
     float changeStageTimer;
 
+    bool selectMoveFlag;
+    bool returnMoveFlag;
+    [SerializeField] float returnMoveTime;
+    float returnMoveTimer;
+    Vector2 selectVector;
+
     void Start()
     {
         GetStageObject();
+        selectObject.transform.GetChild(0).GetComponent<RectTransform>().localScale *= 1.2f;
         selectAction = playerInput.actions.FindAction("Move");
+        enterAciton = playerInput.actions.FindAction("Enter");
     }
 
     void Update()
@@ -33,31 +44,85 @@ public class NewStageSelectManager : MonoBehaviour
 
     void GetStageObject()
     {
-        stageImageObjects = new GameObject[stageGroup.transform.childCount * stageGroup.transform.GetChild(0).childCount];
-        for (int i = 0; i < stageGroup.transform.childCount; i++) for (int j = 0; j < stageGroup.transform.GetChild(0).childCount; j++) stageImageObjects[i * stageGroup.transform.GetChild(i).childCount + j] = stageGroup.transform.GetChild(i).transform.GetChild(j).gameObject;
+        stageImageObjects = new GameObject[stageGroup.transform.childCount];
+        for (int i = 0; i < stageGroup.transform.childCount; i++) stageImageObjects[i] = stageGroup.transform.GetChild(i).gameObject;
     }
 
     void selectControl()
-    {
-        if (selectAction.ReadValue<Vector2>().y > 0 && !selectMoveFlag)
-        {
-            selectVector.y = 1f;
-            selectStageNum++;
-            if (selectStageNum == 5) changeStageFlag = true;
-            if (selectStageNum > 9) selectStageNum = 9;  
-            selectMoveFlag = true;
-        }
-        else if (selectAction.ReadValue<Vector2>().y < 0 && !selectMoveFlag)
-        {
-            selectVector.y = -1f;
-            selectStageNum--;
-            if (selectStageNum < 0) selectStageNum = 0;
-            selectMoveFlag = true;
-        }
-        //else if (selectAction.ReadValue<Vector2>().y == 0)
+    {        
+        // Enterの取得
+        //if (enterAciton.started && selectReturnFlag)
         //{
-        //    selectVector.y = 0f;
-        //}
+
+        //} 
+        if (!returnMoveFlag)
+        {
+            if (selectAction.ReadValue<Vector2>().x != 0)
+            {
+                returnMoveFlag = true;
+                if (selectAction.ReadValue<Vector2>().x > 0) selectVector.x = 1f;
+                else if (selectAction.ReadValue<Vector2>().x < 0) selectVector.x = -1f;
+                if (!selectReturnFlag)
+                {
+                    returnButton.GetComponent<RectTransform>().localScale *= 1.2f;
+                    selectObject.transform.GetChild(0).GetComponent<RectTransform>().localScale = Vector2.one;
+                    selectReturnFlag = true;
+                }
+                else
+                {
+                    returnButton.GetComponent<RectTransform>().localScale = Vector3.one;
+                    selectObject.transform.GetChild(0).GetComponent<RectTransform>().localScale *= 1.2f;
+                    selectReturnFlag = false;
+                }
+            }
+        }
+        else if (returnMoveFlag)
+        {
+            if (returnMoveTimer > returnMoveTime)
+            {
+                returnMoveTimer = 0f;
+                returnMoveFlag = false;
+            }
+            else if (returnMoveTimer < returnMoveTime)
+            {
+                returnMoveTimer += Time.deltaTime;
+            } 
+        }
+
+        if (!selectReturnFlag)
+        {
+            if (selectAction.ReadValue<Vector2>().y > 0 && !selectMoveFlag)
+            {
+                selectMoveFlag = true;
+                selectVector.y = 1f;
+                selectStageNum++;
+                if (selectStageNum == 5) changeStageFlag = true;
+                else if (selectStageNum == 10) changeStageFlag = true;
+                if (selectStageNum > 14)
+                {
+                    selectStageNum = 14;
+                    selectMoveFlag = false;
+                }
+            }
+            else if (selectAction.ReadValue<Vector2>().y < 0 && !selectMoveFlag)
+            {
+                selectMoveFlag = true;
+                selectVector.y = -1f;
+                selectStageNum--;
+                if (selectStageNum == 4) changeStageFlag = true;
+                else if (selectStageNum == 9) changeStageFlag = true;
+                if (selectStageNum < 0)
+                {
+                    selectStageNum = 0;
+                    selectMoveFlag = false;
+                }
+            }
+            //else if (selectAction.ReadValue<Vector2>().y == 0)
+            //{
+            //    selectVector.y = 0f;
+            //}
+        }
+
 
         if (selectMoveFlag)
         {
@@ -96,17 +161,26 @@ public class NewStageSelectManager : MonoBehaviour
                     changeStageTimer += Time.deltaTime;
                     if (selectVector.y == 1f)
                     {
-                        float y = Mathf.Lerp(0f, -1000f, changeStageTimer / changeStageTime);
-                        stageGroup.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition = new Vector2(stageGroup.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition.x, y);
-                        stageGroup.transform.GetChild(1).GetComponent<RectTransform>().anchoredPosition = new Vector2(stageGroup.transform.GetChild(0).GetComponent<RectTransform>().anchoredPosition.x, y);
+                        int n = selectStageNum / 5 - 1;
+                        for (int i = 0; i < stageGroup.transform.childCount; i++)
+                        {
+                            float y = Mathf.Lerp(100f + (n * -1000f) + 200f * i, -900f + (n * -1000f) + 200f * i, changeStageTimer / changeStageTime);
+                            stageImageObjects[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(stageImageObjects[i].GetComponent<RectTransform>().anchoredPosition.x, y);
+                        }
+                        selectObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(selectObject.GetComponent<RectTransform>().anchoredPosition.x, stageImageObjects[selectStageNum - 1].GetComponent<RectTransform>().anchoredPosition.y);
                     }
                     else if (selectVector.y == -1f)
                     {
-
+                        int n = selectStageNum / 5;
+                        for (int i = 0; i < stageGroup.transform.childCount; i++)
+                        {
+                            float y = Mathf.Lerp(-900f + (n * -1000f) + 200f * i, 100f + (n * -1000f) + 200f * i, changeStageTimer / changeStageTime);
+                            stageImageObjects[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(stageImageObjects[i].GetComponent<RectTransform>().anchoredPosition.x, y);
+                        }
+                        selectObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(selectObject.GetComponent<RectTransform>().anchoredPosition.x, stageImageObjects[selectStageNum + 1].GetComponent<RectTransform>().anchoredPosition.y);
                     }
                 }
             }
-
         }
     }
 }
