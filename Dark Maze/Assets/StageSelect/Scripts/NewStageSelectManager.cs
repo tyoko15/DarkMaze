@@ -1,3 +1,4 @@
+using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -14,6 +15,7 @@ public class NewStageSelectManager : MonoBehaviour
     GameObject[] stageImageObjects;
     [SerializeField] GameObject selectObject;
     [SerializeField] GameObject returnButton;
+    [SerializeField] GameObject stageNameText;
     [Header("FadeŠÖ˜A")]
     [SerializeField] GameObject fadeManagerObject;
     FadeManager fadeManager;
@@ -75,6 +77,16 @@ public class NewStageSelectManager : MonoBehaviour
             clearFieldNum = totalClearNum / 5;
             clearStageNum = totalClearNum % 5;
         }
+        if (totalClearNum > 14) totalClearNum = 14;
+        selectStageNum = totalClearNum;
+        int n = selectStageNum / 5 - 1;
+        for (int i = 0; i < stageGroup.transform.childCount; i++)
+        {
+            float y = -900f + (n * -1000f) + 200f * i;
+            stageImageObjects[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(stageImageObjects[i].GetComponent<RectTransform>().anchoredPosition.x, y);
+        }
+        selectObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(selectObject.GetComponent<RectTransform>().anchoredPosition.x, stageImageObjects[selectStageNum].GetComponent<RectTransform>().anchoredPosition.y);
+        stageNameText.GetComponent<TextMeshProUGUI>().text = $"{clearFieldNum + 1} - {clearStageNum + 1}";
     }
 
     void Update()
@@ -95,7 +107,11 @@ public class NewStageSelectManager : MonoBehaviour
             fadeManager.endFlag = false;
             int fieldNum = selectStageNum / 5;
             int stageNum = selectStageNum % 5;
-            if (selectReturnFlag) SceneManager.LoadScene(0);
+            if (selectReturnFlag)
+            {
+                SceneManager.LoadScene(0);
+                fadeManager.titleFlag = true;
+            }
             else SceneManager.LoadScene($"{fieldNum + 1}-{stageNum + 1}");
             
             //SceneManager.LoadScene($"{fieldNum + 1}-{stageSelectManagers[fieldNum].selectNum + 1}");
@@ -184,6 +200,7 @@ public class NewStageSelectManager : MonoBehaviour
                 if (selectStageNum > totalClearNum)
                 {
                     selectStageNum = totalClearNum;
+                    changeStageFlag = false;
                     selectMoveFlag = false;
                 }
                 else if (selectStageNum > 14)
@@ -221,6 +238,10 @@ public class NewStageSelectManager : MonoBehaviour
                     selectMoveTimer = 0;
                     selectVector.y = 0f;
                     selectMoveFlag = false;
+
+                    int fieldNum = selectStageNum / 5;
+                    int stageNum = selectStageNum % 5;
+                    stageNameText.GetComponent<TextMeshProUGUI>().text = $"{fieldNum + 1} - {stageNum + 1}";
                 }
                 else if (selectMoveTimer < selectMoveTime)
                 {

@@ -32,6 +32,9 @@ public class FadeManager : MonoBehaviour
     public bool endFlag; 
     float[] timer;
     float[] moveX;
+
+    public bool titleFlag;
+    public bool finishFlag;
     void Start()
     {
         DontDestroyOnLoad(this.gameObject);
@@ -70,6 +73,20 @@ public class FadeManager : MonoBehaviour
             fadeInFlag = false;
             fadeIntervalFlag = false;
             OutFade();
+        }
+
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            finishFlag = true;
+            fadeInFlag = true;
+        }
+        if (finishFlag && endFlag)
+        {
+#if UNITY_EDITOR
+            UnityEditor.EditorApplication.isPlaying = false;//ゲームプレイ終了
+#else
+    Application.Quit();//ゲームプレイ終了
+#endif
         }
     }
 

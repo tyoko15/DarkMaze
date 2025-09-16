@@ -48,6 +48,13 @@ public class TitleManager : MonoBehaviour
         TitleUIActive(true);
         SelectDataUIActive(false);
         CreateDataUIActive(false);
+
+        if (fadeManager.titleFlag)
+        {
+            fadeManager.AfterFade();
+            fadeFlag = true;
+            fadeManager.fadeOutFlag = true;
+        }
     }
 
     void Update()
