@@ -15,6 +15,7 @@ public class DataManager : MonoBehaviour
     public Data[] data = new Data[3];
     public string[] filePath = new string[3];
     public int useDataNum;
+    public bool nextFieldFlag;
     void Start()
     {
         DontDestroyOnLoad(gameObject);

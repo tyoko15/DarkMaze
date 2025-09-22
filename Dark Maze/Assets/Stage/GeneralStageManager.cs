@@ -161,8 +161,8 @@ public class GeneralStageManager : MonoBehaviour
                 DataManager dataManager = GameObject.Find("DataManager").GetComponent<DataManager>();
                 int dataNum = dataManager.useDataNum;
                 if (dataManager.data[dataNum].clearStageNum == stageNum - 1) dataManager.data[dataNum].clearStageNum = stageNum;
-                dataManager.data[dataNum].selectStageNum = stageNum - 1;
-                dataManager.SaveData(dataManager.useDataNum, dataManager.data[dataManager.useDataNum].playerName, dataManager.data[dataNum].clearStageNum, dataManager.data[dataNum].selectStageNum);
+                dataManager.SaveData(dataNum, dataManager.data[dataNum].playerName, dataManager.data[dataNum].clearStageNum, stageNum-1);
+                if (stageNum % 5 == 0) dataManager.nextFieldFlag = true;
             }
             SceneManager.LoadScene("StageSelect");
         }

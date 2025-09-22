@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class FadeManager : MonoBehaviour
@@ -35,6 +36,9 @@ public class FadeManager : MonoBehaviour
 
     public bool titleFlag;
     public bool finishFlag;
+
+    public bool saveDirection;
+    [SerializeField] GameObject saveText;
     void Start()
     {
         DontDestroyOnLoad(this.gameObject);
@@ -49,7 +53,6 @@ public class FadeManager : MonoBehaviour
             //fadeObjects[i].gameObject.GetComponent<RectTransform>().anchoredPosition = new Vector3(-fadeObjectWidth - i * 300f, fadeObjects[i].gameObject.GetComponent<RectTransform>().anchoredPosition.y);
             timer[i] -= i * fadeInTimer;
         }
-
     }
 
     void Update()
@@ -67,9 +70,25 @@ public class FadeManager : MonoBehaviour
             fadeInFlag = false;
             fadeOutFlag = false;
             IntervalFade();
+            // セーブ演出
+            for (int i = 0; i < 3; i++)
+            {
+                for (int j = 0; j < 5; j++)
+                {
+                    if (SceneManager.GetActiveScene().name == $"{i}-{j}") saveDirection = true;
+                    if (saveDirection) break;
+                }
+            }
+            if (SceneManager.GetActiveScene().name == $"StageSelect") saveDirection = true;
+            if (saveDirection)
+            {
+                saveText.SetActive(true);
+            }
+            else saveText.SetActive(false);
         }
         else if (fadeOutFlag)
         {
+            saveText.SetActive(false);
             fadeInFlag = false;
             fadeIntervalFlag = false;
             OutFade();
