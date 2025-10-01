@@ -15398,8 +15398,9 @@ MonoBehaviour:
   createNameText: {fileID: 596807704}
   createDataDecisionUIObject: {fileID: 1148876740}
   inputGroup: {fileID: 1462435968}
+  inputDeleteObject: {fileID: 0}
   selectInputTextObject: {fileID: 890853801}
-  alphanumericTexts:
+  alphanumericSmallTexts:
   - 1
   - q
   - a
@@ -15460,7 +15461,73 @@ MonoBehaviour:
   - 
   - 
   - 
+  - "\u5927"
   - 
+  - 
+  - 
+  - 
+  alphanumericLargeTexts:
+  - 1
+  - Q
+  - A
+  - Z
+  - 
+  - 2
+  - W
+  - S
+  - X
+  - 
+  - 3
+  - E
+  - D
+  - C
+  - 
+  - 4
+  - R
+  - F
+  - V
+  - 
+  - 5
+  - T
+  - G
+  - B
+  - 
+  - 6
+  - Y
+  - H
+  - N
+  - 
+  - 7
+  - U
+  - J
+  - M
+  - 
+  - 8
+  - I
+  - K
+  - 
+  - 
+  - 9
+  - O
+  - L
+  - 
+  - 
+  - 0
+  - P
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - "\u5C0F"
   - 
   - 
   - 

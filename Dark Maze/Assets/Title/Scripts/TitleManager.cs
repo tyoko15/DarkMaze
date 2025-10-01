@@ -25,7 +25,9 @@ public class TitleManager : MonoBehaviour
     GameObject[,] inputTextObjects;
     [SerializeField] GameObject inputDeleteObject;
     [SerializeField] GameObject selectInputTextObject;
-    [SerializeField] string[] alphanumericTexts;
+    [SerializeField] string[] alphanumericSmallTexts;
+    [SerializeField] string[] alphanumericLargeTexts;
+    bool changeSizeFlag = true;
     public Vector2 inputTextVector;
     
     public int enterTitleUINum;
@@ -170,10 +172,17 @@ public class TitleManager : MonoBehaviour
 
     void SetCharactersInputText()
     {
-        // âpêîéö
         int w = inputGroup.transform.GetChild(1).childCount;
         int h = inputGroup.transform.GetChild(1).GetChild(0).childCount;
-        for (int i = 0; i < w; i++) for (int j = 0; j < h; j++) inputTexts[i, j].text = alphanumericTexts[i * h + j];
+        // âpêîéö
+        if (!changeSizeFlag)    // è¨ï∂éö
+        {
+            for (int i = 0; i < w; i++) for (int j = 0; j < h; j++) inputTexts[i, j].text = alphanumericSmallTexts[i * h + j];
+        }
+        else if (!changeSizeFlag)    // ëÂï∂éö
+        {
+            for (int i = 0; i < w; i++) for (int j = 0; j < h; j++) inputTexts[i, j].text = alphanumericLargeTexts[i * h + j];
+        }
     }
 
     void SelectInputText()
