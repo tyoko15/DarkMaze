@@ -1,6 +1,7 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
+using Unity.VisualScripting;
 
 public class TitleManager : MonoBehaviour
 {
@@ -18,8 +19,15 @@ public class TitleManager : MonoBehaviour
     [SerializeField] public TMP_InputField nameInputField;
     [SerializeField] public TextMeshProUGUI createNameText;
     [SerializeField] GameObject createDataDecisionUIObject;
-    
 
+    [SerializeField] GameObject inputGroup;
+    TextMeshProUGUI[,] inputTexts;
+    GameObject[,] inputTextObjects;
+    [SerializeField] GameObject inputDeleteObject;
+    [SerializeField] GameObject selectInputTextObject;
+    [SerializeField] string[] alphanumericTexts;
+    public Vector2 inputTextVector;
+    
     public int enterTitleUINum;
 
     public int enterSelectDataNum;
@@ -32,6 +40,7 @@ public class TitleManager : MonoBehaviour
     // 2:CreateDataUI
     public int progressNum;
     public bool fadeFlag;
+
     void Start()
     {
         GameObject fade = GameObject.Find("FadeManager");
@@ -55,12 +64,16 @@ public class TitleManager : MonoBehaviour
             fadeFlag = true;
             fadeManager.fadeOutFlag = true;
         }
+
+        GetInputText();
+        SetCharactersInputText();
     }
 
     void Update()
     {
         DisplayData();
-        if(fadeFlag)
+        SelectInputText();
+        if (fadeFlag)
         {
             FadeControl();
         }
@@ -135,6 +148,46 @@ public class TitleManager : MonoBehaviour
     {
         dataManager.SaveData(selectDataNum, nameInputField.text, 0, 0);
         nameInputField.text = null;
+    }
+
+    void GetInputText()
+    {
+        if (inputGroup != null)
+        {
+            int w = inputGroup.transform.GetChild(1).childCount;
+            int h = inputGroup.transform.GetChild(1).GetChild(0).childCount;
+            inputTexts = new TextMeshProUGUI[w,h];
+            inputTextObjects = new GameObject[w,h];
+            GameObject texts = inputGroup.transform.GetChild(2).gameObject;
+            GameObject textObjects = inputGroup.transform.GetChild(1).gameObject;
+            for (int i = 0; i < w; i++) for (int j = 0; j < h; j++)
+            {
+                inputTexts[i, j] = texts.transform.GetChild(i).GetChild(j).GetComponent<TextMeshProUGUI>();
+                inputTextObjects[i, j] = textObjects.transform.GetChild(i).GetChild(j).gameObject;
+            }
+        }
+    }
+
+    void SetCharactersInputText()
+    {
+        // âpêîéö
+        int w = inputGroup.transform.GetChild(1).childCount;
+        int h = inputGroup.transform.GetChild(1).GetChild(0).childCount;
+        for (int i = 0; i < w; i++) for (int j = 0; j < h; j++) inputTexts[i, j].text = alphanumericTexts[i * h + j];
+    }
+
+    void SelectInputText()
+    {
+        if (inputTextVector.y != -1)
+        {
+            selectInputTextObject.GetComponent<RectTransform>().sizeDelta = new Vector2(100f, 100f);
+            selectInputTextObject.GetComponent<RectTransform>().localPosition = new Vector2(-600f + 100f * inputTextVector.x, 50f + -100f * inputTextVector.y);
+        }
+        else
+        {
+            selectInputTextObject.GetComponent<RectTransform>().sizeDelta = new Vector2(200f, 100f);
+            selectInputTextObject.GetComponent<RectTransform>().localPosition = new Vector2(550f, 150f);
+        }
     }
 
     // UIÇÃï\é¶êÿÇËë÷Ç¶

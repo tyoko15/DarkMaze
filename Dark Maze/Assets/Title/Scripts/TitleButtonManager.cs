@@ -178,69 +178,69 @@ public class TitleButtonManager : MonoBehaviour
         }
         else if(titleManager.progressNum == 2)
         {
-            if (!decisionFlag)
-            {
-                if (oneFlag)
-                {
-                    if (selectNum == 0)
-                    {
-                        EnterCreateDataReturnButton();
-                        if (oldSelectNum == 1) titleManager.nameInputField.DeactivateInputField();
-                        else if (oldSelectNum == 2) ExitCreateDataDecisionButton();
-                    }
-                    else if (selectNum == 1)
-                    {
-                        titleManager.nameInputField.ActivateInputField();
-                        if (oldSelectNum == 0) ExitCreateDataReturnButton();
-                        else if (oldSelectNum == 2) ExitCreateDataDecisionButton();
-                    }
-                    else if (selectNum == 2)
-                    {
-                        EnterCreateDataDecisionButton();
-                        if (oldSelectNum == 0) ExitCreateDataReturnButton();
-                        else if (oldSelectNum == 1) titleManager.nameInputField.DeactivateInputField();
-                    }
-                    oldSelectNum = selectNum;
-                    oneFlag = false;
-                }
+            //if (!decisionFlag)
+            //{
+            //    if (oneFlag)
+            //    {
+            //        if (selectNum == 0)
+            //        {
+            //            EnterCreateDataReturnButton();
+            //            if (oldSelectNum == 1) titleManager.nameInputField.DeactivateInputField();
+            //            else if (oldSelectNum == 2) ExitCreateDataDecisionButton();
+            //        }
+            //        else if (selectNum == 1)
+            //        {
+            //            titleManager.nameInputField.ActivateInputField();
+            //            if (oldSelectNum == 0) ExitCreateDataReturnButton();
+            //            else if (oldSelectNum == 2) ExitCreateDataDecisionButton();
+            //        }
+            //        else if (selectNum == 2)
+            //        {
+            //            EnterCreateDataDecisionButton();
+            //            if (oldSelectNum == 0) ExitCreateDataReturnButton();
+            //            else if (oldSelectNum == 1) titleManager.nameInputField.DeactivateInputField();
+            //        }
+            //        oldSelectNum = selectNum;
+            //        oneFlag = false;
+            //    }
 
-                if (EnterFlag)
-                {
-                    if (selectNum == 0) ClickCreateDataReturnButton();
-                    else if (selectNum == 2) ClickCreateDataDecisionButton();
-                    selectNum = 0;
-                    oldSelectNum = 1;
-                    EnterFlag = false;
-                    oneFlag = true;
-                }
-            }
-            else
-            {
-                if(oneFlag)
-                {
-                    if (selectNum == 0)
-                    {
-                        EnterCreateDataDecisionUIReturnButton();
-                        if (oldSelectNum == 1) ExitCreateDataDecisionUIDecisionButton();
-                    }
-                    else if (selectNum == 1)
-                    {
-                        EnterCreateDataDecisionUIDecisionButton();
-                        if (oldSelectNum == 0) ExitCreateDataDecisionUIReturnButton();
-                    }
-                    oldSelectNum = selectNum;
-                    oneFlag = false;
-                }
-                if(EnterFlag)
-                {
-                    if (selectNum == 0) ClickCreateDataDecisionUIReturnButton();
-                    else if (selectNum == 1) ClickCreateDataDecisionUIDecisionButton();
-                    selectNum = 0;
-                    oldSelectNum = 1;
-                    EnterFlag = false;
-                    oneFlag = true;
-                }
-            }
+            //    if (EnterFlag)
+            //    {
+            //        if (selectNum == 0) ClickCreateDataReturnButton();
+            //        else if (selectNum == 2) ClickCreateDataDecisionButton();
+            //        selectNum = 0;
+            //        oldSelectNum = 1;
+            //        EnterFlag = false;
+            //        oneFlag = true;
+            //    }
+            //}
+            //else
+            //{
+            //    if(oneFlag)
+            //    {
+            //        if (selectNum == 0)
+            //        {
+            //            EnterCreateDataDecisionUIReturnButton();
+            //            if (oldSelectNum == 1) ExitCreateDataDecisionUIDecisionButton();
+            //        }
+            //        else if (selectNum == 1)
+            //        {
+            //            EnterCreateDataDecisionUIDecisionButton();
+            //            if (oldSelectNum == 0) ExitCreateDataDecisionUIReturnButton();
+            //        }
+            //        oldSelectNum = selectNum;
+            //        oneFlag = false;
+            //    }
+            //    if(EnterFlag)
+            //    {
+            //        if (selectNum == 0) ClickCreateDataDecisionUIReturnButton();
+            //        else if (selectNum == 1) ClickCreateDataDecisionUIDecisionButton();
+            //        selectNum = 0;
+            //        oldSelectNum = 1;
+            //        EnterFlag = false;
+            //        oneFlag = true;
+            //    }
+            //}
         }
     }
 
@@ -249,7 +249,6 @@ public class TitleButtonManager : MonoBehaviour
     {
         if(flag) buttons[i].GetComponent<TextMeshProUGUI>().fontSize = 120f;
         if(!flag) buttons[i].GetComponent<TextMeshProUGUI>().fontSize = 100f;
-
     }
     void ButtonAnime(ref GameObject[] buttons, int i, bool flag)
     {
@@ -617,17 +616,40 @@ public class TitleButtonManager : MonoBehaviour
         {
             if(!decisionFlag)
             {
+            //    // Old
+            //    if (context.started && context.ReadValue<Vector2>().x > 0)
+            //    {
+            //        selectNum++;
+            //        if (selectNum > 2) selectNum = 0;
+            //        oneFlag = true;
+            //    }
+            //    else if (context.started && context.ReadValue<Vector2>().x < 0)
+            //    {
+            //        selectNum--;
+            //        if (selectNum < 0) selectNum = 2;
+            //        oneFlag = true;
+            //    }
+
+                // New
                 if (context.started && context.ReadValue<Vector2>().x > 0)
                 {
-                    selectNum++;
-                    if (selectNum > 2) selectNum = 0;
-                    oneFlag = true;
+                    titleManager.inputTextVector.x++;
+                    if (titleManager.inputTextVector.x > 12) titleManager.inputTextVector.x = 12;
                 }
                 else if (context.started && context.ReadValue<Vector2>().x < 0)
                 {
-                    selectNum--;
-                    if (selectNum < 0) selectNum = 2;
-                    oneFlag = true;
+                    titleManager.inputTextVector.x--;
+                    if (titleManager.inputTextVector.x < 0) titleManager.inputTextVector.x = 0;
+                }
+                if (context.started && context.ReadValue<Vector2>().y < 0)
+                {
+                    titleManager.inputTextVector.y++;
+                    if (titleManager.inputTextVector.y > 4) titleManager.inputTextVector.y = 4;
+                }
+                else if (context.started && context.ReadValue<Vector2>().y > 0)
+                {
+                    titleManager.inputTextVector.y--;
+                    if (titleManager.inputTextVector.y < -1) titleManager.inputTextVector.y = -1;
                 }
             }
             else
