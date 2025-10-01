@@ -671,6 +671,13 @@ public class TitleButtonManager : MonoBehaviour
     }
     public void InputEnter(InputAction.CallbackContext context)
     {
-        if(context.started) EnterFlag = true;
+        if (titleManager.progressNum == 0 || titleManager.progressNum == 1)
+        {
+            if (context.started) EnterFlag = true;
+        }
+        else if (titleManager.progressNum == 2)
+        {
+            if (context.started) titleManager.enterInputFlag = true;
+        }
     }
 }

@@ -15397,8 +15397,9 @@ MonoBehaviour:
   nameInputField: {fileID: 1857445997}
   createNameText: {fileID: 596807704}
   createDataDecisionUIObject: {fileID: 1148876740}
+  nameText: {fileID: 1808710404}
   inputGroup: {fileID: 1462435968}
-  inputDeleteObject: {fileID: 0}
+  inputDeleteObject: {fileID: 2035049744}
   selectInputTextObject: {fileID: 890853801}
   alphanumericSmallTexts:
   - 1
@@ -15533,6 +15534,7 @@ MonoBehaviour:
   - 
   - 
   inputTextVector: {x: 0, y: 0}
+  enterInputFlag: 0
   enterTitleUINum: 0
   enterSelectDataNum: 0
   selectDataNum: 0
@@ -18178,7 +18180,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: New Name
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 7b596a962bed5d4418ea300df7b4a38e, type: 2}
   m_sharedMaterial: {fileID: 3042620495786268223, guid: 7b596a962bed5d4418ea300df7b4a38e, type: 2}

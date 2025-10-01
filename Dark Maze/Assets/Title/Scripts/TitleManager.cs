@@ -20,6 +20,7 @@ public class TitleManager : MonoBehaviour
     [SerializeField] public TextMeshProUGUI createNameText;
     [SerializeField] GameObject createDataDecisionUIObject;
 
+    [SerializeField] GameObject nameText;
     [SerializeField] GameObject inputGroup;
     TextMeshProUGUI[,] inputTexts;
     GameObject[,] inputTextObjects;
@@ -29,6 +30,7 @@ public class TitleManager : MonoBehaviour
     [SerializeField] string[] alphanumericLargeTexts;
     bool changeSizeFlag = true;
     public Vector2 inputTextVector;
+    public bool enterInputFlag;
     
     public int enterTitleUINum;
 
@@ -74,7 +76,7 @@ public class TitleManager : MonoBehaviour
     void Update()
     {
         DisplayData();
-        SelectInputText();
+        SelectInputTextControl();
         if (fadeFlag)
         {
             FadeControl();
@@ -179,23 +181,60 @@ public class TitleManager : MonoBehaviour
         {
             for (int i = 0; i < w; i++) for (int j = 0; j < h; j++) inputTexts[i, j].text = alphanumericSmallTexts[i * h + j];
         }
-        else if (!changeSizeFlag)    // ëÂï∂éö
+        else if (changeSizeFlag)    // ëÂï∂éö
         {
             for (int i = 0; i < w; i++) for (int j = 0; j < h; j++) inputTexts[i, j].text = alphanumericLargeTexts[i * h + j];
         }
     }
 
-    void SelectInputText()
+    void SelectInputTextControl()
     {
+        // Deleteà»äO
         if (inputTextVector.y != -1)
         {
             selectInputTextObject.GetComponent<RectTransform>().sizeDelta = new Vector2(100f, 100f);
             selectInputTextObject.GetComponent<RectTransform>().localPosition = new Vector2(-600f + 100f * inputTextVector.x, 50f + -100f * inputTextVector.y);
         }
-        else
+        // Delete
+        else if (inputTextVector.y == -1)
         {
             selectInputTextObject.GetComponent<RectTransform>().sizeDelta = new Vector2(200f, 100f);
             selectInputTextObject.GetComponent<RectTransform>().localPosition = new Vector2(550f, 150f);
+        }
+
+        // åàíË
+        if (enterInputFlag)
+        {
+            Debug.Log($"1{alphanumericSmallTexts[(int)inputTextVector.x * 5 + (int)inputTextVector.y] != ""}, 2{inputTextVector.y != -1}, 3{(inputTextVector.x != 12 && inputTextVector.y != 0)}");
+
+            if (alphanumericSmallTexts[(int)inputTextVector.x * 5 + (int)inputTextVector.y] != "" && inputTextVector.y != -1 && (inputTextVector.x != 12 && inputTextVector.y != 0))
+            {
+                if (!changeSizeFlag)   // è¨ï∂éö 
+                {
+                    nameText.GetComponent<TextMeshProUGUI>().text += alphanumericSmallTexts[(int)inputTextVector.x * 5 + (int)inputTextVector.y];
+                }
+                else                 // ëÂï∂éö
+                {
+                    nameText.GetComponent<TextMeshProUGUI>().text += alphanumericLargeTexts[(int)inputTextVector.x * 5 + (int)inputTextVector.y];
+                }
+            }
+            else if (inputTextVector.y == -1)
+            {
+                Debug.Log("Delete");
+                string text = nameText.GetComponent<TextMeshProUGUI>().text;
+                text = text.Remove(text.Length - 1);
+                nameText.GetComponent<TextMeshProUGUI>().text = text;
+            }
+            else if (alphanumericSmallTexts[(int)inputTextVector.x * 5 + (int)inputTextVector.y] == "")
+            {
+                Debug.Log("Ç»Ç¢");
+            }
+            else if (inputTextVector.x == 12 && inputTextVector.y == 0)
+            {
+                changeSizeFlag = (!changeSizeFlag) ? true : false;
+                SetCharactersInputText();
+            }
+            enterInputFlag = false;
         }
     }
 
