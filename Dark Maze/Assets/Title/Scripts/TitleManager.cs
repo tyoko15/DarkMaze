@@ -1,10 +1,10 @@
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement;
-using Unity.VisualScripting;
 
 public class TitleManager : MonoBehaviour
 {
+    [SerializeField] TitleButtonManager titleButtonManager;
     [SerializeField] DataManager dataManager;
     [SerializeField] FadeManager fadeManager;
     [SerializeField] GameObject fadeManagerObject;
@@ -20,7 +20,8 @@ public class TitleManager : MonoBehaviour
     [SerializeField] public TextMeshProUGUI createNameText;
     [SerializeField] GameObject createDataDecisionUIObject;
 
-    [SerializeField] GameObject nameText;
+    int inputProgressNum;
+    [SerializeField] public GameObject nameText;
     [SerializeField] GameObject inputGroup;
     TextMeshProUGUI[,] inputTexts;
     GameObject[,] inputTextObjects;
@@ -150,21 +151,22 @@ public class TitleManager : MonoBehaviour
     }
     public void CreateName()
     {
-        dataManager.SaveData(selectDataNum, nameInputField.text, 0, 0);
-        nameInputField.text = null;
+        string name = nameText.GetComponent<TextMeshProUGUI>().text;
+        dataManager.SaveData(selectDataNum, name, 0, 0);
+        nameText.GetComponent<TextMeshProUGUI>().text = null;
     }
 
     void GetInputText()
     {
         if (inputGroup != null)
         {
-            int w = inputGroup.transform.GetChild(1).childCount;
-            int h = inputGroup.transform.GetChild(1).GetChild(0).childCount;
-            inputTexts = new TextMeshProUGUI[w,h];
-            inputTextObjects = new GameObject[w,h];
+            int h = inputGroup.transform.GetChild(1).childCount;
+            int w = inputGroup.transform.GetChild(1).GetChild(0).childCount;
+            inputTexts = new TextMeshProUGUI[h,w];
+            inputTextObjects = new GameObject[h,w];
             GameObject texts = inputGroup.transform.GetChild(2).gameObject;
             GameObject textObjects = inputGroup.transform.GetChild(1).gameObject;
-            for (int i = 0; i < w; i++) for (int j = 0; j < h; j++)
+            for (int i = 0; i < h; i++) for (int j = 0; j < w; j++)
             {
                 inputTexts[i, j] = texts.transform.GetChild(i).GetChild(j).GetComponent<TextMeshProUGUI>();
                 inputTextObjects[i, j] = textObjects.transform.GetChild(i).GetChild(j).gameObject;
@@ -174,67 +176,110 @@ public class TitleManager : MonoBehaviour
 
     void SetCharactersInputText()
     {
-        int w = inputGroup.transform.GetChild(1).childCount;
-        int h = inputGroup.transform.GetChild(1).GetChild(0).childCount;
+        int h = inputGroup.transform.GetChild(1).childCount;
+        int w = inputGroup.transform.GetChild(1).GetChild(0).childCount;
         // âpêîéö
         if (!changeSizeFlag)    // è¨ï∂éö
         {
-            for (int i = 0; i < w; i++) for (int j = 0; j < h; j++) inputTexts[i, j].text = alphanumericSmallTexts[i * h + j];
+            for (int i = 0; i < h; i++) for (int j = 0; j < w; j++) inputTexts[i, j].text = alphanumericSmallTexts[i * w + j];
         }
         else if (changeSizeFlag)    // ëÂï∂éö
         {
-            for (int i = 0; i < w; i++) for (int j = 0; j < h; j++) inputTexts[i, j].text = alphanumericLargeTexts[i * h + j];
+            for (int i = 0; i < h; i++) for (int j = 0; j < w; j++) inputTexts[i, j].text = alphanumericLargeTexts[i * w + j];
         }
     }
 
     void SelectInputTextControl()
     {
-        // Deleteà»äO
-        if (inputTextVector.y != -1)
+        if (inputProgressNum == 0)
         {
-            selectInputTextObject.GetComponent<RectTransform>().sizeDelta = new Vector2(100f, 100f);
-            selectInputTextObject.GetComponent<RectTransform>().localPosition = new Vector2(-600f + 100f * inputTextVector.x, 50f + -100f * inputTextVector.y);
-        }
-        // Delete
-        else if (inputTextVector.y == -1)
-        {
-            selectInputTextObject.GetComponent<RectTransform>().sizeDelta = new Vector2(200f, 100f);
-            selectInputTextObject.GetComponent<RectTransform>().localPosition = new Vector2(550f, 150f);
-        }
-
-        // åàíË
-        if (enterInputFlag)
-        {
-            Debug.Log($"1{alphanumericSmallTexts[(int)inputTextVector.x * 5 + (int)inputTextVector.y] != ""}, 2{inputTextVector.y != -1}, 3{(inputTextVector.x != 12 && inputTextVector.y != 0)}");
-
-            if (alphanumericSmallTexts[(int)inputTextVector.x * 5 + (int)inputTextVector.y] != "" && inputTextVector.y != -1 && (inputTextVector.x != 12 && inputTextVector.y != 0))
+            // Deleteà»äO
+            if (inputTextVector.y != -1 && inputTextVector.x > -1 && inputTextVector.x < 13)
             {
-                if (!changeSizeFlag)   // è¨ï∂éö 
-                {
-                    nameText.GetComponent<TextMeshProUGUI>().text += alphanumericSmallTexts[(int)inputTextVector.x * 5 + (int)inputTextVector.y];
-                }
-                else                 // ëÂï∂éö
-                {
-                    nameText.GetComponent<TextMeshProUGUI>().text += alphanumericLargeTexts[(int)inputTextVector.x * 5 + (int)inputTextVector.y];
-                }
+                selectInputTextObject.GetComponent<RectTransform>().sizeDelta = new Vector2(100f, 100f);
+                selectInputTextObject.GetComponent<RectTransform>().localPosition = new Vector2(-600f + 100f * inputTextVector.x, 50f + -100f * inputTextVector.y);
             }
+            // Delete
             else if (inputTextVector.y == -1)
             {
-                Debug.Log("Delete");
-                string text = nameText.GetComponent<TextMeshProUGUI>().text;
-                text = text.Remove(text.Length - 1);
-                nameText.GetComponent<TextMeshProUGUI>().text = text;
+                selectInputTextObject.GetComponent<RectTransform>().sizeDelta = new Vector2(200f, 100f);
+                selectInputTextObject.GetComponent<RectTransform>().localPosition = new Vector2(550f, 150f);
             }
-            else if (alphanumericSmallTexts[(int)inputTextVector.x * 5 + (int)inputTextVector.y] == "")
+            // ñﬂÇÈ
+            if (inputTextVector.x == -1)
             {
-                Debug.Log("Ç»Ç¢");
+                selectInputTextObject.GetComponent<RectTransform>().sizeDelta = new Vector2(100f, 200f);
+                selectInputTextObject.GetComponent<RectTransform>().localPosition = new Vector2(-700f, 0f);
             }
-            else if (inputTextVector.x == 12 && inputTextVector.y == 0)
+            // åàíË
+            else if (inputTextVector.x == 13)
             {
-                changeSizeFlag = (!changeSizeFlag) ? true : false;
-                SetCharactersInputText();
+                selectInputTextObject.GetComponent<RectTransform>().sizeDelta = new Vector2(200f, 300f);
+                selectInputTextObject.GetComponent<RectTransform>().localPosition = new Vector2(750f, -50f);
             }
-            enterInputFlag = false;
+
+            // åàíË
+            if (enterInputFlag)
+            {
+                //Debug.Log($"1. ãÛóìÇ≈ÇÕÇ»Ç¢Ç©îªíË{alphanumericSmallTexts[(int)inputTextVector.y * inputGroup.transform.GetChild(1).GetChild(0).childCount + (int)inputTextVector.x] != ""}, 2. deleteÉ{É^ÉìÇ≈ÇÕÇ»Ç¢Ç©îªíË{inputTextVector.y != -1}, 3. èÍì‡Ç©îªíË{(inputTextVector.x != 12 && inputTextVector.x != 0)}");
+                // ï∂éöÇí«â¡
+                if (nameText.GetComponent<TextMeshProUGUI>().text.Length < 8 && inputTextVector.y != -1 && (inputTextVector.x < 12 && inputTextVector.x >= 0))
+                {
+                    // ï∂éö
+                    if (alphanumericSmallTexts[(int)inputTextVector.y * inputGroup.transform.GetChild(1).GetChild(0).childCount + (int)inputTextVector.x] != "")
+                    {
+                        if (!changeSizeFlag)   // è¨ï∂éö 
+                        {
+                            nameText.GetComponent<TextMeshProUGUI>().text += alphanumericSmallTexts[(int)inputTextVector.y * inputGroup.transform.GetChild(1).GetChild(0).childCount + (int)inputTextVector.x];
+                        }
+                        else                   // ëÂï∂éö
+                        {
+                            nameText.GetComponent<TextMeshProUGUI>().text += alphanumericLargeTexts[(int)inputTextVector.y * inputGroup.transform.GetChild(1).GetChild(0).childCount + (int)inputTextVector.x];
+                        }
+                    }
+                    // ãÛ
+                    else if (alphanumericSmallTexts[(int)inputTextVector.y * inputGroup.transform.GetChild(1).GetChild(0).childCount + (int)inputTextVector.x] == "")
+                    {
+                        Debug.Log("Ç»Ç¢");
+                    }
+                }
+                // ï∂éöÇàÍÇ¬è¡Ç∑
+                else if (inputTextVector.y == -1 && nameText.GetComponent<TextMeshProUGUI>().text.Length > 0)
+                {
+                    Debug.Log("Delete");
+                    string text = nameText.GetComponent<TextMeshProUGUI>().text;
+                    text = text.Remove(text.Length - 1);
+                    nameText.GetComponent<TextMeshProUGUI>().text = text;
+                }
+                // åàíË
+                else if (inputTextVector.x == 13 && nameText.GetComponent<TextMeshProUGUI>().text.Length > 0)
+                {
+                    Debug.Log("Enter");
+                    inputTextVector = Vector2.zero;
+                    titleButtonManager.ClickCreateDataDecisionButton();
+                }
+                else if (inputTextVector.x == 13 && nameText.GetComponent<TextMeshProUGUI>().text.Length == 0)
+                {
+                    Debug.Log("ì¸óÕÇ≥ÇπÇƒÇ¢Ç‹ÇπÇÒ");
+                }
+                // ñﬂÇÈ
+                else if (inputTextVector.x == -1)
+                {
+                    Debug.Log("Return");
+                    titleButtonManager.ClickCreateDataReturnButton();
+                }
+                // ëSäpîºäpÇïœÇ¶ÇÈ
+                else if (inputTextVector.x == 12 && inputTextVector.y == 0)
+                {
+                    changeSizeFlag = (!changeSizeFlag) ? true : false;
+                    SetCharactersInputText();
+                }
+                enterInputFlag = false;
+            }
+        }
+        else if (inputProgressNum == 1)
+        {
+
         }
     }
 

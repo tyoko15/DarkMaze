@@ -3,6 +3,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using static UnityEditor.Timeline.TimelinePlaybackControls;
 
 public class TitleButtonManager : MonoBehaviour
 {
@@ -24,6 +25,10 @@ public class TitleButtonManager : MonoBehaviour
     [SerializeField] float fadeInDecisionUITimer;
     [SerializeField] float fadeOutDecisionUITime;
     [SerializeField] float fadeOutDecisionUITimer;
+    int inputDirectionNum;
+    bool inputIntervalFlag;
+    [SerializeField] float inputIntervalTime;
+    float inputIntervalTimer;
 
     [Header("コントローラー情報")]
     [SerializeField] bool controllerFlag;
@@ -65,7 +70,7 @@ public class TitleButtonManager : MonoBehaviour
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
         }
-
+        InputSelectControl();
         if (animeFlag == 1) SelectDataDecisionUIAnime(selectDataDecisionUI, true);
         else if(animeFlag == 2) SelectDataDecisionUIAnime(selectDataDecisionUI, false);
         else if(animeFlag == 3) CreateDataDecisionUIAnime(createDataDecisionUI, true);
@@ -178,60 +183,54 @@ public class TitleButtonManager : MonoBehaviour
         }
         else if(titleManager.progressNum == 2)
         {
-            //if (!decisionFlag)
+            if (decisionFlag)
+            {
+                Debug.Log($"決定前");
+                if (oneFlag)
+                {
+                    if (selectNum == 0)
+                    {
+                        EnterCreateDataDecisionUIReturnButton();
+                        if (oldSelectNum == 1) ExitCreateDataDecisionUIDecisionButton();
+                    }
+                    else if (selectNum == 1)
+                    {
+                        EnterCreateDataDecisionUIDecisionButton();
+                        if (oldSelectNum == 0) ExitCreateDataDecisionUIReturnButton();
+                    }
+                    oldSelectNum = selectNum;
+                    oneFlag = false;
+                }
+                if (EnterFlag)
+                {
+                    if (selectNum == 0) ClickCreateDataDecisionUIReturnButton();
+                    else if (selectNum == 1) ClickCreateDataDecisionUIDecisionButton();
+                    selectNum = 0;
+                    oldSelectNum = 1;
+                    EnterFlag = false;
+                    oneFlag = true;
+                }
+            }
+            //if (decisionFlag)
             //{
+            //    Debug.Log($"決定確認");
+
             //    if (oneFlag)
             //    {
             //        if (selectNum == 0)
             //        {
-            //            EnterCreateDataReturnButton();
-            //            if (oldSelectNum == 1) titleManager.nameInputField.DeactivateInputField();
-            //            else if (oldSelectNum == 2) ExitCreateDataDecisionButton();
-            //        }
-            //        else if (selectNum == 1)
-            //        {
-            //            titleManager.nameInputField.ActivateInputField();
-            //            if (oldSelectNum == 0) ExitCreateDataReturnButton();
-            //            else if (oldSelectNum == 2) ExitCreateDataDecisionButton();
-            //        }
-            //        else if (selectNum == 2)
-            //        {
-            //            EnterCreateDataDecisionButton();
-            //            if (oldSelectNum == 0) ExitCreateDataReturnButton();
-            //            else if (oldSelectNum == 1) titleManager.nameInputField.DeactivateInputField();
-            //        }
-            //        oldSelectNum = selectNum;
-            //        oneFlag = false;
-            //    }
-
-            //    if (EnterFlag)
-            //    {
-            //        if (selectNum == 0) ClickCreateDataReturnButton();
-            //        else if (selectNum == 2) ClickCreateDataDecisionButton();
-            //        selectNum = 0;
-            //        oldSelectNum = 1;
-            //        EnterFlag = false;
-            //        oneFlag = true;
-            //    }
-            //}
-            //else
-            //{
-            //    if(oneFlag)
-            //    {
-            //        if (selectNum == 0)
-            //        {
             //            EnterCreateDataDecisionUIReturnButton();
-            //            if (oldSelectNum == 1) ExitCreateDataDecisionUIDecisionButton();
+            //            if (oldSelectNum == 1) ExitCreateDataDecisionButton();
             //        }
             //        else if (selectNum == 1)
             //        {
             //            EnterCreateDataDecisionUIDecisionButton();
-            //            if (oldSelectNum == 0) ExitCreateDataDecisionUIReturnButton();
+            //            if (oldSelectNum == 0) ExitCreateDataReturnButton();
             //        }
             //        oldSelectNum = selectNum;
             //        oneFlag = false;
             //    }
-            //    if(EnterFlag)
+            //    if (EnterFlag)
             //    {
             //        if (selectNum == 0) ClickCreateDataDecisionUIReturnButton();
             //        else if (selectNum == 1) ClickCreateDataDecisionUIDecisionButton();
@@ -503,7 +502,7 @@ public class TitleButtonManager : MonoBehaviour
     public void ClickCreateDataDecisionButton()
     {
         animeFlag = 3;
-        titleManager.createNameText.text = $"プレイヤー名: {titleManager.nameInputField.text}";
+        titleManager.createNameText.text = $"プレイヤー名: {titleManager.nameText.GetComponent<TextMeshProUGUI>().text}";
         //TextAnime(ref createDataUIButtons, 0, false);
     }
     public void ClickCreateDataReturnButton()
@@ -514,7 +513,7 @@ public class TitleButtonManager : MonoBehaviour
         titleManager.fadeFlag = true;
         for (int i = 0; i < selectDataUIButtons.Length; i++) selectDataUIButtons[i].GetComponent<EventTrigger>().enabled = true;
         //TextAnime(ref createDataUIButtons, 1, false);
-        titleManager.nameInputField.text = null;
+        titleManager.nameText.GetComponent<TextMeshProUGUI>().text = null;
     }
     public void ExitCreateDataDecisionButton()
     {
@@ -541,7 +540,7 @@ public class TitleButtonManager : MonoBehaviour
         titleManager.progressNum = 3;
         decisionFlag = false;
         // ステージ選択
-        SceneManager.LoadScene("StageSelect");
+        //SceneManager.LoadScene("StageSelect");
     }
     public void ClickCreateDataDecisionUIReturnButton()
     {
@@ -552,11 +551,67 @@ public class TitleButtonManager : MonoBehaviour
     public void ExitCreateDataDecisionUIDecisionButton()
     {
         TextAnime(ref createDataDecisionUIButtons, 0, false);
-        Debug.Log("a");
     }
     public void ExitCreateDataDecisionUIReturnButton()
     {
         TextAnime(ref createDataDecisionUIButtons, 1, false);
+    }
+
+    public void InputSelectControl()
+    {
+        if (titleManager.progressNum == 2)
+        {
+            if (!decisionFlag)
+            {
+                // New
+                if (inputIntervalFlag)
+                {
+                    if (inputIntervalTimer > inputIntervalTime)
+                    {
+                        inputIntervalTimer = 0;
+                        inputIntervalFlag = false;
+                    }
+                    else if (inputIntervalTimer < inputIntervalTime) inputIntervalTimer += Time.deltaTime;
+                }
+                else if (!inputIntervalFlag)
+                {
+                    if ((inputDirectionNum == 1 || inputDirectionNum == 2) && titleManager.inputTextVector.y == -1)
+                    {
+                        inputDirectionNum = 0;
+                        inputIntervalFlag = true;
+                    }
+                    else if ((inputDirectionNum == 3 || inputDirectionNum == 4) && (titleManager.inputTextVector.x == -1 || titleManager.inputTextVector.x == 13)) 
+                    {
+                        inputDirectionNum = 0;
+                        inputIntervalFlag = true;
+                    }
+                    if (inputDirectionNum == 1)
+                    {
+                        titleManager.inputTextVector.x++;
+                        if (titleManager.inputTextVector.x > 13) titleManager.inputTextVector.x = 13;
+                        inputIntervalFlag = true;
+                    }
+                    else if (inputDirectionNum == 2)
+                    {
+                        titleManager.inputTextVector.x--;
+                        if (titleManager.inputTextVector.x < -1) titleManager.inputTextVector.x = -1;
+                        inputIntervalFlag = true;
+                    }
+                    if (inputDirectionNum == 3)
+                    {
+                        titleManager.inputTextVector.y++;
+                        if (titleManager.inputTextVector.y > 4) titleManager.inputTextVector.y = 4;
+                        inputIntervalFlag = true;
+                    }
+                    else if (inputDirectionNum == 4)
+                    {
+                        titleManager.inputTextVector.y--;
+                        if (titleManager.inputTextVector.y < -1) titleManager.inputTextVector.y = -1;
+                        inputIntervalFlag = true;
+                    }
+                }
+            }
+        }
     }
 
     public void InputSelectNum(InputAction.CallbackContext context)
@@ -616,41 +671,26 @@ public class TitleButtonManager : MonoBehaviour
         {
             if(!decisionFlag)
             {
-            //    // Old
-            //    if (context.started && context.ReadValue<Vector2>().x > 0)
-            //    {
-            //        selectNum++;
-            //        if (selectNum > 2) selectNum = 0;
-            //        oneFlag = true;
-            //    }
-            //    else if (context.started && context.ReadValue<Vector2>().x < 0)
-            //    {
-            //        selectNum--;
-            //        if (selectNum < 0) selectNum = 2;
-            //        oneFlag = true;
-            //    }
+                // Old
+                //if (context.started && context.ReadValue<Vector2>().x > 0)
+                //{
+                //    selectNum++;
+                //    if (selectNum > 2) selectNum = 0;
+                //    oneFlag = true;
+                //}
+                //else if (context.started && context.ReadValue<Vector2>().x < 0)
+                //{
+                //    selectNum--;
+                //    if (selectNum < 0) selectNum = 2;
+                //    oneFlag = true;
+                //}
 
                 // New
-                if (context.started && context.ReadValue<Vector2>().x > 0)
-                {
-                    titleManager.inputTextVector.x++;
-                    if (titleManager.inputTextVector.x > 12) titleManager.inputTextVector.x = 12;
-                }
-                else if (context.started && context.ReadValue<Vector2>().x < 0)
-                {
-                    titleManager.inputTextVector.x--;
-                    if (titleManager.inputTextVector.x < 0) titleManager.inputTextVector.x = 0;
-                }
-                if (context.started && context.ReadValue<Vector2>().y < 0)
-                {
-                    titleManager.inputTextVector.y++;
-                    if (titleManager.inputTextVector.y > 4) titleManager.inputTextVector.y = 4;
-                }
-                else if (context.started && context.ReadValue<Vector2>().y > 0)
-                {
-                    titleManager.inputTextVector.y--;
-                    if (titleManager.inputTextVector.y < -1) titleManager.inputTextVector.y = -1;
-                }
+                if (context.ReadValue<Vector2>().x > 0) inputDirectionNum = 1;
+                else if (context.ReadValue<Vector2>().x < 0) inputDirectionNum = 2;
+                if (context.ReadValue<Vector2>().y < 0) inputDirectionNum = 3;
+                else if (context.ReadValue<Vector2>().y > 0) inputDirectionNum = 4;
+                if (context.canceled) inputDirectionNum = 0;               
             }
             else
             {
@@ -677,7 +717,8 @@ public class TitleButtonManager : MonoBehaviour
         }
         else if (titleManager.progressNum == 2)
         {
-            if (context.started) titleManager.enterInputFlag = true;
+            if (context.started && !decisionFlag) titleManager.enterInputFlag = true;
+            if (context.started && decisionFlag) EnterFlag = true;
         }
     }
 }

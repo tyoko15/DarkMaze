@@ -93,7 +93,6 @@ public class NewStageSelectManager : MonoBehaviour
         if (totalClearNum > 14) totalClearNum = 14;
         if (dataManager)
         {
-            Debug.Log("a");
             selectNum = dataManager.data[dataManager.useDataNum].selectStageNum;
             selectFieldNum = selectNum / 5 + 1;
             selectStageNum = selectNum % 5 + 1;
