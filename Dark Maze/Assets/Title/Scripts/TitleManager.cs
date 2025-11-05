@@ -153,7 +153,7 @@ public class TitleManager : MonoBehaviour
     {
         string name = nameText.GetComponent<TextMeshProUGUI>().text;
         dataManager.SaveData(selectDataNum, name, 0, 0);
-        nameText.GetComponent<TextMeshProUGUI>().text = null;
+        nameText.GetComponent<TextMeshProUGUI>().text = "";
     }
 
     void GetInputText()

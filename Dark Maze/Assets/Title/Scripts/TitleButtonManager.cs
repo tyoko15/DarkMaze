@@ -513,7 +513,7 @@ public class TitleButtonManager : MonoBehaviour
         titleManager.fadeFlag = true;
         for (int i = 0; i < selectDataUIButtons.Length; i++) selectDataUIButtons[i].GetComponent<EventTrigger>().enabled = true;
         //TextAnime(ref createDataUIButtons, 1, false);
-        titleManager.nameText.GetComponent<TextMeshProUGUI>().text = null;
+        titleManager.nameText.GetComponent<TextMeshProUGUI>().text = "";
     }
     public void ExitCreateDataDecisionButton()
     {
