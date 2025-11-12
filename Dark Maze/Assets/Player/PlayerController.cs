@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
-
 public class PlayerController : MonoBehaviour
 {
     // 0.start 1.play 2.stop 3.over 4.clear
@@ -137,7 +136,8 @@ public class PlayerController : MonoBehaviour
                 CameraControl();
                 PlayerAttackControl();
                 if (arrowAnimeFlag) ArrowAnime();
-                animator.speed = 1f;
+                if (onLight != 1) animator.speed = 1f;
+                else if (onLight == 1) animator.speed = 0.5f;
                 break;
             case 2: // stop
                 PlayerAttackControl();
@@ -226,7 +226,7 @@ public class PlayerController : MonoBehaviour
             else
             {
                 Vector3 playerPosition = playerObject.transform.position;
-                if (onLight == 1) playerPosition += new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime) * 0.1f;
+                if (onLight == 1) playerPosition += new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime) * 0.1f;                
                 else playerPosition += new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime);
                 playerObject.transform.position = playerPosition;
                 // Animation
@@ -284,13 +284,18 @@ public class PlayerController : MonoBehaviour
                 damageTimer = 0;
                 damageFlag = false;
                 farstDamageFlag = false;
-                animator.SetBool("Damage", false);
             }
             else if (damageTimer < damageTime)
             {
                 float v = Mathf.Lerp(beforeHP, afterHP, damageTimer / damageTime);
                 v = Mathf.InverseLerp(0f, maxPlayerHp, v);
                 playerDamageGauge.fillAmount = v;
+            }
+
+            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
+            if (stateInfo.IsName("Damage") && stateInfo.normalizedTime >= 1.0f)
+            {
+                animator.SetBool("Damage", false);
             }
         }
         else if (recoveryFlag)
@@ -391,6 +396,7 @@ public class PlayerController : MonoBehaviour
             playerLight.spotAngle = 0;
         }
         playerLight.spotAngle = playerLightRange;
+        playerLight.innerSpotAngle = playerLightRange;
         
         float normalized = Mathf.InverseLerp(30f, 180f, playerLightRange);        
         lightGauge.fillAmount = normalized;

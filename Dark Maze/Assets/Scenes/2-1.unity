@@ -183,6 +183,18 @@ PrefabInstance:
       propertyPath: 'respawnPositions.Array.data[3]'
       value: 
       objectReference: {fileID: 1014136577}
+    - target: {fileID: 5974960092551672101, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
+      propertyPath: m_Type
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5974960092551672101, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
+      propertyPath: m_Intensity
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 5974960092551672101, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
+      propertyPath: m_Lightmapping
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 9212233892112901566, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -1111,6 +1123,7 @@ MonoBehaviour:
   clearFlag: 0
   enterFlag: 0
   menuSelectNum: 0
+  clearAnimeTime: 2.5
 --- !u!114 &430325512
 MonoBehaviour:
   m_ObjectHideFlags: 0
