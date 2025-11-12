@@ -11,6 +11,7 @@ public class PlayerController : MonoBehaviour
 
     [Header("プレイヤーの基本情報")]
     [SerializeField] GameObject playerObject;
+    [SerializeField] Animator animator;
     [SerializeField] Rigidbody rb;
     [SerializeField] Vector3 gravity;
     [SerializeField] float playerHorizontal;
@@ -136,15 +137,20 @@ public class PlayerController : MonoBehaviour
                 CameraControl();
                 PlayerAttackControl();
                 if (arrowAnimeFlag) ArrowAnime();
+                animator.speed = 1f;
                 break;
             case 2: // stop
                 PlayerAttackControl();
+                animator.speed = 0f;
                 break;
             case 3: // menu
+                animator.speed = 0f;
                 break;
             case 4: // over
+                animator.SetBool("Dead", true);
                 break;
             case 5: // clear
+                animator.SetBool("Clear", true);
                 break;
         }
         PlayerItemSelectControl();                 
@@ -223,6 +229,17 @@ public class PlayerController : MonoBehaviour
                 if (onLight == 1) playerPosition += new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime) * 0.1f;
                 else playerPosition += new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime);
                 playerObject.transform.position = playerPosition;
+                // Animation
+                if (playerHorizontal != 0f || playerVertical != 0f)
+                {
+                    animator.SetBool("Idle", false);
+                    animator.SetBool("Move", true);
+                }
+                else if (playerHorizontal == 0f && playerVertical == 0f)
+                {
+                    animator.SetBool("Move", false);
+                    animator.SetBool("Idle", true);
+                }
             }
             //進む方向に滑らかに向く。
             transform.forward = Vector3.Slerp(transform.forward, new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime), Time.deltaTime * 10f);
@@ -257,6 +274,7 @@ public class PlayerController : MonoBehaviour
                 float v = Mathf.InverseLerp(0f, maxPlayerHp, afterHP);
                 playerHpGauge.fillAmount = v;
                 playerHpText.text = $"HP : {afterHP} / {maxPlayerHp}";
+                animator.SetBool("Damage", true);
             }
             if (damageTimer > damageTime)
             {
@@ -266,6 +284,7 @@ public class PlayerController : MonoBehaviour
                 damageTimer = 0;
                 damageFlag = false;
                 farstDamageFlag = false;
+                animator.SetBool("Damage", false);
             }
             else if (damageTimer < damageTime)
             {
@@ -382,20 +401,25 @@ public class PlayerController : MonoBehaviour
         if (attackFlag)
         {
             if (attackTimer == 0) sword.SetActive(true);
-            if(attackTimer > attackTime)
+            if (attackTimer > attackTime)
             {
                 attackTimer = 0;
                 sword.SetActive(false);
                 attackFlag = false;
             }
-            else if(attackTimer < attackTime)
+            else if (attackTimer < attackTime)
             {
                 attackTimer += Time.deltaTime;
                 float y = Mathf.Lerp(playerObject.transform.eulerAngles.y - 45f, playerObject.transform.eulerAngles.y + 45f, attackTimer / attackTime);
                 sword.transform.rotation = Quaternion.Euler(0f, y, 0f);
             }
+            animator.SetBool("Attack", true);
         }
-        else sword.SetActive(false);
+        else
+        {
+            sword.SetActive(false);
+            animator.SetBool("Attack", false);
+        }
     }
     void PlayerItemSelectControl()
     {

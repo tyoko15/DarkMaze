@@ -39,12 +39,15 @@ public class Enemy1 : MonoBehaviour
                 break;
             case GameStatus.play: // play
                 EnemyControl();
+                animator.speed = 1f;
                 break;
             case GameStatus.stop: // stop
                 agent.isStopped = true;
+                animator.speed = 0f;
                 break;
             case GameStatus.menu: // menu
                 agent.isStopped = true;
+                animator.speed = 0f; 
                 break;
             case GameStatus.over: // over
                 agent.isStopped = true;

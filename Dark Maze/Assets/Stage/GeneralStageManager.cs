@@ -1,6 +1,7 @@
 using JetBrains.Annotations;
 using TMPro;
 using Unity.AI.Navigation;
+using UnityEditor.Rendering;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
@@ -85,6 +86,9 @@ public class GeneralStageManager : MonoBehaviour
     [SerializeField] public bool clearFlag;
     [SerializeField] public bool enterFlag;
     [SerializeField] public int menuSelectNum;
+    bool clearAnimeFlag;
+    [SerializeField] public float clearAnimeTime = 2.5f;
+    float clearAnimeTimer;
 
     void Start()
     {
@@ -154,7 +158,7 @@ public class GeneralStageManager : MonoBehaviour
             if (fadeManager.fadeIntervalFlag && fadeManager.endFlag) fadeFlag = false;
             fadeManager.FadeControl();
         }
-        else
+        else if (!fadeFlag && clearAnimeFlag)
         {
             if (GameObject.Find("DataManager") != null)
             {
@@ -166,14 +170,26 @@ public class GeneralStageManager : MonoBehaviour
             }
             SceneManager.LoadScene("StageSelect");
         }
+        else if (!fadeFlag && !clearAnimeFlag)
+        {
+            if (clearAnimeTimer > clearAnimeTime)
+            {
+                clearAnimeTimer = 0f;
+                clearAnimeFlag = true;
+                fadeFlag = true;
+                fadeManager.fadeInFlag = true;
+            }
+            else if (clearAnimeTimer < clearAnimeTime)
+            {
+                clearAnimeTimer += Time.deltaTime;
+            }
+        }
     }
 
     public void Goal()
     {
         if (goalObject.GetComponent<GoalManager>().isGoalFlag)
         {
-            fadeFlag = true;
-            fadeManager.fadeInFlag = true;
             status = GameStatus.clear;
         }
     }
