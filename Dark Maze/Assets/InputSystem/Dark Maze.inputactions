@@ -72,7 +72,7 @@
                     "name": "ItemSelectButton",
                     "type": "Button",
                     "id": "65f54ca5-53c9-4055-b117-35647ecd0248",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -677,7 +677,7 @@
                 {
                     "name": "",
                     "id": "b93f4e9a-e82a-48fd-99e7-b3f49c86ea95",
-                    "path": "<Gamepad>/rightStick",
+                    "path": "<Gamepad>/leftStick",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
