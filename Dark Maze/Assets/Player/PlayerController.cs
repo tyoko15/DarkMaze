@@ -345,6 +345,7 @@ public class PlayerController : MonoBehaviour
     }
     void PlayerLightControl()
     {
+        float propotrion = Mathf.InverseLerp(30f, 180f, playerLightRange);
         // ç≈ägëÂÇµÇΩç€ÅAÉCÉìÉ^Å[ÉoÉãèIóπéû
         if (onLight == 2 && lightMaxIntervalTimer > lightMaxIntervalTime)
         {
@@ -361,8 +362,8 @@ public class PlayerController : MonoBehaviour
             float normal = Mathf.InverseLerp(lightMaxIntervalTime, 0f, lightMaxIntervalTimer);
             lightMaxIntervalTimerGauge.fillAmount = normal;
         }
-            // ç≈ägëÂ
-            if (onLight == 1 && playerLightRange == 180f)
+        // ç≈ägëÂ
+        if (onLight == 1 && playerLightRange == 180f)
         {
             playerLightRange = 180f;
             lightSpreadTimer = 0;
@@ -381,7 +382,10 @@ public class PlayerController : MonoBehaviour
         // ägëÂíÜ
         else if (onLight == 1 && playerLightRange < 180f)
         {
-            lightSpreadTimer += Time.deltaTime;
+            // ÉâÉCÉgägëÂéûÇÃââèoïîï™
+            if (propotrion < 0.2f) lightSpreadTimer += Time.deltaTime * 10f;
+            else if (propotrion < 0.4f) lightSpreadTimer += Time.deltaTime;
+            else lightSpreadTimer += Time.deltaTime * 0.5f;
             playerLightRange = Mathf.Lerp(30f, 180f, lightSpreadTimer / lightSpreadTime);
             lightMaxIntervalTimerGauge.enabled = true;
             float nor = Mathf.InverseLerp(30f, 180f, playerLightRange);
@@ -415,7 +419,14 @@ public class PlayerController : MonoBehaviour
             }
             else if (attackTimer < attackTime)
             {
-                attackTimer += Time.deltaTime;
+                float attackPropotion = Mathf.InverseLerp(0f, attackTime, attackTimer);
+                if (attackPropotion < 0.2f) attackTimer += Time.deltaTime * 0.5f;
+                else if (attackPropotion < 0.5f) attackTimer += Time.deltaTime;
+                else attackTimer += Time.deltaTime;
+
+                if (attackPropotion < 0.2f) animator.speed = 0.5f;
+                else if (attackPropotion < 0.5f) animator.speed = 1f;
+                else animator.speed = 1.5f;
                 float y = Mathf.Lerp(playerObject.transform.eulerAngles.y - 45f, playerObject.transform.eulerAngles.y + 45f, attackTimer / attackTime);
                 sword.transform.rotation = Quaternion.Euler(0f, y, 0f);
             }
