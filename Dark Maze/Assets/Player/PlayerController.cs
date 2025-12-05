@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
+using UnityEditor.Animations;
 public class PlayerController : MonoBehaviour
 {
     // 0.start 1.play 2.stop 3.over 4.clear
@@ -424,9 +425,9 @@ public class PlayerController : MonoBehaviour
                 else if (attackPropotion < 0.5f) attackTimer += Time.deltaTime;
                 else attackTimer += Time.deltaTime;
 
-                if (attackPropotion < 0.2f) animator.speed = 0.5f;
-                else if (attackPropotion < 0.5f) animator.speed = 1f;
-                else animator.speed = 1.5f;
+                if (attackPropotion < 0.3f) animator.speed = 0.1f;
+                //else animator.speed = 2f;
+                Debug.Log(animator.speed);
                 float y = Mathf.Lerp(playerObject.transform.eulerAngles.y - 45f, playerObject.transform.eulerAngles.y + 45f, attackTimer / attackTime);
                 sword.transform.rotation = Quaternion.Euler(0f, y, 0f);
             }
