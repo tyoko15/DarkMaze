@@ -48,13 +48,22 @@ public class DataManager : MonoBehaviour
         {
             string json = File.ReadAllText(filePath[dataNum]);
             data[dataNum] = JsonUtility.FromJson<Data>(json);
-            name = data[dataNum].playerName;
-            stage = data[dataNum].clearStageNum;
-            selectNum = data[dataNum].selectStageNum;
+            if (data[dataNum] != null)
+            {
+                //name = data[dataNum].playerName;
+                //stage = data[dataNum].clearStageNum;
+                //selectNum = data[dataNum].selectStageNum;
+            }
+            else
+            {
+                Debug.Log("このデータは存在しません。");
+                SaveData(dataNum, "", 0, 0);
+            }
         }
         else
         {
             Debug.Log("このデータは存在しません。");
+            SaveData(dataNum, "", 0, 0);
         }
     }
 
