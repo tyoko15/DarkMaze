@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Rendering;
 using static GeneralStageManager;
 
 public class Enemy1 : MonoBehaviour

@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: f0d06a4908cc67146afdbe4b89e7b63e
+guid: 16d35f557d44a514d985291d2d1b9c7e
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -39,8 +39,8 @@ ModelImporter:
       name: Attack
       takeName: Take 001
       internalID: 1827226128182048838
-      firstFrame: 37
-      lastFrame: 38
+      firstFrame: 36
+      lastFrame: 36
       wrapMode: 0
       orientationOffsetY: 0
       level: 0
