@@ -8,6 +8,7 @@ public class TitleButtonManager : MonoBehaviour
     [Header("スクリプトの取得")]
     [SerializeField] TitleManager titleManager;
     [SerializeField] DataManager dataManager;
+    [SerializeField] FadeManager fadeManager;
     [Header("Buttonの取得")]
     [SerializeField] GameObject[] titleUIButtons;
     [SerializeField] GameObject[] selectDataUIButtons;
@@ -51,6 +52,7 @@ public class TitleButtonManager : MonoBehaviour
             controllerFlag = false;
             Cursor.visible = true;
         }
+        fadeManager = GameObject.Find("FadeManager").GetComponent<FadeManager>();
     }
     void Update()
     {
@@ -257,12 +259,16 @@ public class TitleButtonManager : MonoBehaviour
     public void EnterStartButton()
     {
         titleManager.enterTitleUINum = 1;
-        TextAnime(ref titleUIButtons, 0, true);
+        titleUIButtons[0].SetActive(true);
+        titleUIButtons[1].SetActive(false);
+        //TextAnime(ref titleUIButtons, 0, true);
     }
     public void EnterEndButton()
     {
         titleManager.enterTitleUINum = 2;
-        TextAnime(ref titleUIButtons, 1, true);
+        titleUIButtons[0].SetActive(false);
+        titleUIButtons[1].SetActive(true);
+        //TextAnime(ref titleUIButtons, 1, true);
     }
     public void ClickStartButton()
     {
@@ -274,19 +280,16 @@ public class TitleButtonManager : MonoBehaviour
     }
     public void ClickEndButton()
     {
-#if UNITY_EDITOR
-        UnityEditor.EditorApplication.isPlaying = false;//ゲームプレイ終了
-#else
-    Application.Quit();//ゲームプレイ終了
-#endif
+        fadeManager.finishFlag = true;
+        fadeManager.fadeInFlag = true;
     }
     public void ExitStartButton()
     {
-        TextAnime(ref titleUIButtons, 0, false);
+        //TextAnime(ref titleUIButtons, 0, false);
     }
     public void ExitEndButton()
     {
-        TextAnime(ref titleUIButtons, 1, false);
+        //TextAnime(ref titleUIButtons, 1, false);
     }
 
     // SelectDataUI

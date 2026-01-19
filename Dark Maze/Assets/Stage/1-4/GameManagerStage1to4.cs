@@ -1,5 +1,3 @@
-using UnityEngine;
-using UnityEngine.SceneManagement;
 public class GameManagerStage1to4 : GeneralStageManager
 {
     bool bothflag = true;

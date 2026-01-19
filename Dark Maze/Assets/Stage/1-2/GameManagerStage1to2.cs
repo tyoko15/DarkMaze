@@ -1,5 +1,3 @@
-using UnityEngine;
-using UnityEngine.SceneManagement;
 public class GameManagerStage1to2 : GeneralStageManager
 {
     void Start()
