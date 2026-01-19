@@ -48,8 +48,8 @@ public class GameManagerStage2to4 : GeneralStageManager
     {
         if (enemys[0].transform.childCount == 0 && defeatGateFlag[0])
         {
-            PreActiveLight(areaLightObjects[0], 2, 0, false, ref defeatGateFlag[0]);
-            PreGate(gateObjects[0], lightObjects[0], cameraPointObjects[0], true, 2, 0, true, ref defeatGateFlag[0]);
+            ActiveLight(areaLightObjects[0], 2, 0, false, ref defeatGateFlag[0]);
+            Gate(gateObjects[0], lightObjects[0], cameraPointObjects[0], true, 2, 0, true, ref defeatGateFlag[0]);
         }
     }
     // 
@@ -58,9 +58,9 @@ public class GameManagerStage2to4 : GeneralStageManager
         //if (enterArea[2].enterAreaFlag) PreGate(gateObjects[0], lightObjects[1], cameraPointObjects[1], false, 2, 2, true, ref enterArea[2].enterAreaFlag);
         if (enemys[2].transform.childCount == 0 && defeatGateFlag[2])
         {
-            PreActiveLight(areaLightObjects[2], 2, 2, false, ref defeatGateFlag[2]);
-            PreGate(gateObjects[1], lightObjects[1], null, true, 2, 1, false, ref defeatGateFlag[2]);
-            PreGate(gateObjects[2], lightObjects[2], cameraPointObjects[2], true, 2, 2, true, ref defeatGateFlag[2]);
+            ActiveLight(areaLightObjects[2], 2, 2, false, ref defeatGateFlag[2]);
+            Gate(gateObjects[1], lightObjects[1], null, true, 2, 1, false, ref defeatGateFlag[2]);
+            Gate(gateObjects[2], lightObjects[2], cameraPointObjects[2], true, 2, 2, true, ref defeatGateFlag[2]);
         }
     }
     // 
@@ -69,11 +69,11 @@ public class GameManagerStage2to4 : GeneralStageManager
         //if (enterArea[3].enterAreaFlag) PreGate(gateObjects[2], lightObjects[1], cameraPointObjects[3], false, 2, 2, true, ref enterArea[3].enterAreaFlag);
         if (enemys[3].transform.childCount == 0 && defeatGateFlag[3])
         {
-            PreActiveLight(areaLightObjects[3], 2, 3, false, ref defeatGateFlag[3]);
-            PreGate(gateObjects[2], lightObjects[2], null, true, 2, 2, false, ref defeatGateFlag[3]);
-            PreGate(gateObjects[3], null, null, true, 2, 3, false, ref defeatGateFlag[3]);
-            PreGate(gateObjects[4], null, null, true, 2, 4, false, ref defeatGateFlag[3]);
-            PreGate(gateObjects[5], lightObjects[2], cameraPointObjects[4], true, 2, 5, true, ref defeatGateFlag[3]);
+            ActiveLight(areaLightObjects[3], 2, 3, false, ref defeatGateFlag[3]);
+            Gate(gateObjects[2], lightObjects[2], null, true, 2, 2, false, ref defeatGateFlag[3]);
+            Gate(gateObjects[3], null, null, true, 2, 3, false, ref defeatGateFlag[3]);
+            Gate(gateObjects[4], null, null, true, 2, 4, false, ref defeatGateFlag[3]);
+            Gate(gateObjects[5], lightObjects[2], cameraPointObjects[4], true, 2, 5, true, ref defeatGateFlag[3]);
         }
     }
     // 
@@ -81,17 +81,17 @@ public class GameManagerStage2to4 : GeneralStageManager
     {
         if (enterArea[1].enterAreaFlag)
         {
-            PreGate(gateObjects[4], null, null, false, 2, 4, false, ref enterArea[1].enterAreaFlag);
-            PreGate(gateObjects[5], lightObjects[2], cameraPointObjects[5], false, 2, 5, true, ref enterArea[1].enterAreaFlag);
+            Gate(gateObjects[4], null, null, false, 2, 4, false, ref enterArea[1].enterAreaFlag);
+            Gate(gateObjects[5], lightObjects[2], cameraPointObjects[5], false, 2, 5, true, ref enterArea[1].enterAreaFlag);
         }
         if (enemys[1].transform.childCount == 0 && defeatGateFlag[1])
         {
-            PreActiveLight(areaLightObjects[1], 2, 1, false, ref defeatGateFlag[1]);
-            PreGate(gateObjects[4], null, null, true, 2, 4, false, ref defeatGateFlag[1]);
-            PreGate(gateObjects[5], lightObjects[2], null, true, 2, 5, false, ref defeatGateFlag[1]);
-            PreGate(gateObjects[6], null, null, true, 2, 6, false, ref defeatGateFlag[1]);
-            PreActiveObject(buttonObjects[0], lightObjects[3], cameraPointObjects[6], 2, 0, true, ref defeatGateFlag[1]);
+            ActiveLight(areaLightObjects[1], 2, 1, false, ref defeatGateFlag[1]);
+            Gate(gateObjects[4], null, null, true, 2, 4, false, ref defeatGateFlag[1]);
+            Gate(gateObjects[5], lightObjects[2], null, true, 2, 5, false, ref defeatGateFlag[1]);
+            Gate(gateObjects[6], null, null, true, 2, 6, false, ref defeatGateFlag[1]);
+            ActiveObject(buttonObjects[0], lightObjects[3], cameraPointObjects[6], 2, 0, true, ref defeatGateFlag[1]);
         }
-        if (buttonObjects[0].GetComponent<ButtonManager>().buttonFlag) PreAreaRotation(areas[1], null, cameraPointObjects[7], -1, 180, 2, 0, true, ref buttonObjects[0].GetComponent<ButtonManager>().buttonFlag);
+        if (buttonObjects[0].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[1], null, cameraPointObjects[7], -1, 180, 2, 0, true, ref buttonObjects[0].GetComponent<ButtonManager>().buttonFlag);
     }
 }

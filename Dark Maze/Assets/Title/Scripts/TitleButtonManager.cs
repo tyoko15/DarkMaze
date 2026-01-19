@@ -30,7 +30,6 @@ public class TitleButtonManager : MonoBehaviour
     float inputIntervalTimer;
 
     [Header("コントローラー情報")]
-    [SerializeField] bool controllerFlag;
     [SerializeField] int selectNum;
     int oldSelectNum;
     //[SerializeField] int progressNum;
@@ -42,14 +41,12 @@ public class TitleButtonManager : MonoBehaviour
         var controllers = Input.GetJoystickNames();
         if (controllers != null)
         {
-            controllerFlag = true;
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
             ControllerSelect();
         }
         else if (controllers == null)
         {
-            controllerFlag = false;
             Cursor.visible = true;
         }
         fadeManager = GameObject.Find("FadeManager").GetComponent<FadeManager>();
@@ -59,14 +56,12 @@ public class TitleButtonManager : MonoBehaviour
         var controllers = Input.GetJoystickNames();
         if (controllers != null)
         {
-            controllerFlag = true;
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
             ControllerSelect();
         }
         else if (controllers == null)
         {
-            controllerFlag = false; 
             Cursor.visible = true;
             Cursor.lockState = CursorLockMode.None;
         }
