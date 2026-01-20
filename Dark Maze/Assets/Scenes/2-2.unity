@@ -249,7 +249,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8838186623103947431, guid: efb489548e4ac394fa73a7f2bf9910aa, type: 3}
       propertyPath: m_SpotAngle
-      value: 90
+      value: 60
+      objectReference: {fileID: 0}
+    - target: {fileID: 8838186623103947431, guid: efb489548e4ac394fa73a7f2bf9910aa, type: 3}
+      propertyPath: m_InnerSpotAngle
+      value: 60
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1354,6 +1358,7 @@ MonoBehaviour:
   clearFlag: 0
   enterFlag: 0
   menuSelectNum: 0
+  clearAnimeTime: 2.5
 --- !u!1 &749232580 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 7649603439645047688, guid: 2d50fb5523c9ffa4c91bec75829a2ecd, type: 3}

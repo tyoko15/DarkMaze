@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
-using UnityEditor.Animations;
 public class PlayerController : MonoBehaviour
 {
     // 0.start 1.play 2.stop 3.over 4.clear
@@ -165,14 +164,14 @@ public class PlayerController : MonoBehaviour
         Ray ray = new Ray(playerObject.transform.position, -playerObject.transform.up);
         RaycastHit hit;
         // éŒñ ÇÃèÍçáèdóÕÇâ∫Ç∞ÇÈ
-        if (Physics.Raycast(ray, out hit, 0.01f))
+        if (Physics.Raycast(ray, out hit, 0.05f))
         {
             if (playerObject.transform.position.y < 1.9f)
             {
-                if (hit.normal.y < 0.8f) gravity.y = -3f;
-                else gravity.y = -10f;
+                if (hit.normal.y < 0.75f) gravity.y = -3f;
+                else gravity.y = -30f;
             }
-            else gravity.y = -10f;
+            else gravity.y = -30f;
         }
         for (int i = 0; i < playerObject.transform.parent.childCount; i++)
         {

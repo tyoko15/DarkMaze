@@ -163,7 +163,7 @@ public class NewStageSelectManager : MonoBehaviour
         if (startFadeFlag || endFadeFlag) fadeManager.FadeControl();
         SelectControl();
 
-        CloudControl();
+        //CloudControl();
     }
 
     void GetStageObject()
@@ -238,6 +238,8 @@ public class NewStageSelectManager : MonoBehaviour
                 if (selectNum > totalClearNum)
                 {
                     selectNum = totalClearNum;
+                    selectFieldNum = selectNum / 5;
+                    selectStageNum = selectNum % 5;
                     changeStageFlag = false;
                     selectMoveFlag = false;
                 }
@@ -340,9 +342,11 @@ public class NewStageSelectManager : MonoBehaviour
 
     void WindowControl()
     {
+        /*
         int selectClearStageNum = 0;
-        if (selectFieldNum == 1) selectClearStageNum = totalClearNum;
-        else if (selectFieldNum > 1) selectClearStageNum = totalClearNum - clearFieldNum * 5;
+        //if (selectFieldNum == 1) selectClearStageNum = totalClearNum;
+        //else if (selectFieldNum > 1) selectClearStageNum = totalClearNum - selectFieldNum * 5;
+        selectClearStageNum = totalClearNum - selectFieldNum * 5 + selectStageNum;
         // ClearWindowÇÃê›íË
         windowImages[2].GetComponent<RectTransform>().sizeDelta = new Vector2(600f, 200f * selectClearStageNum);
         float y = windowImages[2].GetComponent<RectTransform>().sizeDelta.y / 2;
@@ -354,16 +358,36 @@ public class NewStageSelectManager : MonoBehaviour
         windowImages[0].GetComponent<RectTransform>().sizeDelta = new Vector2(600f, (5 - selectClearStageNum) * 200f);
         y += 100f + ((5 - selectClearStageNum) * 200f / 2);
         windowImages[0].GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
+        */
+        // êVÇµÇ¢
+
+        if (selectFieldNum -1 == clearFieldNum)
+        {
+            int nowStageNum = clearStageNum;
+            windowImages[2].GetComponent<RectTransform>().sizeDelta = new Vector2(600f, 200f * nowStageNum);
+            float y = windowImages[2].GetComponent<RectTransform>().sizeDelta.y / 2;
+            windowImages[2].GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
+            y = y * 2 + 100f; 
+            windowImages[1].GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
+            windowImages[0].GetComponent<RectTransform>().sizeDelta = new Vector2(600f, (5 - nowStageNum) * 200f);
+            y += 100f + ((5 - nowStageNum) * 200f / 2);
+            windowImages[0].GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
+        }
+        else
+        {
+            windowImages[2].GetComponent<RectTransform>().sizeDelta = new Vector2(600f, 1200f);
+            windowImages[2].GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, 600f);
+        }
     }
 
     void CloudControl()
     {
         if (changeStageFlag && !cloudFlag)
         {
-
             float y = 0f;
             if (cloudUpFlag) y = Mathf.Lerp(550f, 1550f, changeStageTimer / changeStageTime);
             else if (cloudDownFlag) y = Mathf.Lerp(1550f, 550f, changeStageTimer / changeStageTime);
+            else y = 550f;
             Color cloudColor = Color.white;
             cloudColor.a = 1f;
             for (int i = 0; i < 3; i++)
@@ -372,7 +396,6 @@ public class NewStageSelectManager : MonoBehaviour
                 cloudImages[i].SetActive(true);
                 cloudImages[i].GetComponent<Image>().color = cloudColor;
             }
-
             cloudImages[0].GetComponent<RectTransform>().anchoredPosition = new Vector2(250f, y);
             cloudImages[1].GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
             cloudImages[2].GetComponent<RectTransform>().anchoredPosition = new Vector2(-250f, y);

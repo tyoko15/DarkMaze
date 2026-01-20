@@ -193,6 +193,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: LightObject (0)
       objectReference: {fileID: 0}
+    - target: {fileID: 1723908839177016072, guid: efb489548e4ac394fa73a7f2bf9910aa, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4799740525992682507, guid: efb489548e4ac394fa73a7f2bf9910aa, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -239,7 +243,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8838186623103947431, guid: efb489548e4ac394fa73a7f2bf9910aa, type: 3}
       propertyPath: m_InnerSpotAngle
-      value: 1
+      value: 179
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
