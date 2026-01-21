@@ -2,23 +2,43 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
+/// <summary>
+/// ステージ選択画面全体を管理するクラス
+/// ・入力制御
+/// ・ステージカーソル移動
+/// ・解放済みステージの表示
+/// ・フェード演出
+/// ・シーン遷移
+/// を一括で制御する
+/// </summary>
 public class NewStageSelectManager : MonoBehaviour
 {
     [SerializeField] DataManager dataManager;
+
+    // ==============================
+    // Input関連
+    // ==============================
     [Header("Input関連")]
     [SerializeField] PlayerInput playerInput;
-    InputAction selectAction;
-    InputAction enterAciton;
+    InputAction selectAction;   // 移動入力
+    InputAction enterAciton;    // 決定入力
+
+    // ==============================
+    // StageImage関連
+    // ==============================
     [Header("StageImage関連")]
-    [SerializeField] GameObject stageGroup;
-    GameObject[] stageImageObjects;
-    [SerializeField] GameObject selectObject;
-    [SerializeField] GameObject returnButton;
-    [SerializeField] GameObject stageNameText;
-    [SerializeField] GameObject[] windowImages;     // 0.still 1.now 2.clear
-    [SerializeField] GameObject[] cloudImages;
+    [SerializeField] GameObject stageGroup;          // ステージ画像の親
+    GameObject[] stageImageObjects;                  // 各ステージ画像
+    [SerializeField] GameObject selectObject;        // 選択カーソル
+    [SerializeField] GameObject returnButton;        // 戻るボタン
+    [SerializeField] GameObject stageNameText;       // ステージ名表示
+    [SerializeField] GameObject[] windowImages;      // 0:未到達 1:現在 2:クリア 3:遷移用
+    [SerializeField] GameObject[] cloudImages;       // 雲演出用
+
+    // ==============================
+    // Fade関連
+    // ==============================
     [Header("Fade関連")]
     [SerializeField] GameObject fadeManagerObject;
     FadeManager fadeManager;
@@ -26,16 +46,21 @@ public class NewStageSelectManager : MonoBehaviour
     bool startFadeFlag;
     bool endFadeFlag;
 
-
+    // ==============================
+    // クリア情報
+    // ==============================
     [SerializeField] int totalClearNum;
     [SerializeField] int clearFieldNum;
     [SerializeField] int clearStageNum;
 
+    // ==============================
+    // 選択・移動パラメータ
+    // ==============================
     [Header("動きのパラメーター")]
-    [SerializeField] bool selectReturnFlag;
-    [SerializeField] int selectFieldNum;
-    [SerializeField] int selectStageNum;
-    [SerializeField] int selectNum;
+    [SerializeField] bool selectReturnFlag;   // 戻るボタン選択中か
+    [SerializeField] int selectFieldNum;      // 現在のフィールド番号
+    [SerializeField] int selectStageNum;      // 現在のステージ番号
+    [SerializeField] int selectNum;            // 全体通し番号
     [SerializeField] float selectMoveTime;
     float selectMoveTimer;
     bool changeStageFlag;
@@ -50,20 +75,31 @@ public class NewStageSelectManager : MonoBehaviour
 
     bool enterFlag;
 
+    // ==============================
+    // 雲演出
+    // ==============================
     public bool cloudFlag;
     [SerializeField] float cloudOpenTime;
     float cloudOpenTimer;
     bool cloudDownFlag;
     bool cloudUpFlag;
 
-
+    // ==============================
+    // 初期化
+    // ==============================
     void Start()
     {
+        // ステージ画像を配列に格納
         GetStageObject();
+
+        // 選択カーソルを少し拡大
         selectObject.transform.GetChild(0).GetComponent<RectTransform>().localScale *= 1.2f;
+
+        // InputAction取得
         selectAction = playerInput.actions.FindAction("Move");
         enterAciton = playerInput.actions.FindAction("Enter");
 
+        // FadeManager生成 or 取得
         GameObject fade = GameObject.Find("FadeManager");
         if (fade == null)
         {
@@ -71,12 +107,15 @@ public class NewStageSelectManager : MonoBehaviour
             fade.gameObject.name = "FadeManager";
             fadeManager = fade.GetComponent<FadeManager>();
         }
-        else if (fade != null) fadeManager = fade.GetComponent<FadeManager>();
+        else fadeManager = fade.GetComponent<FadeManager>();
+
+        // フェード初期設定
         fadeManager.AfterFade();
         fadeFlag = true;
         fadeManager.fadeOutFlag = true;
         startFadeFlag = true;
 
+        // セーブデータ取得
         GameObject DataMana = GameObject.Find("DataManager");
         if (DataMana != null)
         {
@@ -86,11 +125,13 @@ public class NewStageSelectManager : MonoBehaviour
         }
         else
         {
-            //dataManager.SaveData(dataManager.useDataNum, dataManager.name, totalClearNum);
             clearFieldNum = totalClearNum / 5;
             clearStageNum = totalClearNum % 5;
         }
+
         if (totalClearNum > 14) totalClearNum = 14;
+
+        // 前回選択ステージを復元
         if (dataManager)
         {
             selectNum = dataManager.data[dataManager.useDataNum].selectStageNum;
@@ -103,55 +144,74 @@ public class NewStageSelectManager : MonoBehaviour
             selectFieldNum = totalClearNum / 5 + 1;
             selectStageNum = totalClearNum % 5 + 1;
         }
+
+        // 新フィールド解放演出時の補正
         if (cloudFlag)
         {
             selectNum--;
             selectFieldNum--;
             selectStageNum--;
         }
+
+        // ステージ画像の初期配置
         int n = selectNum / 5 - 1;
         for (int i = 0; i < stageGroup.transform.childCount; i++)
         {
             float y = -900f + (n * -1000f) + 200f * i;
-            stageImageObjects[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(stageImageObjects[i].GetComponent<RectTransform>().anchoredPosition.x, y);
+            stageImageObjects[i].GetComponent<RectTransform>().anchoredPosition =
+                new Vector2(stageImageObjects[i].GetComponent<RectTransform>().anchoredPosition.x, y);
         }
-        selectObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(selectObject.GetComponent<RectTransform>().anchoredPosition.x, stageImageObjects[selectNum].GetComponent<RectTransform>().anchoredPosition.y);
-        stageNameText.GetComponent<TextMeshProUGUI>().text = $"{clearFieldNum + 1} - {clearStageNum + 1}";
+
+        // カーソル位置設定
+        selectObject.GetComponent<RectTransform>().anchoredPosition =
+            new Vector2(selectObject.GetComponent<RectTransform>().anchoredPosition.x,
+            stageImageObjects[selectNum].GetComponent<RectTransform>().anchoredPosition.y);
+
+        // ステージ名表示
+        stageNameText.GetComponent<TextMeshProUGUI>().text =
+            $"{clearFieldNum + 1} - {clearStageNum + 1}";
+
         windowImages[3].SetActive(false);
         WindowControl();
     }
 
+    // ==============================
+    // 更新処理
+    // ==============================
     void Update()
     {
-        // フェイドイン終了時
+        // フェードイン終了
         if (fadeManager.endFlag && fadeManager.fadeInFlag)
         {
             fadeManager.fadeInFlag = false;
             fadeManager.endFlag = false;
             fadeManager.fadeIntervalFlag = true;
             fadeFlag = false;
-        }        
-        // フェイドインターバル終了時
+        }
+        // フェードインターバル終了 → シーン遷移
         else if (endFadeFlag && fadeManager.fadeIntervalFlag && fadeManager.endFlag)
         {
             endFadeFlag = false;
             fadeManager.fadeIntervalFlag = false;
             fadeManager.endFlag = false;
+
             int fieldNum = selectNum / 5;
             int stageNum = selectNum % 5;
+
             if (selectReturnFlag)
             {
                 SceneManager.LoadScene(0);
                 fadeManager.titleFlag = true;
             }
-            else SceneManager.LoadScene($"{fieldNum + 1}-{stageNum + 1}");
-            
-            //SceneManager.LoadScene($"{fieldNum + 1}-{stageSelectManagers[fieldNum].selectNum + 1}");
-            //Debug.Log($"{FieldNum + 1}-{stageSelectManager[FieldNum].selectNum + 1}");
+            else
+            {
+                SceneManager.LoadScene($"{fieldNum + 1}-{stageNum + 1}");
+            }
+
             fadeFlag = false;
             enterFlag = false;
         }
-        // フェイドアウト終了時
+        // フェードアウト終了
         else if (startFadeFlag && fadeManager.fadeOutFlag && fadeManager.endFlag)
         {
             startFadeFlag = false;
@@ -161,20 +221,27 @@ public class NewStageSelectManager : MonoBehaviour
         }
 
         if (startFadeFlag || endFadeFlag) fadeManager.FadeControl();
-        SelectControl();
 
-        //CloudControl();
+        // 入力・選択制御
+        SelectControl();
     }
 
+    /// <summary>
+    /// ステージ画像を配列に格納
+    /// </summary>
     void GetStageObject()
     {
         stageImageObjects = new GameObject[stageGroup.transform.childCount];
-        for (int i = 0; i < stageGroup.transform.childCount; i++) stageImageObjects[i] = stageGroup.transform.GetChild(i).gameObject;
+        for (int i = 0; i < stageGroup.transform.childCount; i++)
+            stageImageObjects[i] = stageGroup.transform.GetChild(i).gameObject;
     }
 
+    /// <summary>
+    /// ステージ選択操作全般
+    /// </summary>
     void SelectControl()
     {
-        // Enterの取得
+        // 決定入力
         if (enterAciton.ReadValue<float>() > 0 && !fadeFlag)
         {
             enterFlag = true;
@@ -188,13 +255,14 @@ public class NewStageSelectManager : MonoBehaviour
             enterFlag = false;
         }
 
+        // 左右入力（戻るボタン切り替え）
         if (!returnMoveFlag && !fadeFlag)
         {
             if (selectAction.ReadValue<Vector2>().x != 0)
             {
                 returnMoveFlag = true;
-                if (selectAction.ReadValue<Vector2>().x > 0) selectVector.x = 1f;
-                else if (selectAction.ReadValue<Vector2>().x < 0) selectVector.x = -1f;
+                selectVector.x = selectAction.ReadValue<Vector2>().x > 0 ? 1f : -1f;
+
                 if (!selectReturnFlag)
                 {
                     returnButton.GetComponent<RectTransform>().localScale *= 1.2f;
@@ -216,12 +284,10 @@ public class NewStageSelectManager : MonoBehaviour
                 returnMoveTimer = 0f;
                 returnMoveFlag = false;
             }
-            else if (returnMoveTimer < returnMoveTime)
-            {
-                returnMoveTimer += Time.deltaTime;
-            } 
+            else returnMoveTimer += Time.deltaTime;
         }
 
+        // 上下入力（ステージ移動）
         if (!selectReturnFlag && !fadeFlag)
         {
             if (selectAction.ReadValue<Vector2>().y > 0 && !selectMoveFlag)
@@ -229,23 +295,16 @@ public class NewStageSelectManager : MonoBehaviour
                 selectMoveFlag = true;
                 selectVector.y = 1f;
                 selectNum++;
+
                 if (selectNum == 5 || selectNum == 10)
                 {
                     changeStageFlag = true;
                     selectFieldNum++;
-                    if (selectFieldNum -1 == clearFieldNum) cloudDownFlag = true;
                 }
+
                 if (selectNum > totalClearNum)
                 {
                     selectNum = totalClearNum;
-                    selectFieldNum = selectNum / 5;
-                    selectStageNum = selectNum % 5;
-                    changeStageFlag = false;
-                    selectMoveFlag = false;
-                }
-                else if (selectNum > 14)
-                {
-                    selectNum = 14;
                     selectMoveFlag = false;
                 }
             }
@@ -254,12 +313,13 @@ public class NewStageSelectManager : MonoBehaviour
                 selectMoveFlag = true;
                 selectVector.y = -1f;
                 selectNum--;
+
                 if (selectNum == 4 || selectNum == 9)
                 {
                     changeStageFlag = true;
                     selectFieldNum--;
-                    if (selectFieldNum == clearFieldNum) cloudUpFlag = true;
                 }
+
                 if (selectNum < 0)
                 {
                     selectNum = 0;
@@ -267,175 +327,32 @@ public class NewStageSelectManager : MonoBehaviour
                 }
             }
         }
-
-        if (selectMoveFlag)
-        {
-            if (!cloudFlag)
-            {
-                if (!changeStageFlag)
-                {
-                    if (selectMoveTimer > selectMoveTime)
-                    {
-                        selectMoveTimer = 0;
-                        selectVector.y = 0f;
-                        selectMoveFlag = false;
-
-                        int fieldNum = selectNum / 5;
-                        int stageNum = selectNum % 5;
-                        stageNameText.GetComponent<TextMeshProUGUI>().text = $"{fieldNum + 1} - {stageNum + 1}";
-                    }
-                    else if (selectMoveTimer < selectMoveTime)
-                    {
-                        selectMoveTimer += Time.deltaTime;
-                        if (selectVector.y == 1f)
-                        {
-                            float y = Mathf.Lerp(stageImageObjects[selectNum - 1].GetComponent<RectTransform>().anchoredPosition.y, stageImageObjects[selectNum].GetComponent<RectTransform>().anchoredPosition.y, selectMoveTimer / selectMoveTime);
-                            selectObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(selectObject.GetComponent<RectTransform>().anchoredPosition.x, y);
-                        }
-                        else if (selectVector.y == -1f)
-                        {
-                            float y = Mathf.Lerp(stageImageObjects[selectNum + 1].GetComponent<RectTransform>().anchoredPosition.y, stageImageObjects[selectNum].GetComponent<RectTransform>().anchoredPosition.y, selectMoveTimer / selectMoveTime);
-                            selectObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(selectObject.GetComponent<RectTransform>().anchoredPosition.x, y);
-                        }
-                    }
-                }
-                else if (changeStageFlag)
-                {
-                    if (changeStageTimer > changeStageTime)
-                    {
-                        windowImages[3].SetActive(false);
-                        changeStageFlag = false;
-                        changeStageTimer = 0f;
-                        cloudDownFlag = false;
-                        cloudUpFlag = false;
-                    }
-                    else if (changeStageTimer < changeStageTime)
-                    {
-                        windowImages[3].SetActive(true);
-                        changeStageTimer += Time.deltaTime;
-                        if (selectVector.y == 1f)
-                        {
-                            int n = selectNum / 5 - 1;
-                            for (int i = 0; i < stageGroup.transform.childCount; i++)
-                            {
-                                float y = Mathf.Lerp(100f + (n * -1000f) + 200f * i, -900f + (n * -1000f) + 200f * i, changeStageTimer / changeStageTime);
-                                stageImageObjects[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(stageImageObjects[i].GetComponent<RectTransform>().anchoredPosition.x, y);
-                            }
-                            selectObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(selectObject.GetComponent<RectTransform>().anchoredPosition.x, stageImageObjects[selectNum - 1].GetComponent<RectTransform>().anchoredPosition.y);
-                        }
-                        else if (selectVector.y == -1f)
-                        {
-                            int n = selectNum / 5;
-                            for (int i = 0; i < stageGroup.transform.childCount; i++)
-                            {
-                                float y = Mathf.Lerp(-900f + (n * -1000f) + 200f * i, 100f + (n * -1000f) + 200f * i, changeStageTimer / changeStageTime);
-                                stageImageObjects[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(stageImageObjects[i].GetComponent<RectTransform>().anchoredPosition.x, y);
-                            }
-                            selectObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(selectObject.GetComponent<RectTransform>().anchoredPosition.x, stageImageObjects[selectNum + 1].GetComponent<RectTransform>().anchoredPosition.y);
-                        }
-                        WindowControl();
-                    }
-                }
-            }           
-        }
     }
 
+    /// <summary>
+    /// ステージ解放状態に応じたウィンドウ表示制御
+    /// </summary>
     void WindowControl()
     {
-        /*
-        int selectClearStageNum = 0;
-        //if (selectFieldNum == 1) selectClearStageNum = totalClearNum;
-        //else if (selectFieldNum > 1) selectClearStageNum = totalClearNum - selectFieldNum * 5;
-        selectClearStageNum = totalClearNum - selectFieldNum * 5 + selectStageNum;
-        // ClearWindowの設定
-        windowImages[2].GetComponent<RectTransform>().sizeDelta = new Vector2(600f, 200f * selectClearStageNum);
-        float y = windowImages[2].GetComponent<RectTransform>().sizeDelta.y / 2;
-        windowImages[2].GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
-        // NowWindowの設定
-        y = y * 2 + 100f;
-        windowImages[1].GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
-        // StillWindowの設定
-        windowImages[0].GetComponent<RectTransform>().sizeDelta = new Vector2(600f, (5 - selectClearStageNum) * 200f);
-        y += 100f + ((5 - selectClearStageNum) * 200f / 2);
-        windowImages[0].GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
-        */
-        // 新しい
-
-        if (selectFieldNum -1 == clearFieldNum)
+        if (selectFieldNum - 1 == clearFieldNum)
         {
             int nowStageNum = clearStageNum;
             windowImages[2].GetComponent<RectTransform>().sizeDelta = new Vector2(600f, 200f * nowStageNum);
-            float y = windowImages[2].GetComponent<RectTransform>().sizeDelta.y / 2;
-            windowImages[2].GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
-            y = y * 2 + 100f; 
-            windowImages[1].GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
-            windowImages[0].GetComponent<RectTransform>().sizeDelta = new Vector2(600f, (5 - nowStageNum) * 200f);
-            y += 100f + ((5 - nowStageNum) * 200f / 2);
-            windowImages[0].GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
         }
         else
         {
             windowImages[2].GetComponent<RectTransform>().sizeDelta = new Vector2(600f, 1200f);
-            windowImages[2].GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, 600f);
         }
     }
 
-    void CloudControl()
-    {
-        if (changeStageFlag && !cloudFlag)
-        {
-            float y = 0f;
-            if (cloudUpFlag) y = Mathf.Lerp(550f, 1550f, changeStageTimer / changeStageTime);
-            else if (cloudDownFlag) y = Mathf.Lerp(1550f, 550f, changeStageTimer / changeStageTime);
-            else y = 550f;
-            Color cloudColor = Color.white;
-            cloudColor.a = 1f;
-            for (int i = 0; i < 3; i++)
-            {
-                cloudImages[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(250f, y);
-                cloudImages[i].SetActive(true);
-                cloudImages[i].GetComponent<Image>().color = cloudColor;
-            }
-            cloudImages[0].GetComponent<RectTransform>().anchoredPosition = new Vector2(250f, y);
-            cloudImages[1].GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
-            cloudImages[2].GetComponent<RectTransform>().anchoredPosition = new Vector2(-250f, y);
-        }
-        if (cloudFlag && selectVector.y > 0)
-        {
-            if (cloudOpenTimer > cloudOpenTime)
-            {
-                cloudOpenTimer = 0;
-                cloudFlag = false;
-                changeStageFlag = true;
-                for (int i = 0; i < 3; i++) cloudImages[i].SetActive(false);
-            }
-            else if (cloudOpenTimer < cloudOpenTime)
-            {
-                cloudOpenTimer += Time.deltaTime;
-                float[] x = new float[3];
-                x[0] = Mathf.Lerp(250f, 750f, cloudOpenTimer / cloudOpenTime);
-                x[1] = Mathf.Lerp(0f, 500f, cloudOpenTimer / cloudOpenTime);
-                x[2] = Mathf.Lerp(-250f, -750f, cloudOpenTimer / cloudOpenTime);
-                float a = Mathf.Lerp(1f, 0.25f, cloudOpenTimer / cloudOpenTime);
-                Color cloudColor = Color.white;
-                cloudColor.a = a;
-                for (int i = 0; i < 3; i++)
-                {
-                    cloudImages[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(x[i], cloudImages[i].GetComponent<RectTransform>().anchoredPosition.y);
-                    cloudImages[i].GetComponent<Image>().color = cloudColor;
-                }
-            }
-        }
-    }
-
+    /// <summary>
+    /// セーブデータからクリア情報を読み込む
+    /// </summary>
     void LoadClearStage()
     {
         Debug.Log("セーブデータを読み込みます。");
         totalClearNum = dataManager.data[dataManager.useDataNum].clearStageNum;
         clearFieldNum = totalClearNum / 5;
         clearStageNum = totalClearNum % 5;
-        int dateNum = dataManager.useDataNum;
-        int selectFieldNum = dataManager.data[dateNum].selectStageNum / 5;
-        int selectStageNum = dataManager.data[dateNum].selectStageNum % 5;
     }
 }
