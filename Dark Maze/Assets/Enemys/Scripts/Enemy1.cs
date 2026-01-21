@@ -25,6 +25,10 @@ public class Enemy1 : MonoBehaviour
     [SerializeField] float enemyDamage;
     [SerializeField] bool isDamageFlag;
     [SerializeField] bool isAttackFlag;
+
+    [Header("Effect")]
+    [SerializeField] GameObject dieEffect;
+    [SerializeField] GameObject damageEffect;
     void Start()
     {
         
@@ -134,10 +138,26 @@ public class Enemy1 : MonoBehaviour
     {
         enemyHP--;
         isDamageFlag = false;
+        confusionObject.SetActive(false);
         if (enemyHP == 0)
         {
-            Destroy(gameObject);
+            animator.SetTrigger("Die");
+            GameObject effect = Instantiate(dieEffect, transform.position, Quaternion.identity);
+            effect.transform.parent = transform;
+            effect.transform.eulerAngles = new Vector3(-90, 0, 0);
+            enemyHP = -1;
+            agent.isStopped = true;
         }
+        else if (enemyHP > 0)
+        {
+            GameObject effect = Instantiate(damageEffect, transform.position, Quaternion.identity);
+            effect.transform.parent = transform;
+            effect.transform.localScale = new Vector3(2, 2, 2);
+        }
+    }
+    public void EnemyDestroy()
+    {
+        Destroy(gameObject);
     }
 
     private void OnCollisionEnter(Collision collision)

@@ -84,6 +84,7 @@ public class GeneralStageManager : MonoBehaviour
     [SerializeField] public bool clearFlag;
     [SerializeField] public bool enterFlag;
     [SerializeField] public int menuSelectNum;
+    [SerializeField] public int overSelectNum;
     bool clearAnimeFlag;
     [SerializeField] public float clearAnimeTime = 2.5f;
     float clearAnimeTimer;
@@ -151,6 +152,7 @@ public class GeneralStageManager : MonoBehaviour
     }
     public void EndAnime()
     {
+        clearUI.SetActive(true);
         if (fadeFlag)
         {
             if (fadeManager.fadeIntervalFlag && fadeManager.endFlag) fadeFlag = false;
@@ -192,6 +194,19 @@ public class GeneralStageManager : MonoBehaviour
         }
     }
 
+    public void JudgeOver()
+    {
+        if (playerController.playerHP <= 0)
+        {
+            status = GameStatus.over;
+            overFlag = true;
+        }
+    }
+
+    public void Over()
+    {
+        overUI.SetActive(true);
+    }
     // 回転ギミック(回転するエリア、ライト、回転方向、回転度、回転にかかる時間)
     public void AreaRotation(GameObject area, GameObject light, GameObject cameraPoint, int direction, int degree, float time, int i, bool end, ref bool flag)
     {
@@ -1112,8 +1127,8 @@ public class GeneralStageManager : MonoBehaviour
         overTexts[0] = overUI.transform.GetChild(2).gameObject;
         overTexts[1] = overUI.transform.GetChild(3).gameObject;
         clearTexts = new GameObject[2];
-        clearTexts[0] = clearUI.transform.GetChild(2).gameObject;
-        clearTexts[1] = clearUI.transform.GetChild(3).gameObject;
+        //clearTexts[0] = clearUI.transform.GetChild(2).gameObject;
+        //clearTexts[1] = clearUI.transform.GetChild(3).gameObject;
     }
     // メニュー関数
     public void MenuUIControl()
@@ -1197,9 +1212,27 @@ public class GeneralStageManager : MonoBehaviour
         }
     }
     // ゲームオーバー関数
-    public void OverUIControl()
+    public void OverUIControl(InputAction.CallbackContext context)
     {
-
+        if (overFlag)
+        {
+            if (context.started && context.ReadValue<Vector2>().y > 0)
+            {
+                overSelectNum++;
+                if (overSelectNum > 1)
+                {
+                    overSelectNum = 0;
+                }
+            }
+            else if (context.started && context.ReadValue<Vector2>().y < 0)
+            {
+                overSelectNum--;
+                if (menuSelectNum < 0)
+                {
+                    overSelectNum = 1;
+                }
+            }
+        }
     }
     public void TextAnime(GameObject textOb, bool flag)
     {

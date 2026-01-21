@@ -114,6 +114,13 @@ public class PlayerController : MonoBehaviour
     float sandTimer;
     Vector3 originPosition;
 
+    [Header("Effect")]
+    [SerializeField] GameObject maxEffectOrigin;
+    GameObject maxEffect;
+    [SerializeField] float maxEffectTime;
+    float maxEffectTimer;
+    bool onEffectFlag;
+
     void Start()
     {
         rb.useGravity = false;
@@ -132,9 +139,10 @@ public class PlayerController : MonoBehaviour
                 PlayerControl();
                 HPControl();
                 PlayerLightControl();
+                MaxEffectControl();
                 PlayerItemUseControl();
                 CameraControl();
-                PlayerAttackControl();
+                PlayerAttackControl();                
                 if (arrowAnimeFlag) ArrowAnime();
                 if (onLight != 1) animator.speed = 1f;
                 else if (onLight == 1) animator.speed = 0.5f;
@@ -369,6 +377,11 @@ public class PlayerController : MonoBehaviour
             lightSpreadTimer = 0;
             onLight = 2;
             lightRangeObject.tag = "StanRange";
+            GameObject effect = Instantiate(maxEffectOrigin, transform.position, Quaternion.identity);
+            maxEffect = effect;
+            maxEffect.transform.parent = transform;
+            onEffectFlag = true;
+
         }
         // k¬’†
         if (onLight == 0 && playerLightRange > 30f)
@@ -406,6 +419,25 @@ public class PlayerController : MonoBehaviour
         lightGauge.fillAmount = normalized;
         lightRangeObject.transform.localScale = new Vector3(Mathf.Lerp(2.75f, 17.25f, normalized), 0.1f, Mathf.Lerp(2.75f, 17.25f, normalized));
     }
+    
+    void MaxEffectControl()
+    {
+        if (onEffectFlag)
+        {
+            if (maxEffectTimer > maxEffectTime)
+            {
+                maxEffectTimer = 0;
+                Destroy(maxEffect);
+                onEffectFlag = false;
+            }
+            else if (maxEffectTimer < maxEffectTime)
+            {
+                maxEffectTimer += Time.deltaTime;
+                float scale = Mathf.Lerp(1, 17.25f, maxEffectTimer / maxEffectTime);
+                maxEffect.transform.localScale = new Vector3(scale, scale, scale);
+            }
+        }
+    }
     void PlayerAttackControl()
     {
         if (attackFlag)
@@ -426,7 +458,6 @@ public class PlayerController : MonoBehaviour
 
                 if (attackPropotion < 0.3f) animator.speed = 0.1f;
                 //else animator.speed = 2f;
-                Debug.Log(animator.speed);
                 float y = Mathf.Lerp(playerObject.transform.eulerAngles.y - 45f, playerObject.transform.eulerAngles.y + 45f, attackTimer / attackTime);
                 sword.transform.rotation = Quaternion.Euler(0f, y, 0f);
             }
