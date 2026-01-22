@@ -116,10 +116,17 @@ public class PlayerController : MonoBehaviour
 
     [Header("Effect")]
     [SerializeField] GameObject maxEffectOrigin;
+    [SerializeField] GameObject clearEffectOrigin;
+    [SerializeField] GameObject overEffectOrigin;
     GameObject maxEffect;
+    GameObject clearEffect;
+    GameObject overEffect;
     [SerializeField] float maxEffectTime;
     float maxEffectTimer;
-    bool onEffectFlag;
+    bool onMaxEffectFlag;
+    [SerializeField] float overEffectTime;
+    float overEffectTimer;
+    bool onOverEffectFlag;
 
     void Start()
     {
@@ -154,11 +161,12 @@ public class PlayerController : MonoBehaviour
             case 3: // menu
                 animator.speed = 0f;
                 break;
-            case 4: // over
-                animator.SetBool("Dead", true);
+            case 4: // over                
+                OverControl();
                 break;
             case 5: // clear
                 animator.SetBool("Clear", true);
+                if (clearEffect == null) clearEffect = Instantiate(clearEffectOrigin, transform.position, Quaternion.identity);
                 break;
         }
         PlayerItemSelectControl();                 
@@ -380,7 +388,7 @@ public class PlayerController : MonoBehaviour
             GameObject effect = Instantiate(maxEffectOrigin, transform.position, Quaternion.identity);
             maxEffect = effect;
             maxEffect.transform.parent = transform;
-            onEffectFlag = true;
+            onMaxEffectFlag = true;
 
         }
         // k¬’†
@@ -420,15 +428,33 @@ public class PlayerController : MonoBehaviour
         lightRangeObject.transform.localScale = new Vector3(Mathf.Lerp(2.75f, 17.25f, normalized), 0.1f, Mathf.Lerp(2.75f, 17.25f, normalized));
     }
     
+    void OverControl()
+    {
+        if (!onOverEffectFlag)
+        {
+            animator.SetTrigger("Dead");
+            onOverEffectFlag = true;
+        }
+
+        if (overEffectTimer > overEffectTime)
+        {
+            Destroy(overEffect);
+        }
+        else if (overEffectTimer < overEffectTime)
+        {
+            overEffectTimer += Time.deltaTime;
+        }
+    }
+
     void MaxEffectControl()
     {
-        if (onEffectFlag)
+        if (onMaxEffectFlag)
         {
             if (maxEffectTimer > maxEffectTime)
             {
                 maxEffectTimer = 0;
                 Destroy(maxEffect);
-                onEffectFlag = false;
+                onMaxEffectFlag = false;
             }
             else if (maxEffectTimer < maxEffectTime)
             {

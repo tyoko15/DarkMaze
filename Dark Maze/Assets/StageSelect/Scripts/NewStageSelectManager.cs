@@ -307,6 +307,11 @@ public class NewStageSelectManager : MonoBehaviour
                     selectNum = totalClearNum;
                     selectMoveFlag = false;
                 }
+                else if (selectNum > 14)
+                {
+                    selectNum = 14;
+                    selectMoveFlag = false;
+                }
             }
             else if (selectAction.ReadValue<Vector2>().y < 0 && !selectMoveFlag)
             {
@@ -327,6 +332,76 @@ public class NewStageSelectManager : MonoBehaviour
                 }
             }
         }
+        if (selectMoveFlag)
+        {
+            if (!cloudFlag)
+            {
+                if (!changeStageFlag)
+                {
+                    if (selectMoveTimer > selectMoveTime)
+                    {
+                        selectMoveTimer = 0;
+                        selectVector.y = 0f;
+                        selectMoveFlag = false;
+
+                        int fieldNum = selectNum / 5;
+                        int stageNum = selectNum % 5;
+                        stageNameText.GetComponent<TextMeshProUGUI>().text = $"{fieldNum + 1} - {stageNum + 1}";
+                    }
+                    else if (selectMoveTimer < selectMoveTime)
+                    {
+                        selectMoveTimer += Time.deltaTime;
+                        if (selectVector.y == 1f)
+                        {
+                            float y = Mathf.Lerp(stageImageObjects[selectNum - 1].GetComponent<RectTransform>().anchoredPosition.y, stageImageObjects[selectNum].GetComponent<RectTransform>().anchoredPosition.y, selectMoveTimer / selectMoveTime);
+                            selectObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(selectObject.GetComponent<RectTransform>().anchoredPosition.x, y);
+                        }
+                        else if (selectVector.y == -1f)
+                        {
+                            float y = Mathf.Lerp(stageImageObjects[selectNum + 1].GetComponent<RectTransform>().anchoredPosition.y, stageImageObjects[selectNum].GetComponent<RectTransform>().anchoredPosition.y, selectMoveTimer / selectMoveTime);
+                            selectObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(selectObject.GetComponent<RectTransform>().anchoredPosition.x, y);
+                        }
+                    }
+                }
+                else if (changeStageFlag)
+                {
+                    if (changeStageTimer > changeStageTime)
+                    {
+                        windowImages[3].SetActive(false);
+                        changeStageFlag = false;
+                        changeStageTimer = 0f;
+                        cloudDownFlag = false;
+                        cloudUpFlag = false;
+                    }
+                    else if (changeStageTimer < changeStageTime)
+                    {
+                        windowImages[3].SetActive(true);
+                        changeStageTimer += Time.deltaTime;
+                        if (selectVector.y == 1f)
+                        {
+                            int n = selectNum / 5 - 1;
+                            for (int i = 0; i < stageGroup.transform.childCount; i++)
+                            {
+                                float y = Mathf.Lerp(100f + (n * -1000f) + 200f * i, -900f + (n * -1000f) + 200f * i, changeStageTimer / changeStageTime);
+                                stageImageObjects[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(stageImageObjects[i].GetComponent<RectTransform>().anchoredPosition.x, y);
+                            }
+                            selectObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(selectObject.GetComponent<RectTransform>().anchoredPosition.x, stageImageObjects[selectNum - 1].GetComponent<RectTransform>().anchoredPosition.y);
+                        }
+                        else if (selectVector.y == -1f)
+                        {
+                            int n = selectNum / 5;
+                            for (int i = 0; i < stageGroup.transform.childCount; i++)
+                            {
+                                float y = Mathf.Lerp(-900f + (n * -1000f) + 200f * i, 100f + (n * -1000f) + 200f * i, changeStageTimer / changeStageTime);
+                                stageImageObjects[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(stageImageObjects[i].GetComponent<RectTransform>().anchoredPosition.x, y);
+                            }
+                            selectObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(selectObject.GetComponent<RectTransform>().anchoredPosition.x, stageImageObjects[selectNum + 1].GetComponent<RectTransform>().anchoredPosition.y);
+                        }
+                        WindowControl();
+                    }
+                }
+            }
+        }
     }
 
     /// <summary>
@@ -338,10 +413,18 @@ public class NewStageSelectManager : MonoBehaviour
         {
             int nowStageNum = clearStageNum;
             windowImages[2].GetComponent<RectTransform>().sizeDelta = new Vector2(600f, 200f * nowStageNum);
+            float y = windowImages[2].GetComponent<RectTransform>().sizeDelta.y / 2;
+            windowImages[2].GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
+            y = y * 2 + 100f;
+            windowImages[1].GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
+            windowImages[0].GetComponent<RectTransform>().sizeDelta = new Vector2(600f, (5 - nowStageNum) * 200f);
+            y += 100f + ((5 - nowStageNum) * 200f / 2);
+            windowImages[0].GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
         }
         else
         {
             windowImages[2].GetComponent<RectTransform>().sizeDelta = new Vector2(600f, 1200f);
+            windowImages[2].GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, 600f);
         }
     }
 

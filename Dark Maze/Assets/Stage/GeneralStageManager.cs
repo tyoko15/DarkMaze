@@ -36,7 +36,7 @@ public class GeneralStageManager : MonoBehaviour
     [SerializeField] public GameObject[] cameraPointObjects;
     [SerializeField] public GameObject[] enemys;
     [Header("ステージ詳細情報")]
-    [SerializeField] public float startTime = 0.1f;
+    [SerializeField] public float startTime = 1.5f;
     float startTimer;
 
     // cameraWorkの変数
@@ -64,6 +64,7 @@ public class GeneralStageManager : MonoBehaviour
 
     [Header("UI情報")]
     [SerializeField] public GameObject playUI;
+    [SerializeField] public GameObject startUI;
     [SerializeField] public GameObject menuUI;
     [SerializeField] public GameObject overUI;
     [SerializeField] public GameObject clearUI;
@@ -76,6 +77,7 @@ public class GeneralStageManager : MonoBehaviour
     public bool fadeClearFlag;
     [SerializeField] public float fadeClearTime = 0.2f;
     float fadeClearTimer;
+    [SerializeField] public GameObject startText;
     [SerializeField] public GameObject[] menuTexts;
     [SerializeField] public GameObject[] overTexts;
     [SerializeField] public GameObject[] clearTexts;
@@ -145,9 +147,19 @@ public class GeneralStageManager : MonoBehaviour
             if (startTimer > startTime)
             {
                 startTimer = 0;
+                startUI.SetActive(false);
                 status = GameStatus.play;
             }
-            else if (startTimer < startTime) startTimer += Time.deltaTime;
+            else if (startTimer < startTime)
+            {
+                startTimer += Time.deltaTime;
+                startUI.SetActive(true);
+                int f = stageNum / 5;
+                int s = stageNum % 5;
+                TextMeshProUGUI text = startText.GetComponent<TextMeshProUGUI>();
+                if (startTimer < startTime / 2) text.text = $"ステージ\n{f + 1} - {s + 1}\n";
+                else text.text = $"スタート\n";
+            }
         }
     }
     public void EndAnime()
@@ -191,6 +203,7 @@ public class GeneralStageManager : MonoBehaviour
         if (goalObject.GetComponent<GoalManager>().isGoalFlag)
         {
             status = GameStatus.clear;
+            clearUI.SetActive(true);
         }
     }
 
@@ -1115,10 +1128,11 @@ public class GeneralStageManager : MonoBehaviour
         playerController = playerSet.transform.GetChild(1).GetComponent<PlayerController>();
 
         playUI = playerSet.transform.GetChild(0).transform.GetChild(0).gameObject;
-        menuUI = playerSet.transform.GetChild(0).transform.GetChild(1).gameObject;
-        overUI = playerSet.transform.GetChild(0).transform.GetChild(2).gameObject;
-        clearUI = playerSet.transform.GetChild(0).transform.GetChild(3).gameObject;
-
+        startUI = playerSet.transform.GetChild(0).transform.GetChild(1).gameObject;
+        menuUI = playerSet.transform.GetChild(0).transform.GetChild(2).gameObject;
+        overUI = playerSet.transform.GetChild(0).transform.GetChild(3).gameObject;
+        clearUI = playerSet.transform.GetChild(0).transform.GetChild(4).gameObject;
+        startText = startUI.transform.GetChild(0).gameObject;
         menuTexts = new GameObject[3];
         menuTexts[0] = menuUI.transform.GetChild(2).gameObject;
         menuTexts[1] = menuUI.transform.GetChild(3).gameObject;
@@ -1211,23 +1225,68 @@ public class GeneralStageManager : MonoBehaviour
             }
         }
     }
+    
+    public void OverUIControl()
+    {
+        if (overSelectNum == 0)
+        {
+            TextAnime(menuTexts[0], true);
+            TextAnime(menuTexts[1], false);
+        }
+        else if (overSelectNum == 1)
+        {
+            TextAnime(menuTexts[0], false);
+            TextAnime(menuTexts[1], true);
+        }
+
+        if (enterFlag)
+        {
+            if (fadeFlag)
+            {
+                if (fadeManager.fadeIntervalFlag && fadeManager.endFlag) fadeFlag = false;
+                fadeManager.FadeControl();
+            }
+            else
+            {
+                if (overSelectNum == 0)
+                {
+                    int fieldNum = stageNum / 5;
+                    int number = stageNum % 5;
+                    SceneManager.LoadScene($"{fieldNum + 1}-{number}");
+                }
+                else if (overSelectNum == 1)
+                {
+                    if (GameObject.Find("DataManager") != null)
+                    {
+                        DataManager dataManager = GameObject.Find("DataManager").GetComponent<DataManager>();
+                        int dataNum = dataManager.useDataNum;
+                        dataManager.data[dataNum].selectStageNum = 0;
+                    }
+                    SceneManager.LoadScene("StageSelect");
+                }
+                enterFlag = false;
+            }
+        }
+    }
+
     // ゲームオーバー関数
     public void OverUIControl(InputAction.CallbackContext context)
     {
         if (overFlag)
         {
+            Debug.Log("aa");
             if (context.started && context.ReadValue<Vector2>().y > 0)
             {
-                overSelectNum++;
-                if (overSelectNum > 1)
+                overSelectNum--;
+                if (overSelectNum < 0)
                 {
                     overSelectNum = 0;
                 }
             }
             else if (context.started && context.ReadValue<Vector2>().y < 0)
             {
-                overSelectNum--;
-                if (menuSelectNum < 0)
+                overSelectNum++;
+                if (menuSelectNum < 1)
                 {
                     overSelectNum = 1;
                 }
@@ -1266,6 +1325,7 @@ public class GeneralStageManager : MonoBehaviour
                 fadeFlag = true;
             }
         }
+        else if (overFlag) enterFlag = true;
     }
     // Select
     public void InputSelectControl(InputAction.CallbackContext context)

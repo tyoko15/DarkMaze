@@ -35,6 +35,7 @@ public class GameManagerStage1to1 : GeneralStageManager
                 playerController.status = 3;
                 break;
             case GameStatus.over:
+                Over();
                 playerController.status = 4;
                 break;
             case GameStatus.clear:
