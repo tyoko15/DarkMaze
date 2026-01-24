@@ -1445,7 +1445,7 @@ MonoBehaviour:
   - {fileID: 607738612}
   enemys:
   - {fileID: 7401445148956876628}
-  startTime: 0.1
+  startTime: 1.5
   originDegree: 0
   rotationTimer:
   - 0
@@ -1470,6 +1470,7 @@ MonoBehaviour:
   - {fileID: 2053911289}
   defeatGateFlag: 00
   playUI: {fileID: 52529360}
+  startUI: {fileID: 0}
   menuUI: {fileID: 52529364}
   overUI: {fileID: 0}
   clearUI: {fileID: 0}
@@ -1479,6 +1480,7 @@ MonoBehaviour:
   fadeOverTime: 0.2
   fadeClearFlag: 0
   fadeClearTime: 0.2
+  startText: {fileID: 0}
   menuTexts:
   - {fileID: 52529363}
   - {fileID: 52529362}
@@ -1490,6 +1492,7 @@ MonoBehaviour:
   clearFlag: 0
   enterFlag: 0
   menuSelectNum: 0
+  overSelectNum: 0
   clearAnimeTime: 2.5
 --- !u!1001 &595398117
 PrefabInstance:

@@ -15,6 +15,7 @@ public class TitleManager : MonoBehaviour
     [SerializeField] DataManager dataManager;               // セーブデータ管理
     [SerializeField] FadeManager fadeManager;               // フェード演出制御
     [SerializeField] GameObject fadeManagerObject;          // FadeManager生成用Prefab
+    [SerializeField] GameObject dataManagerObject;          // DataManager生成用Prefab
 
     // ===== UI参照 =====
     [Header("UIの取得")]
@@ -74,6 +75,18 @@ public class TitleManager : MonoBehaviour
         else
         {
             fadeManager = fade.GetComponent<FadeManager>();
+        }
+        // DataManagerが存在しない場合は生成する
+        GameObject data = GameObject.Find("DataManager");
+        if (data == null)
+        {
+            data = Instantiate(dataManagerObject);
+            data.gameObject.name = "DataManager";
+            dataManager = data.GetComponent<DataManager>();
+        }
+        else
+        {
+            dataManager = data.GetComponent<DataManager>();
         }
 
         // 初期UI状態

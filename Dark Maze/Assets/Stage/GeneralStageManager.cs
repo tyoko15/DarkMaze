@@ -157,7 +157,7 @@ public class GeneralStageManager : MonoBehaviour
                 int f = stageNum / 5;
                 int s = stageNum % 5;
                 TextMeshProUGUI text = startText.GetComponent<TextMeshProUGUI>();
-                if (startTimer < startTime / 2) text.text = $"ステージ\n{f + 1} - {s + 1}\n";
+                if (startTimer < startTime / 2) text.text = $"ステージ\n{f + 1} - {s}\n";
                 else text.text = $"スタート\n";
             }
         }
@@ -213,6 +213,7 @@ public class GeneralStageManager : MonoBehaviour
         {
             status = GameStatus.over;
             overFlag = true;
+            Debug.Log("over");
         }
     }
 
@@ -1230,52 +1231,53 @@ public class GeneralStageManager : MonoBehaviour
     {
         if (overSelectNum == 0)
         {
-            TextAnime(menuTexts[0], true);
-            TextAnime(menuTexts[1], false);
+            TextAnime(overTexts[0], true);
+            TextAnime(overTexts[1], false);
         }
         else if (overSelectNum == 1)
         {
-            TextAnime(menuTexts[0], false);
-            TextAnime(menuTexts[1], true);
+            TextAnime(overTexts[0], false);
+            TextAnime(overTexts[1], true);
         }
-
+        if (fadeFlag)
+        {
+            if (fadeManager.fadeIntervalFlag && fadeManager.endFlag)
+            {
+                fadeManager.fadeIntervalFlag = false;
+                fadeManager.endFlag = false;
+                fadeFlag = false;
+            }
+            fadeManager.FadeControl();
+            if (!fadeFlag)
+            {
+                int fieldNum = stageNum / 5;
+                int number = stageNum % 5;
+                if (overSelectNum == 0) SceneManager.LoadScene($"{fieldNum + 1}-{number}");
+                else if (overSelectNum == 1) SceneManager.LoadScene("StageSelect");
+            }
+        }
         if (enterFlag)
         {
-            if (fadeFlag)
-            {
-                if (fadeManager.fadeIntervalFlag && fadeManager.endFlag) fadeFlag = false;
-                fadeManager.FadeControl();
-            }
-            else
-            {
-                if (overSelectNum == 0)
-                {
-                    int fieldNum = stageNum / 5;
-                    int number = stageNum % 5;
-                    SceneManager.LoadScene($"{fieldNum + 1}-{number}");
-                }
-                else if (overSelectNum == 1)
-                {
-                    if (GameObject.Find("DataManager") != null)
-                    {
-                        DataManager dataManager = GameObject.Find("DataManager").GetComponent<DataManager>();
-                        int dataNum = dataManager.useDataNum;
-                        dataManager.data[dataNum].selectStageNum = 0;
-                    }
-                    SceneManager.LoadScene("StageSelect");
-                }
-                enterFlag = false;
-            }
+            fadeManager.fadeInFlag = true;
+            fadeFlag = true;
+            enterFlag = false;            
         }
     }
 
     // ゲームオーバー関数
     public void OverUIControl(InputAction.CallbackContext context)
     {
-        if (overFlag)
-        {
-            Debug.Log("aa");
+        if (overFlag && !fadeFlag)
+        {           
             if (context.started && context.ReadValue<Vector2>().y > 0)
+            {
+                overSelectNum++;
+                if (overSelectNum > 1)
+                {
+                    overSelectNum = 1;
+                }
+            }
+            else if (context.started && context.ReadValue<Vector2>().y < 0)
             {
                 overSelectNum--;
                 if (overSelectNum < 0)
@@ -1283,14 +1285,7 @@ public class GeneralStageManager : MonoBehaviour
                     overSelectNum = 0;
                 }
             }
-            else if (context.started && context.ReadValue<Vector2>().y < 0)
-            {
-                overSelectNum++;
-                if (menuSelectNum < 1)
-                {
-                    overSelectNum = 1;
-                }
-            }
+            Debug.Log(overSelectNum);
         }
     }
     public void TextAnime(GameObject textOb, bool flag)

@@ -1320,7 +1320,7 @@ MonoBehaviour:
   cameraPointObjects:
   - {fileID: 1091326105}
   enemys: []
-  startTime: 0.1
+  startTime: 1.5
   originDegree: 0
   rotationTimer: []
   rotationFlag: 0
@@ -1338,6 +1338,7 @@ MonoBehaviour:
   - {fileID: 1758817684}
   defeatGateFlag: 
   playUI: {fileID: 1489789535}
+  startUI: {fileID: 0}
   menuUI: {fileID: 1489789539}
   overUI: {fileID: 0}
   clearUI: {fileID: 0}
@@ -1347,6 +1348,7 @@ MonoBehaviour:
   fadeOverTime: 0.2
   fadeClearFlag: 0
   fadeClearTime: 0.2
+  startText: {fileID: 0}
   menuTexts:
   - {fileID: 1489789538}
   - {fileID: 1489789537}
@@ -1358,6 +1360,7 @@ MonoBehaviour:
   clearFlag: 0
   enterFlag: 0
   menuSelectNum: 0
+  overSelectNum: 0
   clearAnimeTime: 2.5
 --- !u!1 &749232580 stripped
 GameObject:

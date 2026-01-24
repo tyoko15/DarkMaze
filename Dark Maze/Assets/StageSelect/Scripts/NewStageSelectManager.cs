@@ -125,24 +125,24 @@ public class NewStageSelectManager : MonoBehaviour
         }
         else
         {
-            clearFieldNum = totalClearNum / 5;
-            clearStageNum = totalClearNum % 5;
+            clearFieldNum = totalClearNum / 4;
+            clearStageNum = totalClearNum % 4;
         }
 
-        if (totalClearNum > 14) totalClearNum = 14;
+        if (totalClearNum > 7) totalClearNum = 7;
 
         // 前回選択ステージを復元
         if (dataManager)
         {
             selectNum = dataManager.data[dataManager.useDataNum].selectStageNum;
-            selectFieldNum = selectNum / 5 + 1;
-            selectStageNum = selectNum % 5 + 1;
+            selectFieldNum = selectNum / 4 + 1;
+            selectStageNum = selectNum % 4 + 1;
         }
         else
         {
             selectNum = totalClearNum;
-            selectFieldNum = totalClearNum / 5 + 1;
-            selectStageNum = totalClearNum % 5 + 1;
+            selectFieldNum = totalClearNum / 4 + 1;
+            selectStageNum = totalClearNum % 4 + 1;
         }
 
         // 新フィールド解放演出時の補正
@@ -154,10 +154,10 @@ public class NewStageSelectManager : MonoBehaviour
         }
 
         // ステージ画像の初期配置
-        int n = selectNum / 5 - 1;
+        int n = selectNum / 4 - 1;
         for (int i = 0; i < stageGroup.transform.childCount; i++)
         {
-            float y = -900f + (n * -1000f) + 200f * i;
+            float y = -875f + (n * -1000f) + 250f * i;
             stageImageObjects[i].GetComponent<RectTransform>().anchoredPosition =
                 new Vector2(stageImageObjects[i].GetComponent<RectTransform>().anchoredPosition.x, y);
         }
@@ -195,8 +195,8 @@ public class NewStageSelectManager : MonoBehaviour
             fadeManager.fadeIntervalFlag = false;
             fadeManager.endFlag = false;
 
-            int fieldNum = selectNum / 5;
-            int stageNum = selectNum % 5;
+            int fieldNum = selectNum / 4;
+            int stageNum = selectNum % 4;
 
             if (selectReturnFlag)
             {
@@ -205,9 +205,9 @@ public class NewStageSelectManager : MonoBehaviour
             }
             else
             {
-                SceneManager.LoadScene($"{fieldNum + 1}-{stageNum + 1}");
+                SceneManager.LoadScene($"{fieldNum + 1}-{stageNum + 1}");                
             }
-
+            dataManager.SaveData(dataManager.useDataNum, dataManager.data[dataManager.useDataNum].playerName, totalClearNum, selectNum);
             fadeFlag = false;
             enterFlag = false;
         }
@@ -296,7 +296,7 @@ public class NewStageSelectManager : MonoBehaviour
                 selectVector.y = 1f;
                 selectNum++;
 
-                if (selectNum == 5 || selectNum == 10)
+                if (selectNum == 4)
                 {
                     changeStageFlag = true;
                     selectFieldNum++;
@@ -307,9 +307,9 @@ public class NewStageSelectManager : MonoBehaviour
                     selectNum = totalClearNum;
                     selectMoveFlag = false;
                 }
-                else if (selectNum > 14)
+                else if (selectNum > 7)
                 {
-                    selectNum = 14;
+                    selectNum = 7;
                     selectMoveFlag = false;
                 }
             }
@@ -319,7 +319,7 @@ public class NewStageSelectManager : MonoBehaviour
                 selectVector.y = -1f;
                 selectNum--;
 
-                if (selectNum == 4 || selectNum == 9)
+                if (selectNum == 3 || selectNum == 9)
                 {
                     changeStageFlag = true;
                     selectFieldNum--;
@@ -344,8 +344,8 @@ public class NewStageSelectManager : MonoBehaviour
                         selectVector.y = 0f;
                         selectMoveFlag = false;
 
-                        int fieldNum = selectNum / 5;
-                        int stageNum = selectNum % 5;
+                        int fieldNum = selectNum / 4;
+                        int stageNum = selectNum % 4;
                         stageNameText.GetComponent<TextMeshProUGUI>().text = $"{fieldNum + 1} - {stageNum + 1}";
                     }
                     else if (selectMoveTimer < selectMoveTime)
@@ -379,20 +379,20 @@ public class NewStageSelectManager : MonoBehaviour
                         changeStageTimer += Time.deltaTime;
                         if (selectVector.y == 1f)
                         {
-                            int n = selectNum / 5 - 1;
+                            int n = selectNum / 4 - 1;
                             for (int i = 0; i < stageGroup.transform.childCount; i++)
                             {
-                                float y = Mathf.Lerp(100f + (n * -1000f) + 200f * i, -900f + (n * -1000f) + 200f * i, changeStageTimer / changeStageTime);
+                                float y = Mathf.Lerp(100f + (n * -1000f) + 250f * i, -875f + (n * -1000f) + 250f * i, changeStageTimer / changeStageTime);
                                 stageImageObjects[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(stageImageObjects[i].GetComponent<RectTransform>().anchoredPosition.x, y);
                             }
                             selectObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(selectObject.GetComponent<RectTransform>().anchoredPosition.x, stageImageObjects[selectNum - 1].GetComponent<RectTransform>().anchoredPosition.y);
                         }
                         else if (selectVector.y == -1f)
                         {
-                            int n = selectNum / 5;
+                            int n = selectNum / 4;
                             for (int i = 0; i < stageGroup.transform.childCount; i++)
                             {
-                                float y = Mathf.Lerp(-900f + (n * -1000f) + 200f * i, 100f + (n * -1000f) + 200f * i, changeStageTimer / changeStageTime);
+                                float y = Mathf.Lerp(-875f + (n * -1000f) + 250f * i, 100f + (n * -1000f) + 250f * i, changeStageTimer / changeStageTime);
                                 stageImageObjects[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(stageImageObjects[i].GetComponent<RectTransform>().anchoredPosition.x, y);
                             }
                             selectObject.GetComponent<RectTransform>().anchoredPosition = new Vector2(selectObject.GetComponent<RectTransform>().anchoredPosition.x, stageImageObjects[selectNum + 1].GetComponent<RectTransform>().anchoredPosition.y);
@@ -412,13 +412,13 @@ public class NewStageSelectManager : MonoBehaviour
         if (selectFieldNum - 1 == clearFieldNum)
         {
             int nowStageNum = clearStageNum;
-            windowImages[2].GetComponent<RectTransform>().sizeDelta = new Vector2(600f, 200f * nowStageNum);
+            windowImages[2].GetComponent<RectTransform>().sizeDelta = new Vector2(600f, 250f * nowStageNum);
             float y = windowImages[2].GetComponent<RectTransform>().sizeDelta.y / 2;
             windowImages[2].GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
             y = y * 2 + 100f;
             windowImages[1].GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
-            windowImages[0].GetComponent<RectTransform>().sizeDelta = new Vector2(600f, (5 - nowStageNum) * 200f);
-            y += 100f + ((5 - nowStageNum) * 200f / 2);
+            windowImages[0].GetComponent<RectTransform>().sizeDelta = new Vector2(600f, (4 - nowStageNum) * 250f);
+            y += 100f + ((4 - nowStageNum) * 250f / 2);
             windowImages[0].GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
         }
         else
@@ -435,7 +435,13 @@ public class NewStageSelectManager : MonoBehaviour
     {
         Debug.Log("セーブデータを読み込みます。");
         totalClearNum = dataManager.data[dataManager.useDataNum].clearStageNum;
-        clearFieldNum = totalClearNum / 5;
-        clearStageNum = totalClearNum % 5;
+        int dateNum = dataManager.useDataNum;
+        int selectFielddataNum = dataManager.data[dateNum].selectStageNum / 5;
+        int selectStagedataNum = dataManager.data[dateNum].selectStageNum % 5;
+        selectFieldNum = selectFielddataNum;
+        selectStageNum = selectStagedataNum;
+        totalClearNum = dataManager.data[dataManager.useDataNum].clearStageNum;
+        clearFieldNum = totalClearNum / 4;
+        clearStageNum = totalClearNum % 4;
     }
 }

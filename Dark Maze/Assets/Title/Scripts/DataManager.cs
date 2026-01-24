@@ -28,10 +28,25 @@ public class DataManager : MonoBehaviour
     public int useDataNum;                     // 現在使用中のデータ番号
     public bool nextFieldFlag;                 // 次フィールド遷移用フラグ（拡張用）
 
+    public static DataManager instance;
+
+    void Awake()
+    {
+        if (instance == null)
+        {
+            instance = this;
+            // シーン切り替え後も破棄されないようにする
+            DontDestroyOnLoad(instance);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
     void Start()
     {
-        // シーン切り替え後も破棄されないようにする
-        DontDestroyOnLoad(gameObject);
+        
 
         // 各セーブスロットの初期化と読み込み
         for (int i = 0; i < 3; i++)
@@ -95,6 +110,12 @@ public class DataManager : MonoBehaviour
             {
                 Debug.Log("このデータは存在しません。");
                 SaveData(dataNum, "", 0, 0);
+            }
+            else if (data[dataNum] != null)
+            {
+                name = data[dataNum].playerName;
+                stage = data[dataNum].clearStageNum;
+                selectNum = data[dataNum].selectStageNum;
             }
         }
         else

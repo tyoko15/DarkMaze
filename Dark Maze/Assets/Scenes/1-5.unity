@@ -3863,7 +3863,7 @@ MonoBehaviour:
   cameraPointObjects: []
   enemys:
   - {fileID: 1554084840}
-  startTime: 0.1
+  startTime: 1.5
   originDegree: 0
   rotationTimer: []
   rotationFlag: 0
@@ -3876,6 +3876,7 @@ MonoBehaviour:
   enterArea: []
   defeatGateFlag: 
   playUI: {fileID: 1018130444}
+  startUI: {fileID: 0}
   menuUI: {fileID: 1018130454}
   overUI: {fileID: 1018130450}
   clearUI: {fileID: 1018130447}
@@ -3885,6 +3886,7 @@ MonoBehaviour:
   fadeOverTime: 0.2
   fadeClearFlag: 0
   fadeClearTime: 0.2
+  startText: {fileID: 0}
   menuTexts:
   - {fileID: 1018130453}
   - {fileID: 1018130452}
@@ -3893,13 +3895,15 @@ MonoBehaviour:
   - {fileID: 1018130449}
   - {fileID: 1018130448}
   clearTexts:
-  - {fileID: 1018130446}
-  - {fileID: 1018130445}
+  - {fileID: 0}
+  - {fileID: 0}
   menuFlag: 0
   overFlag: 0
   clearFlag: 0
   enterFlag: 0
   menuSelectNum: 0
+  overSelectNum: 0
+  clearAnimeTime: 2.5
 --- !u!4 &915417081
 Transform:
   m_ObjectHideFlags: 0
@@ -4679,16 +4683,6 @@ MonoBehaviour:
 --- !u!1 &1018130444 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 2972707508121049092, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
-  m_PrefabInstance: {fileID: 1018130441}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1018130445 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7824774448053884284, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
-  m_PrefabInstance: {fileID: 1018130441}
-  m_PrefabAsset: {fileID: 0}
---- !u!1 &1018130446 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 97703933195505136, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
   m_PrefabInstance: {fileID: 1018130441}
   m_PrefabAsset: {fileID: 0}
 --- !u!1 &1018130447 stripped

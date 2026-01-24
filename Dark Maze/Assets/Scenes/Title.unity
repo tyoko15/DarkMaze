@@ -270,66 +270,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 10286466}
   m_CullTransparentMesh: 1
---- !u!1 &18998180
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 18998182}
-  - component: {fileID: 18998181}
-  m_Layer: 0
-  m_Name: DataManager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &18998181
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 18998180}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 072d32c0b43f95b4ca02cbc34a3067a0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  data:
-  - playerName: 
-    clearStageNum: 0
-    selectStageNum: 0
-  - playerName: 
-    clearStageNum: 0
-    selectStageNum: 0
-  - playerName: 
-    clearStageNum: 0
-    selectStageNum: 0
-  filePath:
-  - 
-  - 
-  - 
-  useDataNum: 0
-  nextFieldFlag: 0
---- !u!4 &18998182
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 18998180}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &19844312
 GameObject:
   m_ObjectHideFlags: 0
@@ -15313,9 +15253,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   titleButtonManager: {fileID: 1589111904}
-  dataManager: {fileID: 18998181}
+  dataManager: {fileID: 0}
   fadeManager: {fileID: 0}
   fadeManagerObject: {fileID: 8267548131005766601, guid: 4640189f3bb3f43458f839336d723fa6, type: 3}
+  dataManagerObject: {fileID: 3651257548105664537, guid: 88854e851300dc14b81aad4fcf681a1b, type: 3}
   titleUIObject: {fileID: 1153567521}
   selectDataUIObject: {fileID: 628547286}
   selectDataText:
@@ -15485,7 +15426,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   titleManager: {fileID: 1589111903}
-  dataManager: {fileID: 18998181}
+  dataManager: {fileID: 0}
   fadeManager: {fileID: 0}
   titleUIButtons:
   - {fileID: 1709934322}
@@ -15511,7 +15452,6 @@ MonoBehaviour:
   fadeOutDecisionUITime: 0.2
   fadeOutDecisionUITimer: 0
   inputIntervalTime: 0.1
-  controllerFlag: 0
   selectNum: 0
 --- !u!114 &1589111905
 MonoBehaviour:
@@ -21302,4 +21242,3 @@ SceneRoots:
   - {fileID: 1768821854}
   - {fileID: 1589111902}
   - {fileID: 1569364890}
-  - {fileID: 18998182}

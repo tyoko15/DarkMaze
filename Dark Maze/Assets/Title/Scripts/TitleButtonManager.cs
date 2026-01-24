@@ -84,6 +84,7 @@ public class TitleButtonManager : MonoBehaviour
     void Update()
     {
         // コントローラー接続状態によるカーソル制御
+        if (dataManager == null) dataManager = GameObject.Find("DataManager").GetComponent<DataManager>();
         var controllers = Input.GetJoystickNames();
         if (controllers != null)
         {

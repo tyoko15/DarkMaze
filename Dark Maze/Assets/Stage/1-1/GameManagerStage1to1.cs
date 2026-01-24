@@ -17,15 +17,16 @@ public class GameManagerStage1to1 : GeneralStageManager
                 Gimmick1();
                 Gimmick2();
                 Gimmick3();
+                JudgeOver();
                 Goal();
                 if (menuFlag) status = GameStatus.menu;
                 playerController.status = 1;
-                if (playerController.playerHP <= 0) status = GameStatus.over;
                 break;
             case GameStatus.stop:
                 Gimmick1();
                 Gimmick2();
                 Gimmick3();
+                JudgeOver();
                 Goal();
                 playerController.status = 2;
                 break;
@@ -36,6 +37,7 @@ public class GameManagerStage1to1 : GeneralStageManager
                 break;
             case GameStatus.over:
                 Over();
+                OverUIControl();
                 playerController.status = 4;
                 break;
             case GameStatus.clear:
