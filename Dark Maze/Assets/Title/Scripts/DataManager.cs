@@ -45,9 +45,7 @@ public class DataManager : MonoBehaviour
     }
 
     void Start()
-    {
-        
-
+    {       
         // 各セーブスロットの初期化と読み込み
         for (int i = 0; i < 3; i++)
         {
@@ -109,7 +107,12 @@ public class DataManager : MonoBehaviour
             if (data[dataNum] == null)
             {
                 Debug.Log("このデータは存在しません。");
-                SaveData(dataNum, "", 0, 0);
+                if(dataNum == 0)
+                {
+                    Debug.Log("TestDataを追加");
+                    SaveData(dataNum, "Test", 7, 0);
+                }
+                else SaveData(dataNum, "", 0, 0);
             }
             else if (data[dataNum] != null)
             {
@@ -122,7 +125,12 @@ public class DataManager : MonoBehaviour
         {
             // 初回起動時など
             Debug.Log("このデータは存在しません。");
-            SaveData(dataNum, "", 0, 0);
+            if (dataNum == 0)
+            {
+                Debug.Log("TestDataを追加");
+                SaveData(dataNum, "Test", 7, 0);
+            }
+            else SaveData(dataNum, "", 0, 0);
         }
     }
 

@@ -178,7 +178,7 @@ public class GeneralStageManager : MonoBehaviour
                 int dataNum = dataManager.useDataNum;
                 if (dataManager.data[dataNum].clearStageNum == stageNum - 1) dataManager.data[dataNum].clearStageNum = stageNum;
                 dataManager.SaveData(dataNum, dataManager.data[dataNum].playerName, dataManager.data[dataNum].clearStageNum, stageNum-1);
-                if (stageNum % 5 == 0) dataManager.nextFieldFlag = true;
+                if (stageNum % 4 == 0) dataManager.nextFieldFlag = true;
             }
             SceneManager.LoadScene("StageSelect");
         }

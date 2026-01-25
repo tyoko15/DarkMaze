@@ -848,7 +848,7 @@ public class TitleButtonManager : MonoBehaviour
         // ==============================
         // TitleUI
         // ==============================
-        if (titleManager.progressNum == 0)
+        if (titleManager.progressNum == 0 && !fadeManager.fadeFlag)
         {
             if (context.started && context.ReadValue<Vector2>().y < 0)
             {
@@ -866,7 +866,7 @@ public class TitleButtonManager : MonoBehaviour
         // ==============================
         // SelectDataUI
         // ==============================
-        else if (titleManager.progressNum == 1)
+        else if (titleManager.progressNum == 1 && !fadeManager.fadeFlag)
         {
             // 通常選択中
             if (!decisionFlag)
@@ -904,7 +904,7 @@ public class TitleButtonManager : MonoBehaviour
         // ==============================
         // CreateDataUI
         // ==============================
-        else if (titleManager.progressNum == 2)
+        else if (titleManager.progressNum == 2 && !fadeManager.fadeFlag)
         {
             // 名前入力中
             if (!decisionFlag)
@@ -945,15 +945,15 @@ public class TitleButtonManager : MonoBehaviour
         // タイトル画面・データ選択画面
         if (titleManager.progressNum == 0 || titleManager.progressNum == 1)
         {
-            if (context.started) EnterFlag = true;
+            if (context.started && !fadeManager.fadeFlag) EnterFlag = true;
         }
         // データ作成画面
         else if (titleManager.progressNum == 2)
         {
             // 名前入力中
-            if (context.started && !decisionFlag) titleManager.enterInputFlag = true;
+            if (context.started && !decisionFlag && !fadeManager.fadeFlag) titleManager.enterInputFlag = true;
             // 決定確認UI中
-            if (context.started && decisionFlag) EnterFlag = true;
+            if (context.started && decisionFlag && !fadeManager.fadeFlag) EnterFlag = true;
         }
     }
 }

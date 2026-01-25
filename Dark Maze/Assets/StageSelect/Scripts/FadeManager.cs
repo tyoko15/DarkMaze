@@ -10,6 +10,7 @@ public class FadeManager : MonoBehaviour
     [SerializeField] List<Sprite> fadeBannerSpriteList;
     [SerializeField] int fadeBannerSpriteNum;
     [SerializeField] float fadeObjectWidth;
+    public bool fadeFlag;
     [Header("フェイドイン関連")]
     [SerializeField] float fadeInSecond;
     float fadeInTimer;
@@ -57,6 +58,8 @@ public class FadeManager : MonoBehaviour
 
     void Update()
     {
+        if (fadeInFlag || fadeIntervalFlag || fadeOutFlag) fadeFlag = true;
+        else if (!fadeInFlag && !fadeIntervalFlag && !fadeOutFlag) fadeFlag = false;
         fadeInTimer = fadeInSecond / fadeObjects.Length;
         fadeOutTimer = fadeInSecond / fadeObjects.Length; 
         if (fadeInFlag)
@@ -98,6 +101,12 @@ public class FadeManager : MonoBehaviour
         {
             finishFlag = true;
             fadeInFlag = true;
+            DataManager dataManager = GameObject.Find("DataManager").GetComponent<DataManager>();
+            if (dataManager != null)
+            {
+                int i  = dataManager.useDataNum;
+                dataManager.SaveData(i, dataManager.data[i].playerName, dataManager.data[i].clearStageNum, dataManager.data[i].selectStageNum);
+            }
         }
         if (finishFlag && endFlag)
         {

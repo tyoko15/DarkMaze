@@ -125,8 +125,8 @@ public class NewStageSelectManager : MonoBehaviour
         }
         else
         {
-            clearFieldNum = totalClearNum / 4;
-            clearStageNum = totalClearNum % 4;
+            clearFieldNum = totalClearNum / 4 + 1;
+            clearStageNum = totalClearNum % 4 + 1;
         }
 
         if (totalClearNum > 7) totalClearNum = 7;
@@ -441,7 +441,7 @@ public class NewStageSelectManager : MonoBehaviour
         selectFieldNum = selectFielddataNum;
         selectStageNum = selectStagedataNum;
         totalClearNum = dataManager.data[dataManager.useDataNum].clearStageNum;
-        clearFieldNum = totalClearNum / 4;
-        clearStageNum = totalClearNum % 4;
+        clearFieldNum = totalClearNum / 4 + 1;
+        clearStageNum = totalClearNum % 4 + 1;
     }
 }
