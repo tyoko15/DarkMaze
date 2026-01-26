@@ -207,7 +207,7 @@ public class NewStageSelectManager : MonoBehaviour
             {
                 SceneManager.LoadScene($"{fieldNum + 1}-{stageNum + 1}");                
             }
-            dataManager.SaveData(dataManager.useDataNum, dataManager.data[dataManager.useDataNum].playerName, totalClearNum, selectNum);
+            if (dataManager != null) dataManager.SaveData(dataManager.useDataNum, dataManager.data[dataManager.useDataNum].playerName, totalClearNum, selectNum);
             fadeFlag = false;
             enterFlag = false;
         }

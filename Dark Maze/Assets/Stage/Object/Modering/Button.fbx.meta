@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: 201e3ab01cc41414fbcdff1bb7279d49
+guid: 0b02d4a06bcebf84da03d94f7174a1f2
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -8,15 +8,15 @@ ModelImporter:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Crystal
-    second: {fileID: 2100000, guid: 633f5d7d3fc27a245acd9ee58a8dd2f2, type: 2}
+    second: {fileID: 2100000, guid: 530f9f4527cc0514abb425803c85af32, type: 2}
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
       name: Stand
-    second: {fileID: 2100000, guid: f23da8e36da4e1e489bccc02734aecb0, type: 2}
+    second: {fileID: 2100000, guid: 04d935d0cd4c0254f8379f6d6edc64ab, type: 2}
   materials:
     materialImportMode: 2
-    materialName: 1
+    materialName: 0
     materialSearch: 1
     materialLocation: 1
   animations:

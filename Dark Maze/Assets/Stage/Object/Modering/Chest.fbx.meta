@@ -1,5 +1,5 @@
 fileFormatVersion: 2
-guid: bdf4ed4ff2d58cf4ab1520562eb35c09
+guid: 571622e21a5eb7e4f9052bceee8666ab
 ModelImporter:
   serializedVersion: 22200
   internalIDToNameTable: []
@@ -7,16 +7,11 @@ ModelImporter:
   - first:
       type: UnityEngine:Material
       assembly: UnityEngine.CoreModule
-      name: Chest_top2
-    second: {fileID: 2100000, guid: c31598a5d665a9e4d99d471b7c0a2f81, type: 2}
-  - first:
-      type: UnityEngine:Material
-      assembly: UnityEngine.CoreModule
-      name: Chest_under2
-    second: {fileID: 2100000, guid: 32059bd2501899a4ba7e41b5a99be4d8, type: 2}
+      name: DarkMaze
+    second: {fileID: 2100000, guid: c42d55e67b7d08f47b3b7e474afb1369, type: 2}
   materials:
     materialImportMode: 2
-    materialName: 1
+    materialName: 0
     materialSearch: 1
     materialLocation: 1
   animations:
