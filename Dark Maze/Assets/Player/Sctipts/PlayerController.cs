@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
+using UnityEditor.Rendering;
 public class PlayerController : MonoBehaviour
 {
     // 0.start 1.play 2.stop 3.over 4.clear
@@ -44,7 +45,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject lightRangeObject;
     [SerializeField] Image lightGauge;
     [SerializeField, Range(30f, 180f)] float playerLightRange;
-    [SerializeField, Range(2.75f, 17.25f)] float lightRangeObjectRange;
+    [SerializeField, Range(2f, 18f)] float lightRangeObjectRange;
     [Header("ç≈ägëÂÇ∑ÇÈÇ‹Ç≈Ç…Ç©Ç©ÇÈïbêî"), SerializeField] float lightSpreadTime;
     float lightSpreadTimer;
     [Header("ç≈èkè¨Ç∑ÇÈÇ‹Ç≈Ç…Ç©Ç©ÇÈïbêî"), SerializeField] float lightShrinkTime;
@@ -425,9 +426,15 @@ public class PlayerController : MonoBehaviour
         
         float normalized = Mathf.InverseLerp(30f, 180f, playerLightRange);        
         lightGauge.fillAmount = normalized;
-        lightRangeObject.transform.localScale = new Vector3(Mathf.Lerp(2.75f, 17.25f, normalized), 0.1f, Mathf.Lerp(2.75f, 17.25f, normalized));
+        //lightRangeObject.transform.localScale = new Vector3(Mathf.Lerp(2.75f, 17.25f, normalized), 0.1f, Mathf.Lerp(2.75f, 17.25f, normalized));
+        lightRangeObject.transform.localScale = new Vector3(Mathf.Lerp(2f, 18f, normalized), 0.1f, Mathf.Lerp(2f, 18f, normalized));
     }
     
+    public float GetPlayerLightRange()
+    {
+        return lightRangeObject.transform.localScale.x;
+    }
+
     void OverControl()
     {
         if (!onOverEffectFlag)

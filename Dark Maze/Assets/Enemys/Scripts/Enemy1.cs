@@ -5,6 +5,7 @@ using static GeneralStageManager;
 public class Enemy1 : MonoBehaviour
 {
     [SerializeField] GeneralStageManager gameManager;
+    [SerializeField] EnemyHpUIManager hpUIManager;
     [SerializeField] int enemyStatus;
     [SerializeField] NavMeshAgent agent;
     [SerializeField] GameObject player;
@@ -16,6 +17,7 @@ public class Enemy1 : MonoBehaviour
     [SerializeField] float wanderingSpeed;
     public bool moveFlag;
     public bool stanFlag;
+    bool dieFlag;
     [SerializeField] GameObject confusionObject;
     [SerializeField] float stanTime;
     float stanTimer;
@@ -41,7 +43,8 @@ public class Enemy1 : MonoBehaviour
             case GameStatus.start: // start
                 break;
             case GameStatus.play: // play
-                EnemyControl();
+                if (!dieFlag) EnemyControl();
+                EnemyHpGaugeControl();
                 animator.speed = 1f;
                 break;
             case GameStatus.stop: // stop
@@ -134,19 +137,32 @@ public class Enemy1 : MonoBehaviour
         }            
     }
 
+    void EnemyHpGaugeControl()
+    {
+        Vector3 playerPos = new Vector3(player.transform.position.x, 0 , player.transform.position.z);
+        Vector3 enemyPos = new Vector3(transform.position.x, 0, transform.position.z);
+        float distance = Vector3.Distance(playerPos, enemyPos);
+        float lightDistance = player.GetComponent<PlayerController>().GetPlayerLightRange() / 2f;
+        bool flag = false;
+        if (lightDistance > distance) flag = true;
+        else flag = false;
+        hpUIManager.HpActive(flag);
+    }
+
     void EnemyDamage()
     {
         enemyHP--;
         isDamageFlag = false;
         confusionObject.SetActive(false);
-        if (enemyHP == 0)
+        if (enemyHP <= 0)
         {
             animator.SetTrigger("Die");
             GameObject effect = Instantiate(dieEffect, transform.position, Quaternion.identity);
             effect.transform.parent = transform;
             effect.transform.eulerAngles = new Vector3(-90, 0, 0);
             enemyHP = -1;
-            agent.isStopped = true;
+            agent.enabled = false;
+            dieFlag = true;
         }
         else if (enemyHP > 0)
         {

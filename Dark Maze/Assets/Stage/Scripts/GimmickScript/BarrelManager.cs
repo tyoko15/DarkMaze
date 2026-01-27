@@ -24,6 +24,7 @@ public class BarrelManager : MonoBehaviour
             if (destroyTimer > destroyTime)
             {
                 Destroy(gameObject);
+                gameObject.GetComponent<Collider>().isTrigger = true;
             }
             else if (destroyTimer < destroyTime)
             {
@@ -37,8 +38,7 @@ public class BarrelManager : MonoBehaviour
         if(other.gameObject.tag == "Attack")
         {
             itemObject.SetActive(true);
-            destroyFlag = true;
-            gameObject.GetComponent<Collider>().isTrigger = true;
+            destroyFlag = true;            
         }
     }
 }
