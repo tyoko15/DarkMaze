@@ -279,6 +279,38 @@ public class PlayerController : MonoBehaviour
     }
     void HPControl()
     {
+        if (damageFlag && recoveryFlag)
+        {
+            // É_ÉÅÅ[ÉWÇÃÇŸÇ§Ç™ëÅÇ¢
+            if (farstDamageFlag && !farstRecoveryFlag)
+            {
+                float v = Mathf.Lerp(beforeHP, afterHP, 1);
+                v = Mathf.InverseLerp(0f, maxPlayerHp, v);
+                playerDamageGauge.fillAmount = v;
+                damageTimer = 0;
+                float volue = Mathf.InverseLerp(0f, maxPlayerHp, afterHP);
+                playerHpGauge.fillAmount = volue;
+                
+                farstDamageFlag = false;
+                damageFlag = false;
+            }
+            // âÒïúÇÃÇŸÇ§Ç™ëÅÇ¢
+            else if (!farstDamageFlag && farstRecoveryFlag)
+            {
+                playerRecoveryGauge.enabled = false;
+                float v = Mathf.Lerp(beforeHP, afterHP, recoveryTimer / recoveryTime);
+                v = Mathf.InverseLerp(0f, maxPlayerHp, v);
+                playerHpGauge.fillAmount = v;           
+                recoveryTimer = 0;
+
+                farstRecoveryFlag = false;
+                recoveryFlag = false;
+            }
+            playerHP = afterHP;
+            playerHpText.text = $"HP : {afterHP} / {maxPlayerHp}";
+            beforeHP = 0f;
+            afterHP = 0f;
+        }
         if (damageFlag)
         {
             damageTimer += Time.deltaTime;

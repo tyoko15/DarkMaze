@@ -9,11 +9,20 @@ public class BarrelManager : MonoBehaviour
     public bool destroyFlag;
     [SerializeField] float destroyTime;
     float destroyTimer;
+
+    private Camera mainCamera;
+    GameObject canvas;
+    bool canvasFlag;
     void Start()
     {
+        mainCamera = Camera.main;
         itemObject = Instantiate(itemObjects[itemNum], new Vector3(transform.position.x, 0, transform.position.z), Quaternion.identity);
         itemObject.transform.parent = transform.parent;
         itemObject.SetActive(false);
+        int last = transform.childCount;
+        canvas = transform.GetChild(last - 1).gameObject;
+        canvas.SetActive(false);
+        canvasFlag = true;
     }
 
     void Update()
@@ -31,6 +40,16 @@ public class BarrelManager : MonoBehaviour
                 destroyTimer += Time.deltaTime;
             }
         }
+
+        if (!canvasFlag) canvas.SetActive(false);
+    }
+
+    private void LateUpdate()
+    {
+        if (mainCamera == null) return;
+
+        // ÉJÉÅÉâÇÃï˚å¸Çå¸Ç≠
+        canvas.transform.rotation = Quaternion.LookRotation(transform.position - mainCamera.transform.position);
     }
 
     void OnTriggerEnter(Collider other)
@@ -38,7 +57,17 @@ public class BarrelManager : MonoBehaviour
         if(other.gameObject.tag == "Attack")
         {
             itemObject.SetActive(true);
-            destroyFlag = true;            
+            destroyFlag = true;
+            canvasFlag = false;
         }
+    }
+
+    void OnCollisionEnter(Collision collision)
+    {
+        if (collision.gameObject.tag == "Player" && canvasFlag) canvas.SetActive(true);
+    }
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.tag == "Player" && canvasFlag) canvas.SetActive(false);
     }
 }

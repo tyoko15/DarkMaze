@@ -23,7 +23,8 @@ public class Enemy1 : MonoBehaviour
     float stanTimer;
     bool trackFlag;
 
-    [SerializeField] float enemyHP;
+    [SerializeField] float maxEnemyHP = 3;
+    float enemyHP;
     [SerializeField] float enemyDamage;
     [SerializeField] bool isDamageFlag;
     [SerializeField] bool isAttackFlag;
@@ -33,7 +34,8 @@ public class Enemy1 : MonoBehaviour
     [SerializeField] GameObject damageEffect;
     void Start()
     {
-        
+        enemyHP = maxEnemyHP;
+        hpUIManager.GetMaxHp(maxEnemyHP);
     }
 
     void Update()
@@ -74,6 +76,7 @@ public class Enemy1 : MonoBehaviour
             animator.SetBool("Down", true);
             animator.SetBool("Move", false);
             animator.SetBool("Attack", false);
+            isAttackFlag = false;
             if (stanTimer > stanTime)
             {
                 stanFlag = false;
@@ -147,6 +150,7 @@ public class Enemy1 : MonoBehaviour
         if (lightDistance > distance) flag = true;
         else flag = false;
         hpUIManager.HpActive(flag);
+        hpUIManager.HpControl(enemyHP);
     }
 
     void EnemyDamage()
@@ -154,6 +158,7 @@ public class Enemy1 : MonoBehaviour
         enemyHP--;
         isDamageFlag = false;
         confusionObject.SetActive(false);
+        if (!hpUIManager.damageFlag) hpUIManager.damageFlag = true;
         if (enemyHP <= 0)
         {
             animator.SetTrigger("Die");
@@ -168,7 +173,7 @@ public class Enemy1 : MonoBehaviour
         {
             GameObject effect = Instantiate(damageEffect, transform.position, Quaternion.identity);
             effect.transform.parent = transform;
-            effect.transform.localScale = new Vector3(2, 2, 2);
+            effect.transform.localScale = new Vector3(2, 2, 2);            
         }
     }
     public void EnemyDestroy()

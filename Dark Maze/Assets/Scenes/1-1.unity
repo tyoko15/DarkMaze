@@ -775,6 +775,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8981066294722036156}
     - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
+      propertyPath: maxEnemyHP
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
       propertyPath: gameManager
       value: 
       objectReference: {fileID: 1001537018}
@@ -840,7 +844,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7508215649130946902, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -4196,6 +4200,10 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 8981066294722036156}
+    - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
+      propertyPath: maxEnemyHP
+      value: 3
+      objectReference: {fileID: 0}
     - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
       propertyPath: gameManager
       value: 

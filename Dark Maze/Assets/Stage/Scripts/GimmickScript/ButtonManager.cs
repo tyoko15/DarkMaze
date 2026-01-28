@@ -19,6 +19,10 @@ public class ButtonManager : MonoBehaviour
     // 0.Crystal 1.Stand
     Material[] buttonMaterials;
 
+    private Camera mainCamera;
+    GameObject canvas;
+    bool canvasFlag;
+
     private void Start()
     {
         buttonObject = gameObject;
@@ -54,6 +58,12 @@ public class ButtonManager : MonoBehaviour
             gameObject.SetActive(false);            
         }
         else activeFlag = true;
+
+        mainCamera = Camera.main;
+        int last = transform.childCount;
+        canvas = transform.GetChild(last - 1).gameObject;
+        canvas.SetActive(false);
+        canvasFlag = true;
     }
 
     void Update()
@@ -78,6 +88,14 @@ public class ButtonManager : MonoBehaviour
         {
             if (buttonObject.GetComponent<MeshRenderer>().materials[1].color.a == 1f) activeFlag = true;
         }
+    }
+
+    private void LateUpdate()
+    {
+        if (mainCamera == null) return;
+
+        // ÉJÉÅÉâÇÃï˚å¸Çå¸Ç≠
+        canvas.transform.rotation = Quaternion.LookRotation(transform.position - mainCamera.transform.position);
     }
 
     private void OnTriggerEnter(Collider collision)
@@ -106,6 +124,13 @@ public class ButtonManager : MonoBehaviour
             buttonFlag = true;
             somethingNum++;
         }
+
+        if (collision.gameObject.tag == "Player" && canvasFlag) canvas.SetActive(true);
+    }
+
+    void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject.tag == "Player" && canvasFlag) canvas.SetActive(false);
     }
     private void OnTriggerStay(Collider other)
     {
