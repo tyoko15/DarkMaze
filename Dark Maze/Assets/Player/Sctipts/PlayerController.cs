@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
-using UnityEditor.Rendering;
 public class PlayerController : MonoBehaviour
 {
     // 0.start 1.play 2.stop 3.over 4.clear
