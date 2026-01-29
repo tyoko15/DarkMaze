@@ -9173,8 +9173,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 550, y: 150}
-  m_SizeDelta: {x: 200, y: 100}
+  m_AnchoredPosition: {x: -700, y: 0}
+  m_SizeDelta: {x: 100, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &890853803
 MonoBehaviour:
@@ -15517,9 +15517,7 @@ MonoBehaviour:
   - {fileID: 351182698}
   - {fileID: 1367689642}
   fadeInDecisionUITime: 0.2
-  fadeInDecisionUITimer: 0
   fadeOutDecisionUITime: 0.2
-  fadeOutDecisionUITimer: 0
   inputIntervalTime: 0.1
   selectNum: 0
 --- !u!114 &1589111905

@@ -999,7 +999,7 @@ public class PlayerController : MonoBehaviour
     public void InputPlayerUseItemButton(InputAction.CallbackContext context)
     {
         if(context.started && status == 1 && !itemSelectFlag && !itemIntervalFlag) itemUseFlag = true;
-        if (context.canceled && status == 1 && !itemSelectFlag && !itemIntervalFlag) endUseFlag = true;
+        if (context.canceled && status == 1 && !itemSelectFlag && !itemIntervalFlag && itemUseFlag) endUseFlag = true;
     }
     public void InputPlayerUseItemControl(InputAction.CallbackContext context)
     {

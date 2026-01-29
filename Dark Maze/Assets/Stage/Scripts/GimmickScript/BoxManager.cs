@@ -14,9 +14,18 @@ public class BoxManager : MonoBehaviour
     bool wallFlag;
     int[] wallDirectionNum = new int[4];
     Vector3 originPosition;
+
+    private Camera mainCamera;
+    GameObject canvas;
+    bool canvasFlag;
     void Start()
     {
-        
+        mainCamera = Camera.main;
+        int last = transform.childCount;
+        canvas = transform.GetChild(last - 1).gameObject;
+        canvas.SetActive(false);
+        canvasFlag = true;
+        canvas.transform.eulerAngles = new Vector3(75f, 0, 0);
     }
 
     void Update()
@@ -26,8 +35,26 @@ public class BoxManager : MonoBehaviour
             MoveBox(directionNum);
             gameObject.tag = "Untagged";
         }
-        else gameObject.tag = "Box";
+        else
+        {
+            gameObject.tag = "Box";
+        }
+
+
+        if (buttonFlag) canvas.SetActive(false);
+        else
+        {
+            Vector3 playerPos = new Vector3(player.transform.position.x, 0, player.transform.position.z);
+            Vector3 myPos = new Vector3(transform.position.x, 0, transform.position.z);
+            float distance = Vector3.Distance(playerPos, myPos);
+            float lightDistance = player.GetComponent<PlayerController>().GetPlayerLightRange() / 2f;
+            bool flag = false;
+            if (lightDistance > distance) flag = true;
+            else flag = false;
+            canvas.SetActive(flag);
+        }
     }
+
 
     private void OnCollisionEnter(Collision collision)
     {
@@ -79,6 +106,15 @@ public class BoxManager : MonoBehaviour
                 else if (completeTimer < completeTime) completeTimer += Time.deltaTime;
             }
         }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject == player && canvasFlag) canvas.SetActive(true);
+    }
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject == player && canvasFlag) canvas.SetActive(false);
     }
     void Direction()
     {

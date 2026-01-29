@@ -10,10 +10,20 @@ public class ChestManger : MonoBehaviour
     [SerializeField] float openedTime;
     float openedTimer;
     [SerializeField] bool hideFlag;
+
+    private Camera mainCamera;
+    GameObject canvas;
+    bool canvasFlag;
     void Start()
     {
         if (hideFlag) chestObject.SetActive(false);
         if (chestObject.transform.childCount > 1) chestTopObject = chestObject.transform.GetChild(0).gameObject;
+
+        mainCamera = Camera.main;
+        int last = transform.childCount;
+        canvas = transform.GetChild(last - 1).gameObject;
+        canvas.SetActive(false);
+        canvasFlag = true;
     }
 
     void Update()
@@ -45,12 +55,28 @@ public class ChestManger : MonoBehaviour
         }
     }
 
+    private void LateUpdate()
+    {
+        if (mainCamera == null && !canvasFlag) return;
+
+        // ÉJÉÅÉâÇÃï˚å¸Çå¸Ç≠
+        Vector3 rotation = transform.position - mainCamera.transform.position;
+        rotation = new Vector3(0f, rotation.y, rotation.z);
+        canvas.transform.rotation = Quaternion.LookRotation(rotation);
+    }
+
     private void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.tag == "Player" || collision.gameObject.tag == "Attack")
+        if (collision.gameObject.tag == "Attack")
         {
             if (!openFlag) openFlag = true;
             player.GetComponent<PlayerController>().canItemFlag[itemNum] = true;            
         }
+        if (collision.gameObject == player && canvasFlag) canvas.SetActive(true);
+    }
+
+    private void OnCollisionExit(Collision collision)
+    {
+        if (collision.gameObject == player && canvasFlag) canvas.SetActive(false);
     }
 }

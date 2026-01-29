@@ -143,7 +143,7 @@ public class GeneralStageManager : MonoBehaviour
         }
         else
         {
-            player.transform.position = new Vector3(startObject.transform.position.x, startObject.transform.position.y + 1, startObject.transform.position.z);
+            player.transform.position = new Vector3(startObject.transform.position.x, startObject.transform.position.y + 0.25f, startObject.transform.position.z);
             if (startTimer > startTime)
             {
                 startTimer = 0;

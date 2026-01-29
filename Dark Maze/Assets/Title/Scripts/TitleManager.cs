@@ -225,10 +225,8 @@ public class TitleManager : MonoBehaviour
         {
             for (int j = 0; j < w; j++)
             {
-                inputTexts[i, j] =
-                    texts.transform.GetChild(i).GetChild(j).GetComponent<TextMeshProUGUI>();
-                inputTextObjects[i, j] =
-                    textObjects.transform.GetChild(i).GetChild(j).gameObject;
+                inputTexts[i, j] = texts.transform.GetChild(i).GetChild(j).GetComponent<TextMeshProUGUI>();
+                inputTextObjects[i, j] = textObjects.transform.GetChild(i).GetChild(j).gameObject;
             }
         }
     }
@@ -246,8 +244,7 @@ public class TitleManager : MonoBehaviour
             for (int j = 0; j < w; j++)
             {
                 int index = i * w + j;
-                inputTexts[i, j].text =
-                    changeSizeFlag ? alphanumericLargeTexts[index] : alphanumericSmallTexts[index];
+                inputTexts[i, j].text = changeSizeFlag ? alphanumericLargeTexts[index] : alphanumericSmallTexts[index];
             }
         }
     }
@@ -264,13 +261,22 @@ public class TitleManager : MonoBehaviour
         if (inputTextVector.y != -1 && inputTextVector.x > -1 && inputTextVector.x < 13)
         {
             selectInputTextObject.GetComponent<RectTransform>().sizeDelta = new Vector2(100f, 100f);
-            selectInputTextObject.GetComponent<RectTransform>().localPosition =
-                new Vector2(-600f + 100f * inputTextVector.x, 50f - 100f * inputTextVector.y);
+            selectInputTextObject.GetComponent<RectTransform>().localPosition = new Vector2(-600f + 100f * inputTextVector.x, 50f - 100f * inputTextVector.y);
         }
         else if (inputTextVector.y == -1)
         {
             selectInputTextObject.GetComponent<RectTransform>().sizeDelta = new Vector2(200f, 100f);
             selectInputTextObject.GetComponent<RectTransform>().localPosition = new Vector2(550f, 150f);
+        }
+        else if (inputTextVector.y != -1 && inputTextVector.x == 13)
+        {
+            selectInputTextObject.GetComponent<RectTransform>().sizeDelta = new Vector2(200f, 300f);
+            selectInputTextObject.GetComponent<RectTransform>().localPosition = new Vector2(750f, -50f);
+        }
+        else if (inputTextVector.y != -1 && inputTextVector.x == -1)
+        {
+            selectInputTextObject.GetComponent<RectTransform>().sizeDelta = new Vector2(100f, 200f);
+            selectInputTextObject.GetComponent<RectTransform>().localPosition = new Vector2(-700f, 0f);
         }
 
         // Œˆ’è“ü—Íˆ—
@@ -281,11 +287,9 @@ public class TitleManager : MonoBehaviour
             inputTextVector.y != -1 &&
             inputTextVector.x >= 0 && inputTextVector.x < 12)
         {
-            int index =
-                (int)inputTextVector.y * inputTexts.GetLength(1) + (int)inputTextVector.x;
+            int index = (int)inputTextVector.y * inputTexts.GetLength(1) + (int)inputTextVector.x;
 
-            string addChar =
-                changeSizeFlag ? alphanumericLargeTexts[index] : alphanumericSmallTexts[index];
+            string addChar = changeSizeFlag ? alphanumericLargeTexts[index] : alphanumericSmallTexts[index];
 
             if (addChar != "")
             {
@@ -293,16 +297,13 @@ public class TitleManager : MonoBehaviour
             }
         }
         // Delete
-        else if (inputTextVector.y == -1 &&
-                 nameText.GetComponent<TextMeshProUGUI>().text.Length > 0)
+        else if (inputTextVector.y == -1 && nameText.GetComponent<TextMeshProUGUI>().text.Length > 0)
         {
             string text = nameText.GetComponent<TextMeshProUGUI>().text;
-            nameText.GetComponent<TextMeshProUGUI>().text =
-                text.Remove(text.Length - 1);
+            nameText.GetComponent<TextMeshProUGUI>().text = text.Remove(text.Length - 1);
         }
         // Œˆ’è
-        else if (inputTextVector.x == 13 &&
-                 nameText.GetComponent<TextMeshProUGUI>().text.Length > 0)
+        else if (inputTextVector.x == 13 && nameText.GetComponent<TextMeshProUGUI>().text.Length > 0)
         {
             inputTextVector = Vector2.zero;
             titleButtonManager.ClickCreateDataDecisionButton();

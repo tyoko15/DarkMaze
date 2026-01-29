@@ -232,8 +232,7 @@ public class NewStageSelectManager : MonoBehaviour
     void GetStageObject()
     {
         stageImageObjects = new GameObject[stageGroup.transform.childCount];
-        for (int i = 0; i < stageGroup.transform.childCount; i++)
-            stageImageObjects[i] = stageGroup.transform.GetChild(i).gameObject;
+        for (int i = 0; i < stageGroup.transform.childCount; i++) stageImageObjects[i] = stageGroup.transform.GetChild(i).gameObject;
     }
 
     /// <summary>
@@ -261,19 +260,18 @@ public class NewStageSelectManager : MonoBehaviour
             if (selectAction.ReadValue<Vector2>().x != 0)
             {
                 returnMoveFlag = true;
-                selectVector.x = selectAction.ReadValue<Vector2>().x > 0 ? 1f : -1f;
+                if (selectAction.ReadValue<Vector2>().x > 0.5f) selectReturnFlag = true;
+                else if (selectAction.ReadValue<Vector2>().x < -0.5f) selectReturnFlag = false;
 
-                if (!selectReturnFlag)
+                if (selectReturnFlag)
                 {
-                    returnButton.GetComponent<RectTransform>().localScale *= 1.2f;
+                    returnButton.GetComponent<RectTransform>().localScale = new Vector2(1.2f, 1.2f);
                     selectObject.transform.GetChild(0).GetComponent<RectTransform>().localScale = Vector2.one;
-                    selectReturnFlag = true;
                 }
                 else
                 {
                     returnButton.GetComponent<RectTransform>().localScale = Vector3.one;
-                    selectObject.transform.GetChild(0).GetComponent<RectTransform>().localScale *= 1.2f;
-                    selectReturnFlag = false;
+                    selectObject.transform.GetChild(0).GetComponent<RectTransform>().localScale = new Vector2(1.2f, 1.2f);
                 }
             }
         }
@@ -290,7 +288,7 @@ public class NewStageSelectManager : MonoBehaviour
         // 上下入力（ステージ移動）
         if (!selectReturnFlag && !fadeFlag)
         {
-            if (selectAction.ReadValue<Vector2>().y > 0 && !selectMoveFlag)
+            if (selectAction.ReadValue<Vector2>().y > 0.5f && !selectMoveFlag)
             {
                 selectMoveFlag = true;
                 selectVector.y = 1f;
@@ -313,7 +311,7 @@ public class NewStageSelectManager : MonoBehaviour
                     selectMoveFlag = false;
                 }
             }
-            else if (selectAction.ReadValue<Vector2>().y < 0 && !selectMoveFlag)
+            else if (selectAction.ReadValue<Vector2>().y < -0.5f && !selectMoveFlag)
             {
                 selectMoveFlag = true;
                 selectVector.y = -1f;
@@ -441,7 +439,7 @@ public class NewStageSelectManager : MonoBehaviour
         selectFieldNum = selectFielddataNum;
         selectStageNum = selectStagedataNum;
         totalClearNum = dataManager.data[dataManager.useDataNum].clearStageNum;
-        clearFieldNum = totalClearNum / 4 + 1;
-        clearStageNum = totalClearNum % 4 + 1;
+        clearFieldNum = totalClearNum / 4;
+        clearStageNum = totalClearNum % 4;
     }
 }

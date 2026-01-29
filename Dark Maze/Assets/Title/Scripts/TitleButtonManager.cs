@@ -40,9 +40,9 @@ public class TitleButtonManager : MonoBehaviour
     int animeFlag;                         // 再生するアニメーションの種類
     bool decisionFlag;                     // 決定UIが表示中かどうか
     [SerializeField] float fadeInDecisionUITime;
-    [SerializeField] float fadeInDecisionUITimer;
+    float fadeInDecisionUITimer;
     [SerializeField] float fadeOutDecisionUITime;
-    [SerializeField] float fadeOutDecisionUITimer;
+    float fadeOutDecisionUITimer;
 
     // ==============================
     // 入力制御関連
@@ -98,7 +98,8 @@ public class TitleButtonManager : MonoBehaviour
             Cursor.lockState = CursorLockMode.None;
         }
         // 入力による選択番号更新
-        InputSelectControl();
+        InputNameSelectControl();
+        IntervalTimeControl();
 
         // 決定UIのフェードアニメーション制御
         if (animeFlag == 1) SelectDataDecisionUIAnime(selectDataDecisionUI, true);
@@ -201,6 +202,9 @@ public class TitleButtonManager : MonoBehaviour
             }
             else
             {
+                ExitData1();
+                ExitData2();
+                ExitData3();
                 // 決定確認UI表示中
                 if (oneFlag)
                 {
@@ -770,71 +774,68 @@ public class TitleButtonManager : MonoBehaviour
     // 入力制御（データ作成画面・カーソル移動）
     // ==============================
 
+    void IntervalTimeControl()
+    {
+        // 入力インターバル中
+        if (inputIntervalFlag)
+        {
+            if (inputIntervalTimer > inputIntervalTime)
+            {
+                inputIntervalTimer = 0;
+                inputIntervalFlag = false;
+            }
+            else if (inputIntervalTimer < inputIntervalTime) inputIntervalTimer += Time.deltaTime;
+        }        
+    }
+
     /// <summary>
     /// データ作成画面での文字選択カーソル入力制御
     /// 入力間隔を設けて、連続入力を防止している
     /// </summary>
-    public void InputSelectControl()
+    public void InputNameSelectControl()
     {
         // CreateDataUI のときのみ処理
         if (titleManager.progressNum == 2)
         {
             if (!decisionFlag)
             {
-                // 入力インターバル中
-                if (inputIntervalFlag)
-                {
-                    if (inputIntervalTimer > inputIntervalTime)
-                    {
-                        inputIntervalTimer = 0;
-                        inputIntervalFlag = false;
-                    }
-                    else if (inputIntervalTimer < inputIntervalTime) inputIntervalTimer += Time.deltaTime;
-                }
                 // 入力受付状態
-                else
-                {
-                    // カーソルが端に到達した場合は入力方向をリセット
-                    if ((inputDirectionNum == 1 || inputDirectionNum == 2) && titleManager.inputTextVector.y == -1)
-                    {
-                        inputDirectionNum = 0;
-                        inputIntervalFlag = true;
-                    }
-                    else if ((inputDirectionNum == 3 || inputDirectionNum == 4) && (titleManager.inputTextVector.x == -1 || titleManager.inputTextVector.x == 13)) 
-                    {
-                        inputDirectionNum = 0;
-                        inputIntervalFlag = true;
-                    }
 
-                    // 右入力
-                    if (inputDirectionNum == 1)
-                    {
-                        titleManager.inputTextVector.x++;
-                        if (titleManager.inputTextVector.x > 13) titleManager.inputTextVector.x = 13;
-                        inputIntervalFlag = true;
-                    }
-                    // 左入力
-                    else if (inputDirectionNum == 2)
-                    {
-                        titleManager.inputTextVector.x--;
-                        if (titleManager.inputTextVector.x < -1) titleManager.inputTextVector.x = -1;
-                        inputIntervalFlag = true;
-                    }
-                    // 上入力
-                    if (inputDirectionNum == 3)
-                    {
-                        titleManager.inputTextVector.y++;
-                        if (titleManager.inputTextVector.y > 4) titleManager.inputTextVector.y = 4;
-                        inputIntervalFlag = true;
-                    }
-                    // 下入力
-                    else if (inputDirectionNum == 4)
-                    {
-                        titleManager.inputTextVector.y--;
-                        if (titleManager.inputTextVector.y < -1) titleManager.inputTextVector.y = -1;
-                        inputIntervalFlag = true;
-                    }
+                // カーソルが端に到達した場合は入力方向をリセット
+                if ((inputDirectionNum == 1 || inputDirectionNum == 2) && titleManager.inputTextVector.y == -1)
+                {
+                    inputDirectionNum = 0;
                 }
+                else if ((inputDirectionNum == 3 || inputDirectionNum == 4) && (titleManager.inputTextVector.x == -1 || titleManager.inputTextVector.x == 13)) 
+                {
+                    inputDirectionNum = 0;
+                }
+
+                // 右入力
+                if (inputDirectionNum == 1)
+                {
+                    titleManager.inputTextVector.x++;
+                    if (titleManager.inputTextVector.x > 13) titleManager.inputTextVector.x = 13;
+                }
+                // 左入力
+                else if (inputDirectionNum == 2)
+                {
+                    titleManager.inputTextVector.x--;
+                    if (titleManager.inputTextVector.x < -1) titleManager.inputTextVector.x = -1;
+                }
+                // 上入力
+                if (inputDirectionNum == 3)
+                {
+                    titleManager.inputTextVector.y++;
+                    if (titleManager.inputTextVector.y > 4) titleManager.inputTextVector.y = 4;
+                }
+                // 下入力
+                else if (inputDirectionNum == 4)
+                {
+                    titleManager.inputTextVector.y--;
+                    if (titleManager.inputTextVector.y < -1) titleManager.inputTextVector.y = -1;
+                }
+                inputDirectionNum = 0;
             }
         }
     }
@@ -848,72 +849,74 @@ public class TitleButtonManager : MonoBehaviour
         // ==============================
         // TitleUI
         // ==============================
-        if (titleManager.progressNum == 0 && !fadeManager.fadeFlag)
+        if (titleManager.progressNum == 0 && !fadeManager.fadeFlag && !inputIntervalFlag)
         {
-            if (context.started && context.ReadValue<Vector2>().y < 0)
+            if (context.ReadValue<Vector2>().y < -0.5f)
             {
                 selectNum++;
-                if (selectNum > 1) selectNum = 0;
+                if (selectNum > 1) selectNum = 1;
                 oneFlag = true;
             }
-            else if (context.started && context.ReadValue<Vector2>().y > 0)
+            else if (context.ReadValue<Vector2>().y > 0.5f)
             {
                 selectNum--;
-                if (selectNum < 0) selectNum = 1;
+                if (selectNum < 0) selectNum = 0;
                 oneFlag = true;
             }
+            inputIntervalFlag = true;
         }
         // ==============================
         // SelectDataUI
         // ==============================
-        else if (titleManager.progressNum == 1 && !fadeManager.fadeFlag)
+        else if (titleManager.progressNum == 1 && !fadeManager.fadeFlag && !inputIntervalFlag)
         {
             // 通常選択中
             if (!decisionFlag)
             {
-                if (context.started && context.ReadValue<Vector2>().x > 0)
+                if (context.ReadValue<Vector2>().x > 0.5f)
                 {
                     selectNum++;
-                    if (selectNum > 3) selectNum = 0;
+                    if (selectNum > 3) selectNum = 3;
                     oneFlag = true;
                 }
-                else if (context.started && context.ReadValue<Vector2>().x < 0)
+                else if (context.ReadValue<Vector2>().x < -0.5f)
                 {
                     selectNum--;
-                    if (selectNum < 0) selectNum = 3;
+                    if (selectNum < 0) selectNum = 0;
                     oneFlag = true;
                 }
             }
             // 決定確認UI中
             else
             {
-                if (context.started && context.ReadValue<Vector2>().x > 0)
+                if (context.ReadValue<Vector2>().x > 0.5f)
                 {
                     selectNum++;
-                    if (selectNum > 1) selectNum = 0;
+                    if (selectNum > 1) selectNum = 1;
                     oneFlag = true;
                 }
-                else if (context.started && context.ReadValue<Vector2>().x < 0)
+                else if (context.ReadValue<Vector2>().x < -0.5f)
                 {
                     selectNum--;
-                    if (selectNum < 0) selectNum = 1;
+                    if (selectNum < 0) selectNum = 0;
                     oneFlag = true;
                 }
             }
+            inputIntervalFlag = true;
         }
         // ==============================
         // CreateDataUI
         // ==============================
-        else if (titleManager.progressNum == 2 && !fadeManager.fadeFlag)
+        else if (titleManager.progressNum == 2 && !fadeManager.fadeFlag && !inputIntervalFlag)
         {
             // 名前入力中
             if (!decisionFlag)
             {
                 // 方向入力を数値として保存
-                if (context.ReadValue<Vector2>().x > 0) inputDirectionNum = 1;
-                else if (context.ReadValue<Vector2>().x < 0) inputDirectionNum = 2;
-                if (context.ReadValue<Vector2>().y < 0) inputDirectionNum = 3;
-                else if (context.ReadValue<Vector2>().y > 0) inputDirectionNum = 4;
+                if (context.ReadValue<Vector2>().x > 0.5f) inputDirectionNum = 1;
+                else if (context.ReadValue<Vector2>().x < -0.5f) inputDirectionNum = 2;
+                if (context.ReadValue<Vector2>().y < -0.5f) inputDirectionNum = 3;
+                else if (context.ReadValue<Vector2>().y > 0.5f) inputDirectionNum = 4;
 
                 // 入力解除
                 if (context.canceled) inputDirectionNum = 0;               
@@ -921,19 +924,20 @@ public class TitleButtonManager : MonoBehaviour
             // 決定確認UI中
             else
             {
-                if (context.started && context.ReadValue<Vector2>().x > 0)
+                if (context.ReadValue<Vector2>().x > 0.5f)
                 {
                     selectNum++;
-                    if (selectNum > 1) selectNum = 0;
+                    if (selectNum > 1) selectNum = 1;
                     oneFlag = true;
                 }
-                else if (context.started && context.ReadValue<Vector2>().x < 0)
+                else if (context.ReadValue<Vector2>().x < -0.5f)
                 {
                     selectNum--;
-                    if (selectNum < 0) selectNum = 1;
+                    if (selectNum < 0) selectNum = 0;
                     oneFlag = true;
                 }
             }
+            inputIntervalFlag = true;
         }
     }
 
