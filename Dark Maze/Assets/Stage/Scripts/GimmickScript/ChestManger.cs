@@ -75,6 +75,19 @@ public class ChestManger : MonoBehaviour
         if (collision.gameObject == player && canvasFlag) canvas.SetActive(true);
     }
 
+    private void OnCollisionStay(Collision collision)
+    {
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.gameObject.tag == "Attack")
+        {
+            if (!openFlag) openFlag = true;
+            player.GetComponent<PlayerController>().canItemFlag[itemNum] = true;
+        }
+    }
+
     private void OnCollisionExit(Collision collision)
     {
         if (collision.gameObject == player && canvasFlag) canvas.SetActive(false);

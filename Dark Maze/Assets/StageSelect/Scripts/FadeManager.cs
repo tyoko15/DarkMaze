@@ -2,6 +2,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using UnityEngine.WSA;
 
 public class FadeManager : MonoBehaviour
 {
@@ -24,6 +25,8 @@ public class FadeManager : MonoBehaviour
     [SerializeField] float fadeIntervalTimer;
     public bool fadeIntervalFlag;
     [SerializeField] Image fadeBannerObject;
+    [SerializeField] Sprite[] fadeBannerImages;
+    int fadeBannerImageNum;
     [SerializeField] Color fadeBannerColor;
     [SerializeField] float fadeBannerFadeTimer;
     [SerializeField] float fadeBannerFadeInSecond;
@@ -54,6 +57,7 @@ public class FadeManager : MonoBehaviour
             //fadeObjects[i].gameObject.GetComponent<RectTransform>().anchoredPosition = new Vector3(-fadeObjectWidth - i * 300f, fadeObjects[i].gameObject.GetComponent<RectTransform>().anchoredPosition.y);
             timer[i] -= i * fadeInTimer;
         }
+        fadeBannerImageNum = 0;
     }
 
     void Update()
@@ -179,7 +183,7 @@ public class FadeManager : MonoBehaviour
             fadeBannerFadeInFlag = true;
             fadeBannerObject.enabled = true;
             // フェイドバナーを交換する
-            //fadeBannerObject.sprite = fadeBannerSpriteList[fadeBannerSpriteNum];
+            fadeBannerObject.sprite = fadeBannerSpriteList[fadeBannerSpriteNum];
             fadeBannerSpriteNum++;
             if(fadeBannerSpriteNum == fadeBannerSpriteList.Count) fadeBannerSpriteNum = 0;
         }

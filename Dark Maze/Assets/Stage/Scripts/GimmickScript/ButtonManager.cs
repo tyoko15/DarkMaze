@@ -19,6 +19,10 @@ public class ButtonManager : MonoBehaviour
     // 0.Crystal 1.Stand
     Material[] buttonMaterials;
 
+    bool intervalFlag;
+    float intervalTime = 1;
+    float intervalTimer;
+
     private Camera mainCamera;
     GameObject canvas;
     bool canvasFlag;
@@ -88,6 +92,16 @@ public class ButtonManager : MonoBehaviour
         {
             if (buttonObject.GetComponent<MeshRenderer>().materials[1].color.a == 1f) activeFlag = true;
         }
+
+        if (intervalFlag)
+        {
+            if (intervalTimer > intervalTime)
+            {
+                intervalTimer = 0;
+                intervalFlag = false;
+            }
+            else intervalTimer += Time.deltaTime;
+        }
     }
 
     private void LateUpdate()
@@ -117,14 +131,18 @@ public class ButtonManager : MonoBehaviour
     }
     private void OnCollisionEnter(Collision collision)
     {
-        if (somethingFlag && (collision.gameObject.tag == "Attack" || collision.gameObject.tag == "Arrow") && !buttonFlag)
+        if (!intervalFlag)
         {
-            buttonFlag = true;
-        }
-        else if (!somethingFlag && somethingNum == 0 && (collision.gameObject.tag == "Attack" || collision.gameObject.tag == "Arrow") && !buttonFlag)
-        {
-            buttonFlag = true;
-            somethingNum++;
+            if (somethingFlag && (collision.gameObject.tag == "Attack" || collision.gameObject.tag == "Arrow") && !buttonFlag)
+            {
+                buttonFlag = true;
+                intervalFlag = true;
+            }
+            else if (!somethingFlag && somethingNum == 0 && (collision.gameObject.tag == "Attack" || collision.gameObject.tag == "Arrow") && !buttonFlag)
+            {
+                buttonFlag = true;
+                somethingNum++;
+            }
         }
 
         if (collision.gameObject.tag == "Player" && canvasFlag) canvas.SetActive(true);

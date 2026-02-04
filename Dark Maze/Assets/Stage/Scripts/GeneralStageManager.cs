@@ -1047,28 +1047,44 @@ public class GeneralStageManager : MonoBehaviour
             {
                 status = GameStatus.stop;
                 activeOb.SetActive(true);
-                if (activeOb.GetComponent<MeshRenderer>())
+                // マテリアルの取得
+                Material[] activeMaterials;
+                int index = 0;
+                if (activeOb.GetComponent<ChestManger>() == null)
                 {
-                    Material[] activeMaterials = new Material[activeOb.GetComponent<MeshRenderer>().materials.Length];
+                    activeMaterials = new Material[activeOb.GetComponent<MeshRenderer>().materials.Length];
                     for (int n = 0; n < activeMaterials.Length; n++)
                     {
                         activeMaterials[n] = activeOb.GetComponent<MeshRenderer>().materials[n];
+                    }
+                    // 
+                    for (int n = 0; n < activeMaterials.Length; n++)
+                    {
                         Color a = activeMaterials[n].color;
                         a.a = 0f;
-                        activeOb.GetComponent<MeshRenderer>().materials[n].color = a;
+                        if (activeOb.GetComponent<MeshRenderer>().materials[n] != null) activeOb.GetComponent<MeshRenderer>().materials[n].color = a;
                     }
                 }
                 else
                 {
-                    Material[] activeMaterials = new Material[activeOb.transform.childCount];
+                    for (int m = 0; m < activeOb.transform.childCount; m++)
+                    {
+                        if (activeOb.transform.GetChild(m).GetComponent<MeshRenderer>() != null) index++;
+                    }
+                    activeMaterials = new Material[index];
+                    for (int m = 0; m < activeMaterials.Length; m++)
+                    {
+                        if (activeOb.transform.GetChild(m).GetComponent<MeshRenderer>().material != null) activeMaterials[m] = activeOb.transform.GetChild(m).GetComponent<MeshRenderer>().material;
+                    }
+                    // 
                     for (int n = 0; n < activeMaterials.Length; n++)
                     {
-                        activeMaterials[n] = activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().material;
                         Color a = activeMaterials[n].color;
                         a.a = 0f;
-                        activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().material.color = a;
+                        if (activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().material != null) activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().material.color = a;
                     }
                 }
+                
                 if (light != null)
                 {
                     light.SetActive(true);
@@ -1101,9 +1117,17 @@ public class GeneralStageManager : MonoBehaviour
             }
             if (activeObTimer[i] > time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
             {
-                if (activeOb.GetComponent<MeshRenderer>())
+                // マテリアルの取得
+                Material[] activeMaterials;
+                int index = 0;
+                if (activeOb.GetComponent<ChestManger>() == null)
                 {
-                    Material[] activeMaterials = new Material[activeOb.GetComponent<MeshRenderer>().materials.Length];
+                    activeMaterials = new Material[activeOb.GetComponent<MeshRenderer>().materials.Length];
+                    for (int n = 0; n < activeMaterials.Length; n++)
+                    {
+                        activeMaterials[n] = activeOb.GetComponent<MeshRenderer>().materials[n];
+                    }
+
                     for (int n = 0; n < activeMaterials.Length; n++)
                     {
                         activeMaterials[n] = activeOb.GetComponent<MeshRenderer>().materials[n];
@@ -1114,7 +1138,16 @@ public class GeneralStageManager : MonoBehaviour
                 }
                 else
                 {
-                    Material[] activeMaterials = new Material[activeOb.transform.childCount];
+                    for (int m = 0; m < activeOb.transform.childCount; m++)
+                    {
+                        if (activeOb.transform.GetChild(m).GetComponent<MeshRenderer>() != null) index++;
+                    }
+                    activeMaterials = new Material[index];
+                    for (int m = 0; m < activeMaterials.Length; m++)
+                    {
+                        if (activeOb.transform.GetChild(m).GetComponent<MeshRenderer>().material != null) activeMaterials[m] = activeOb.transform.GetChild(m).GetComponent<MeshRenderer>().material;
+                    }
+
                     for (int n = 0; n < activeMaterials.Length; n++)
                     {
                         activeMaterials[n] = activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().material;
@@ -1123,18 +1156,26 @@ public class GeneralStageManager : MonoBehaviour
                         activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().material.color = a;
                     }
                 }
+
                 activeObTimer[i] = 0f;
                 cameraWorkEndFlag[i] = true;
             }
             else if (activeObTimer[i] < time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
             {
                 activeObTimer[i] += Time.deltaTime;
-                if (activeOb.GetComponent<MeshRenderer>())
+                // マテリアルの取得
+                Material[] activeMaterials;
+                int index = 0;
+                if (activeOb.GetComponent<ChestManger>() == null)
                 {
-                    Material[] activeMaterials = new Material[activeOb.GetComponent<MeshRenderer>().materials.Length];
+                    activeMaterials = new Material[activeOb.GetComponent<MeshRenderer>().materials.Length];
+                    for (int n = 0; n < activeMaterials.Length; n++) activeMaterials[n] = activeOb.GetComponent<MeshRenderer>().materials[n];
                     for (int n = 0; n < activeMaterials.Length; n++)
                     {
                         activeMaterials[n] = activeOb.GetComponent<MeshRenderer>().materials[n];
+                    }
+                    for (int n = 0; n < activeMaterials.Length; n++)
+                    {
                         Color a = activeMaterials[n].color;
                         a.a = Mathf.Lerp(0f, 1f, activeObTimer[i] / time);
                         activeOb.GetComponent<MeshRenderer>().materials[n].color = a;
@@ -1142,10 +1183,18 @@ public class GeneralStageManager : MonoBehaviour
                 }
                 else
                 {
-                    Material[] activeMaterials = new Material[activeOb.transform.childCount];
+                    for (int m = 0; m < activeOb.transform.childCount; m++)
+                    {
+                        if (activeOb.transform.GetChild(m).GetComponent<MeshRenderer>() != null) index++;
+                    }
+                    activeMaterials = new Material[index];
+                    for (int m = 0; m < activeMaterials.Length; m++)
+                    {
+                        if (activeOb.transform.GetChild(m).GetComponent<MeshRenderer>().material != null) activeMaterials[m] = activeOb.transform.GetChild(m).GetComponent<MeshRenderer>().material;
+                    }
+
                     for (int n = 0; n < activeMaterials.Length; n++)
                     {
-                        activeMaterials[n] = activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().material;
                         Color a = activeMaterials[n].color;
                         a.a = Mathf.Lerp(0f, 1f, activeObTimer[i] / time);
                         activeOb.transform.GetChild(n).GetComponent<MeshRenderer>().material.color = a;
@@ -1175,6 +1224,19 @@ public class GeneralStageManager : MonoBehaviour
             }
         }
     }
+    
+    public void PreActiveObject(GameObject activeOb, GameObject light, GameObject cameraPoint, float time, int i, bool end, ref bool flag)
+    {
+        status = GameStatus.stop;
+        activeOb.SetActive(true);
+
+
+        if (activeObTimer[i] == 0 && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
+        {
+
+        }
+    }
+
     public void ActiveLight(GameObject lightOb, float time, int i, bool end, ref bool flag)
     {
         if (activeLightTimer[i] == 0)

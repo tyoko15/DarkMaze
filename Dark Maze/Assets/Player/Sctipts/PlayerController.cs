@@ -165,7 +165,7 @@ public class PlayerController : MonoBehaviour
                 OverControl();
                 break;
             case 5: // clear
-                animator.SetBool("Clear", true);
+                animator.SetTrigger("Clear");
                 if (clearEffect == null) clearEffect = Instantiate(clearEffectOrigin, transform.position, Quaternion.identity);
                 break;
         }
@@ -322,7 +322,7 @@ public class PlayerController : MonoBehaviour
                 float v = Mathf.InverseLerp(0f, maxPlayerHp, afterHP);
                 playerHpGauge.fillAmount = v;
                 playerHpText.text = $"HP : {afterHP} / {maxPlayerHp}";
-                animator.SetBool("Damage", true);
+                animator.SetTrigger("Damage");
             }
             if (damageTimer > damageTime)
             {
@@ -338,12 +338,6 @@ public class PlayerController : MonoBehaviour
                 float v = Mathf.Lerp(beforeHP, afterHP, damageTimer / damageTime);
                 v = Mathf.InverseLerp(0f, maxPlayerHp, v);
                 playerDamageGauge.fillAmount = v;
-            }
-
-            AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-            if (stateInfo.IsName("Damage") && stateInfo.normalizedTime >= 1.0f)
-            {
-                animator.SetBool("Damage", false);
             }
         }
         else if (recoveryFlag)
@@ -506,31 +500,8 @@ public class PlayerController : MonoBehaviour
     {
         if (attackFlag)
         {
-            if (attackTimer == 0) sword.SetActive(true);
-            if (attackTimer > attackTime)
-            {
-                attackTimer = 0;
-                sword.SetActive(false);
-                attackFlag = false;
-            }
-            else if (attackTimer < attackTime)
-            {
-                float attackPropotion = Mathf.InverseLerp(0f, attackTime, attackTimer);
-                if (attackPropotion < 0.2f) attackTimer += Time.deltaTime * 0.5f;
-                else if (attackPropotion < 0.5f) attackTimer += Time.deltaTime;
-                else attackTimer += Time.deltaTime;
-
-                if (attackPropotion < 0.3f) animator.speed = 0.1f;
-                //else animator.speed = 2f;
-                float y = Mathf.Lerp(playerObject.transform.eulerAngles.y - 45f, playerObject.transform.eulerAngles.y + 45f, attackTimer / attackTime);
-                sword.transform.rotation = Quaternion.Euler(0f, y, 0f);
-            }
-            animator.SetBool("Attack", true);
-        }
-        else
-        {
-            sword.SetActive(false);
-            animator.SetBool("Attack", false);
+            animator.SetTrigger("Attack");
+            attackFlag = false;
         }
     }
     void PlayerItemSelectControl()

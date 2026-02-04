@@ -34,7 +34,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2200, y: 100}
+  m_AnchoredPosition: {x: 0, y: 100}
   m_SizeDelta: {x: 2200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7165025331597870233
@@ -109,7 +109,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2200, y: 500}
+  m_AnchoredPosition: {x: 0, y: 500}
   m_SizeDelta: {x: 2200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &152942991564145076
@@ -184,7 +184,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2200, y: 700}
+  m_AnchoredPosition: {x: 0, y: 700}
   m_SizeDelta: {x: 2200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5763117683510910392
@@ -442,7 +442,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2200, y: -100}
+  m_AnchoredPosition: {x: 0, y: -100}
   m_SizeDelta: {x: 2200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3046794159689812509
@@ -517,7 +517,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2200, y: -700}
+  m_AnchoredPosition: {x: 0, y: -700}
   m_SizeDelta: {x: 2200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8777008782246283653
@@ -592,7 +592,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2200, y: -1100}
+  m_AnchoredPosition: {x: 0, y: -1100}
   m_SizeDelta: {x: 2200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &5342663521968288434
@@ -667,7 +667,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2200, y: 1100}
+  m_AnchoredPosition: {x: 0, y: 1100}
   m_SizeDelta: {x: 2200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2768718472038993045
@@ -742,7 +742,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2200, y: 300}
+  m_AnchoredPosition: {x: 0, y: 300}
   m_SizeDelta: {x: 2200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &4460901164218484843
@@ -817,7 +817,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2200, y: -300}
+  m_AnchoredPosition: {x: 0, y: -300}
   m_SizeDelta: {x: 2200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7107927262284308512
@@ -892,7 +892,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2200, y: 900}
+  m_AnchoredPosition: {x: 0, y: 900}
   m_SizeDelta: {x: 2200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &8125313369689321824
@@ -1042,7 +1042,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2200, y: -500}
+  m_AnchoredPosition: {x: 0, y: -500}
   m_SizeDelta: {x: 2200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1032187300609607008
@@ -1142,21 +1142,40 @@ MonoBehaviour:
   - {fileID: 6945088363108775416}
   - {fileID: 5576263124932832889}
   fadeBannerSpriteList:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
-  fadeBannerSpriteNum: 0
+  - {fileID: 21300000, guid: b1fbfad3bdc5e3945bc5d1f7a148076c, type: 3}
+  - {fileID: 21300000, guid: 3f8b96e09c9b0b9449dee6595e6634b9, type: 3}
+  - {fileID: 21300000, guid: 96a035c3866db864a8b2f05b95030d38, type: 3}
+  - {fileID: 21300000, guid: eebac1d94cd22934ab0f8741fadeee73, type: 3}
+  - {fileID: 21300000, guid: f2d33cf12298e9f42854edb2d69cafb6, type: 3}
+  - {fileID: 21300000, guid: 6d0ffc70636cb5d47ae95e4ac088e093, type: 3}
+  - {fileID: 21300000, guid: 3706938f126f5794382da797b6165326, type: 3}
+  - {fileID: 21300000, guid: 91d0c116b95f1c94daa044f03cc6d9bb, type: 3}
+  - {fileID: 21300000, guid: 97a514caa58fb7a48bb296c74143031d, type: 3}
+  - {fileID: 21300000, guid: c52a41f625c4b8542b16eddc6b0594a8, type: 3}
+  - {fileID: 21300000, guid: 088332fa467a2d842bd187dca8bdfcef, type: 3}
+  fadeBannerSpriteNum: 10
   fadeObjectWidth: 0
+  fadeFlag: 0
   fadeInSecond: 1
   fadeInFlag: 0
   fadeOutSecond: 1
   fadeOutFlag: 0
-  fadeIntervalSecond: 2
+  fadeIntervalSecond: 5
   fadeIntervalTimer: 0
   fadeIntervalFlag: 0
   fadeBannerObject: {fileID: 4361489176844274872}
+  fadeBannerImages:
+  - {fileID: 21300000, guid: b1fbfad3bdc5e3945bc5d1f7a148076c, type: 3}
+  - {fileID: 21300000, guid: 3f8b96e09c9b0b9449dee6595e6634b9, type: 3}
+  - {fileID: 21300000, guid: 96a035c3866db864a8b2f05b95030d38, type: 3}
+  - {fileID: 21300000, guid: eebac1d94cd22934ab0f8741fadeee73, type: 3}
+  - {fileID: 21300000, guid: f2d33cf12298e9f42854edb2d69cafb6, type: 3}
+  - {fileID: 21300000, guid: 6d0ffc70636cb5d47ae95e4ac088e093, type: 3}
+  - {fileID: 21300000, guid: 3706938f126f5794382da797b6165326, type: 3}
+  - {fileID: 21300000, guid: 91d0c116b95f1c94daa044f03cc6d9bb, type: 3}
+  - {fileID: 21300000, guid: 97a514caa58fb7a48bb296c74143031d, type: 3}
+  - {fileID: 21300000, guid: c52a41f625c4b8542b16eddc6b0594a8, type: 3}
+  - {fileID: 21300000, guid: 088332fa467a2d842bd187dca8bdfcef, type: 3}
   fadeBannerColor: {r: 1, g: 1, b: 1, a: 0}
   fadeBannerFadeTimer: 0
   fadeBannerFadeInSecond: 0.5
@@ -1306,7 +1325,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -2200, y: -900}
+  m_AnchoredPosition: {x: 0, y: -900}
   m_SizeDelta: {x: 2200, y: 200}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1394089931409074723
