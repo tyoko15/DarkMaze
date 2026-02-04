@@ -1,8 +1,8 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using UnityEngine.WSA;
 
 public class FadeManager : MonoBehaviour
 {
@@ -25,8 +25,6 @@ public class FadeManager : MonoBehaviour
     [SerializeField] float fadeIntervalTimer;
     public bool fadeIntervalFlag;
     [SerializeField] Image fadeBannerObject;
-    [SerializeField] Sprite[] fadeBannerImages;
-    int fadeBannerImageNum;
     [SerializeField] Color fadeBannerColor;
     [SerializeField] float fadeBannerFadeTimer;
     [SerializeField] float fadeBannerFadeInSecond;
@@ -43,6 +41,10 @@ public class FadeManager : MonoBehaviour
 
     public bool saveDirection;
     [SerializeField] GameObject saveText;
+
+    // Input
+    public InputActionAsset inputActions;
+    InputAction enterAction;
     void Start()
     {
         DontDestroyOnLoad(this.gameObject);
@@ -57,7 +59,7 @@ public class FadeManager : MonoBehaviour
             //fadeObjects[i].gameObject.GetComponent<RectTransform>().anchoredPosition = new Vector3(-fadeObjectWidth - i * 300f, fadeObjects[i].gameObject.GetComponent<RectTransform>().anchoredPosition.y);
             timer[i] -= i * fadeInTimer;
         }
-        fadeBannerImageNum = 0;
+        enterAction = inputActions.FindActionMap("Player")["Enter"];
     }
 
     void Update()
@@ -120,6 +122,17 @@ public class FadeManager : MonoBehaviour
     Application.Quit();//ゲームプレイ終了
 #endif
         }
+
+        if (enterAction.triggered)
+        {
+            if (fadeFlag)
+            {
+                fadeBannerSpriteNum++;
+                if (fadeBannerSpriteNum == fadeBannerSpriteList.Count) fadeBannerSpriteNum = 0;
+                ChangeBanner();
+            }
+        }
+
     }
 
     void InFade()
@@ -183,9 +196,7 @@ public class FadeManager : MonoBehaviour
             fadeBannerFadeInFlag = true;
             fadeBannerObject.enabled = true;
             // フェイドバナーを交換する
-            fadeBannerObject.sprite = fadeBannerSpriteList[fadeBannerSpriteNum];
-            fadeBannerSpriteNum++;
-            if(fadeBannerSpriteNum == fadeBannerSpriteList.Count) fadeBannerSpriteNum = 0;
+            ChangeBanner();
         }
         if (fadeIntervalTimer > fadeIntervalSecond - fadeBannerFadeOutSecond && !fadeBannerFadeOutFlag) fadeBannerFadeOutFlag = true;
         fadeIntervalTimer += Time.deltaTime;
@@ -223,7 +234,14 @@ public class FadeManager : MonoBehaviour
             fadeBannerObject.enabled = false;
             fadeIntervalTimer = 0;
             endFlag = true;
+            fadeBannerSpriteNum++;
+            if (fadeBannerSpriteNum == fadeBannerSpriteList.Count) fadeBannerSpriteNum = 0;
         }
+    }
+
+    void ChangeBanner()
+    {
+        fadeBannerObject.sprite = fadeBannerSpriteList[fadeBannerSpriteNum];
     }
 
     public void AfterFade()

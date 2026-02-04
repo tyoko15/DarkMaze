@@ -1446,11 +1446,16 @@ public class GeneralStageManager : MonoBehaviour
             menuUI.SetActive(true);
             menuUI.GetComponent<RectTransform>().localScale = new Vector3(0f, 0f, 0f);
         }
+        else if (context.started && menuFlag && status == GameStatus.menu)
+        {
+            menuSelectNum = 2;
+            enterFlag = true;
+        }
     }
     //Enter
     public void InputEnterButton(InputAction.CallbackContext context)
     {
-        if (menuFlag && context.started && !enterFlag)
+        if (menuFlag && context.started && !enterFlag && !fadeMenuFlag)
         {
             enterFlag = true;
             if (menuSelectNum != 2)
@@ -1468,16 +1473,16 @@ public class GeneralStageManager : MonoBehaviour
         {
             if (context.started && context.ReadValue<Vector2>().y > 0)
             {
-                menuSelectNum++;
-                if (menuSelectNum > 2)
+                menuSelectNum--;
+                if (menuSelectNum < 0)
                 {
                     menuSelectNum = 0;
                 }
             }
             else if (context.started && context.ReadValue<Vector2>().y < 0)
             {
-                menuSelectNum--;
-                if (menuSelectNum < 0)
+                menuSelectNum++;
+                if (menuSelectNum > 2)
                 {
                     menuSelectNum = 2;
                 }

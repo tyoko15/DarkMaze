@@ -36,7 +36,7 @@
                     "name": "Enter",
                     "type": "Button",
                     "id": "45c37a98-9026-44d4-bdeb-34d173862c5e",
-                    "expectedControlType": "Button",
+                    "expectedControlType": "",
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
@@ -611,7 +611,7 @@
                 {
                     "name": "",
                     "id": "61bb28f5-4135-4474-8370-b9f2c44b3054",
-                    "path": "<Gamepad>/select",
+                    "path": "<Gamepad>/start",
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
