@@ -154,8 +154,8 @@ public class GeneralStageManager : MonoBehaviour
             {
                 startTimer += Time.deltaTime;
                 startUI.SetActive(true);
-                int f = stageNum / 5;
-                int s = stageNum % 5;
+                int f = stageNum / 4;
+                int s = stageNum % 4;
                 TextMeshProUGUI text = startText.GetComponent<TextMeshProUGUI>();
                 if (startTimer < startTime / 2) text.text = $"ステージ\n{f + 1} - {s}\n";
                 else text.text = $"スタート\n";

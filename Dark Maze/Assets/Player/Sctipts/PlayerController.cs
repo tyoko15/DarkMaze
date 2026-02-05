@@ -504,7 +504,6 @@ public class PlayerController : MonoBehaviour
         if (attackFlag)
         {
             animator.SetTrigger("Attack");
-            attackFlag = false;
         }
     }
     void PlayerItemSelectControl()
@@ -942,7 +941,10 @@ public class PlayerController : MonoBehaviour
 
     public void InputPlayerAttackButton(InputAction.CallbackContext context)
     {
-        if(context.started && status == 1 && !attackFlag) attackFlag = true;
+        if (context.started && status == 1 && !attackFlag)
+        {
+            attackFlag = true;
+        }
     }
 
     public void InputPlayerSelectItemButton(InputAction.CallbackContext context)
@@ -978,5 +980,11 @@ public class PlayerController : MonoBehaviour
     public void InputPlayerUseItemControl(InputAction.CallbackContext context)
     {
         if(itemUseFlag && (context.ReadValue<Vector2>().x != 0 || context.ReadValue<Vector2>().y != 0)) itemUseDirection = new Vector3(context.ReadValue<Vector2>().x, 0f, context.ReadValue<Vector2>().y);
+    }
+
+    // 外部アクセス用関数
+    public void SetAttackFlag(bool flag)
+    {
+        attackFlag = flag;
     }
 }

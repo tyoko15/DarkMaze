@@ -39,7 +39,8 @@ public class PlayerAttackAnimationAnchor : MonoBehaviour
 
     public void EndAttack()
     {
-        sword.SetActive(false);
+        playerController.SetAttackFlag(false);
+
     }
 
 

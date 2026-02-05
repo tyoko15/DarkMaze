@@ -3307,7 +3307,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 791dec992846ada4ba2156fa64ee5ec2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  stageNum: 8
+  stageNum: 7
   fadeManagerObject: {fileID: 8267548131005766601, guid: 4640189f3bb3f43458f839336d723fa6, type: 3}
   fadeManager: {fileID: 0}
   fadeFlag: 0
