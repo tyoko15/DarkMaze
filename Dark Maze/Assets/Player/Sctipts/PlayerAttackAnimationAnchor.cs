@@ -40,7 +40,6 @@ public class PlayerAttackAnimationAnchor : MonoBehaviour
     public void EndAttack()
     {
         playerController.SetAttackFlag(false);
-
     }
 
 

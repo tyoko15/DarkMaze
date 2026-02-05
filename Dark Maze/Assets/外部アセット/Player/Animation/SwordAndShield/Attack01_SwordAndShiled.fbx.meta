@@ -79,15 +79,15 @@ ModelImporter:
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 0.50541854
-        functionName: EndAttackSpeed
+      - time: 0.49714282
+        functionName: EndAttack
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0
         intParameter: 0
         messageOptions: 0
-      - time: 1
-        functionName: EndAttack
+      - time: 0.50541854
+        functionName: EndAttackSpeed
         data: 
         objectReferenceParameter: {instanceID: 0}
         floatParameter: 0

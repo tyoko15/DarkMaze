@@ -4,6 +4,7 @@ public class ChestManger : MonoBehaviour
 {
     [SerializeField] GameObject chestObject;
     GameObject chestTopObject;
+    Vector3 originRotation;
     [SerializeField] GameObject player;
     [SerializeField] int itemNum;
     bool openFlag;
@@ -16,6 +17,7 @@ public class ChestManger : MonoBehaviour
     bool canvasFlag;
     void Start()
     {
+        originRotation = transform.GetChild(0).gameObject.transform.eulerAngles;
         if (hideFlag) chestObject.SetActive(false);
         if (chestObject.transform.childCount > 1) chestTopObject = chestObject.transform.GetChild(0).gameObject;
 
@@ -44,11 +46,12 @@ public class ChestManger : MonoBehaviour
                 openedTimer += Time.deltaTime;
                 if (chestTopObject != null)
                 {
-                    if (openedTimer > openedTime * 0.5f) chestTopObject.transform.eulerAngles = new Vector3(290f, 180f, 0f);
+                    if (openedTimer > openedTime * 0.5f) chestTopObject.transform.eulerAngles = new Vector3(-70f, 0f, 0f);
                     else if (openedTimer < openedTime * 0.5f)
                     {
-                        float x = Mathf.Lerp(360f, 290f, openedTimer / (openedTime * 0.5f));
-                        chestTopObject.transform.eulerAngles = new Vector3(x, 180f, 0f);
+                        float x = Mathf.Lerp(0f, -70f, openedTimer / (openedTime * 0.5f));
+                        //float x = Mathf.Lerp(360f, 290f, openedTimer / (openedTime * 0.5f));
+                        chestTopObject.transform.eulerAngles = new Vector3(x, 0, 0f);
                     }
                 }
             }

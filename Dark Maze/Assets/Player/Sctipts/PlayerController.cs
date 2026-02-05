@@ -503,7 +503,7 @@ public class PlayerController : MonoBehaviour
     {
         if (attackFlag)
         {
-            animator.SetTrigger("Attack");
+            
         }
     }
     void PlayerItemSelectControl()
@@ -579,10 +579,10 @@ public class PlayerController : MonoBehaviour
         if(getItemFlag)
         {
             if(clearStageNum == 1) canItemFlag[0] = true;
-            else if(clearStageNum == 6) canItemFlag[1] = true;
+            else if(clearStageNum == 5) canItemFlag[1] = true;
         }
         // ‹|‚ÌŽg—p‰Â
-        if (clearStageNum > 6)
+        if (clearStageNum > 5)
         {
             for (int i = 0; i < 2; i++) canItemFlag[i] = true;
         }
@@ -944,6 +944,7 @@ public class PlayerController : MonoBehaviour
         if (context.started && status == 1 && !attackFlag)
         {
             attackFlag = true;
+            animator.SetTrigger("Attack");
         }
     }
 

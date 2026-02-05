@@ -2028,7 +2028,7 @@ MonoBehaviour:
   woodLayer:
     serializedVersion: 2
     m_Bits: 256
-  ropePrefab: {fileID: 0}
+  ropePrefab: {fileID: 3252700491665716981, guid: 4ad408df8b5d4e64499d28ae69ec3dba, type: 3}
   ropeObject: {fileID: 0}
   ropeTargetObjects: []
   rangeRopeTargetObject: {fileID: 0}
