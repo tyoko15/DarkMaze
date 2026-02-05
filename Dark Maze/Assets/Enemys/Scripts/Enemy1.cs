@@ -213,6 +213,8 @@ public class Enemy1 : MonoBehaviour
         {
             collision.gameObject.GetComponent<PlayerController>().damageFlag = true;
             collision.gameObject.GetComponent<PlayerController>().damageAmount = enemyDamage;
+            Vector3 knockback = (collision.gameObject.transform.position - transform.position).normalized;
+            collision.gameObject.GetComponent<Rigidbody>().AddForce(knockback * 10f, ForceMode.Impulse);
         }
         else if(collision.gameObject.tag == "Arrow" && !isDamageFlag)
         {
@@ -229,6 +231,8 @@ public class Enemy1 : MonoBehaviour
             {
                 playerController.damageAmount = enemyDamage;
                 playerController.damageFlag = true;
+                Vector3 knockback = (collision.gameObject.transform.position - transform.position).normalized;
+                collision.gameObject.GetComponent<Rigidbody>().AddForce(knockback * 10f, ForceMode.Impulse);
             }
         }
     }

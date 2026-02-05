@@ -3893,7 +3893,7 @@ PrefabInstance:
       objectReference: {fileID: 52529358}
     - target: {fileID: 4848774531409522636, guid: 4443a843334ce7348bc5153a3318bc09, type: 3}
       propertyPath: openedTime
-      value: 10
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8189949347215650480, guid: 4443a843334ce7348bc5153a3318bc09, type: 3}
       propertyPath: m_Name

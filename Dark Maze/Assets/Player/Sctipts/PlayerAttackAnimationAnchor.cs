@@ -23,6 +23,7 @@ public class PlayerAttackAnimationAnchor : MonoBehaviour
     public void StartAttackSpeed()
     {     
         animator.SetFloat("AttackSpeed", startAttackSpeed);
+        animator.SetBool("AttackFlag", true);
     }
 
     public void MidAttackSpeed()
@@ -40,6 +41,7 @@ public class PlayerAttackAnimationAnchor : MonoBehaviour
     public void EndAttack()
     {
         playerController.SetAttackFlag(false);
+        animator.SetBool("AttackFlag", false);
     }
 
 
