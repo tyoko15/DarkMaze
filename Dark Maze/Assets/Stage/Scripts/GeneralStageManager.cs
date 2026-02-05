@@ -215,7 +215,6 @@ public class GeneralStageManager : MonoBehaviour
         {
             status = GameStatus.over;
             overFlag = true;
-            Debug.Log("over");
         }
     }
 

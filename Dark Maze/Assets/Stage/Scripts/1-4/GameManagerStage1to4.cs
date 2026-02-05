@@ -39,6 +39,7 @@ public class GameManagerStage1to4 : GeneralStageManager
                 break;
             case GameStatus.over:
                 Over();
+                OverUIControl();
                 playerController.status = 4;
                 break;
             case GameStatus.clear:

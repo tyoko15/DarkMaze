@@ -186,7 +186,7 @@ public class Enemy1 : MonoBehaviour
             effect.transform.parent = transform;
             effect.transform.localScale = new Vector3(2, 2, 2);
             agent.enabled = false;
-            Vector3 back = (-transform.forward + Vector3.up).normalized;
+            Vector3 back = ((transform.position - player.transform.position) + Vector3.up).normalized;
             rb.AddForce(back * knockbackPower, ForceMode.Impulse);
         }
     }

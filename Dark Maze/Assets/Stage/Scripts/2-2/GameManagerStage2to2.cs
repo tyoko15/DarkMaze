@@ -15,6 +15,7 @@ public class GameManagerStage2to2 : GeneralStageManager
                 break;
             case GameStatus.play:
                 Gimmick1();
+                JudgeOver();
                 Goal();
                 if (menuFlag) status = GameStatus.menu;
                 playerController.status = 1;
@@ -30,6 +31,8 @@ public class GameManagerStage2to2 : GeneralStageManager
                 playerController.status = 3;
                 break;
             case GameStatus.over:
+                Over();
+                OverUIControl();
                 playerController.status = 4;
                 break;
             case GameStatus.clear:

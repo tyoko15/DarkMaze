@@ -26,7 +26,6 @@ public class GameManagerStage1to1 : GeneralStageManager
                 Gimmick1();
                 Gimmick2();
                 Gimmick3();
-                JudgeOver();
                 Goal();
                 playerController.status = 2;
                 break;

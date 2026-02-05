@@ -3578,6 +3578,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 1734810217}
+        m_TargetAssemblyTypeName: GeneralStageManager, Assembly-CSharp
+        m_MethodName: OverUIControl
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 4e78d47f-a10b-4243-b668-6eef56ac7b78
     m_ActionName: 'Player/MenuSelectControl[/Keyboard/w,/Keyboard/s,/Keyboard/upArrow,/Keyboard/downArrow]'
   - m_PersistentCalls:
