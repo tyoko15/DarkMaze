@@ -654,7 +654,7 @@ MonoBehaviour:
   - {fileID: 1243694812}
   - {fileID: 1786121283}
   fadeManagerObject: {fileID: 8267548131005766601, guid: 4640189f3bb3f43458f839336d723fa6, type: 3}
-  totalClearNum: 8
+  totalClearNum: 0
   clearFieldNum: 0
   clearStageNum: 0
   selectReturnFlag: 0

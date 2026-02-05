@@ -8,6 +8,7 @@ public class Enemy1 : MonoBehaviour
     [SerializeField] EnemyHpUIManager hpUIManager;
     [SerializeField] int enemyStatus;
     [SerializeField] NavMeshAgent agent;
+    Rigidbody rb;
     [SerializeField] GameObject player;
     [SerializeField] GameObject[] wanderPoints;
     [SerializeField] int wanderPointNum;
@@ -26,14 +27,19 @@ public class Enemy1 : MonoBehaviour
     [SerializeField] float maxEnemyHP = 3;
     float enemyHP;
     [SerializeField] float enemyDamage;
+    [SerializeField] float knockbackPower;
     [SerializeField] bool isDamageFlag;
     [SerializeField] bool isAttackFlag;
+
+    [SerializeField] float isDamageTime;
+    float isDamageTimer;
 
     [Header("Effect")]
     [SerializeField] GameObject dieEffect;
     [SerializeField] GameObject damageEffect;
     void Start()
     {
+        rb = GetComponent<Rigidbody>();
         enemyHP = maxEnemyHP;
         hpUIManager.GetMaxHp(maxEnemyHP);
     }
@@ -68,8 +74,13 @@ public class Enemy1 : MonoBehaviour
 
     void EnemyControl()
     {
+        // damage’†
+        if (isDamageFlag)
+        {
+            EnemyDamage();
+        }
         // Stan’†
-        if (stanFlag)
+        else if (stanFlag)
         {
             confusionObject.SetActive(true);
             agent.isStopped = true;
@@ -153,10 +164,10 @@ public class Enemy1 : MonoBehaviour
         hpUIManager.HpControl(enemyHP);
     }
 
-    void EnemyDamage()
+    void EnemyDamageHit()
     {
         enemyHP--;
-        isDamageFlag = false;
+        //isDamageFlag = false;
         confusionObject.SetActive(false);
         if (!hpUIManager.damageFlag) hpUIManager.damageFlag = true;
         if (enemyHP <= 0)
@@ -173,9 +184,24 @@ public class Enemy1 : MonoBehaviour
         {
             GameObject effect = Instantiate(damageEffect, transform.position, Quaternion.identity);
             effect.transform.parent = transform;
-            effect.transform.localScale = new Vector3(2, 2, 2);            
+            effect.transform.localScale = new Vector3(2, 2, 2);
+            agent.enabled = false;
+            Vector3 back = (-transform.forward + Vector3.up).normalized;
+            rb.AddForce(back * knockbackPower, ForceMode.Impulse);
         }
     }
+
+    void EnemyDamage()
+    {
+        if (isDamageTimer > isDamageTime)
+        {
+            agent.enabled = true;
+            isDamageFlag = false;
+            isDamageTimer = 0f;
+        }
+        else isDamageTimer += Time.deltaTime;
+    }
+
     public void EnemyDestroy()
     {
         Destroy(gameObject);
@@ -191,7 +217,7 @@ public class Enemy1 : MonoBehaviour
         else if(collision.gameObject.tag == "Arrow" && !isDamageFlag)
         {
             isDamageFlag = true;
-            EnemyDamage();
+            EnemyDamageHit();
         }
     }
     private void OnCollisionStay(Collision collision)
@@ -211,7 +237,7 @@ public class Enemy1 : MonoBehaviour
         if (other.gameObject.tag == "Attack" && !isDamageFlag) 
         {
             isDamageFlag = true; 
-            EnemyDamage();            
+            EnemyDamageHit();            
         }
     }
     private void OnTriggerStay(Collider other)

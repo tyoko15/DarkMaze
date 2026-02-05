@@ -968,8 +968,10 @@ MonoBehaviour:
   stanTime: 3
   maxEnemyHP: 3
   enemyDamage: 10
+  knockbackPower: 5
   isDamageFlag: 0
   isAttackFlag: 0
+  isDamageTime: 0.5
   dieEffect: {fileID: 7226888052703040409, guid: 7ec363c8df426644ea85f8d6d570561c, type: 3}
   damageEffect: {fileID: 4021103657954561961, guid: 5c755f9bc5253ea418e919994537dcc7, type: 3}
 --- !u!54 &3354349886950343879
@@ -997,7 +999,7 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 126
+  m_Constraints: 112
   m_CollisionDetection: 0
 --- !u!195 &3722345354225376576
 NavMeshAgent:
