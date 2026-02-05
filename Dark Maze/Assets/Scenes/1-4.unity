@@ -2706,7 +2706,7 @@ MonoBehaviour:
   enterFlag: 0
   menuSelectNum: 0
   overSelectNum: 0
-  clearAnimeTime: 2.5
+  clearAnimeTime: 3
 --- !u!114 &1030517239
 MonoBehaviour:
   m_ObjectHideFlags: 0

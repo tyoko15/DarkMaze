@@ -203,7 +203,9 @@ public class GeneralStageManager : MonoBehaviour
         if (goalObject.GetComponent<GoalManager>().isGoalFlag)
         {
             status = GameStatus.clear;
+            SceneManager.LoadScene("Clear", LoadSceneMode.Additive);
             clearUI.SetActive(true);
+            playUI.SetActive(false);
         }
     }
 

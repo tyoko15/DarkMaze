@@ -110,7 +110,7 @@ public class DataManager : MonoBehaviour
                 if(dataNum == 0)
                 {
                     Debug.Log("TestData‚ğ’Ç‰Á");
-                    SaveData(dataNum, "Test", 7, 0);
+                    SaveData(dataNum, "Test", 8, 0);
                 }
                 else SaveData(dataNum, "", 0, 0);
             }
@@ -128,7 +128,7 @@ public class DataManager : MonoBehaviour
             if (dataNum == 0)
             {
                 Debug.Log("TestData‚ğ’Ç‰Á");
-                SaveData(dataNum, "Test", 7, 0);
+                SaveData(dataNum, "Test", 8, 0);
             }
             else SaveData(dataNum, "", 0, 0);
         }

@@ -52,6 +52,7 @@ public class NewStageSelectManager : MonoBehaviour
     [SerializeField] int totalClearNum;
     [SerializeField] int clearFieldNum;
     [SerializeField] int clearStageNum;
+    bool allClearFlag;
 
     // ==============================
     // 選択・移動パラメータ
@@ -125,11 +126,13 @@ public class NewStageSelectManager : MonoBehaviour
         }
         else
         {
-            clearFieldNum = totalClearNum / 4 + 1;
-            clearStageNum = totalClearNum % 4 + 1;
+            if (totalClearNum > 7) allClearFlag = true;
+            if (totalClearNum > 7) totalClearNum = 7;
+            clearFieldNum = totalClearNum / 4;
+            clearStageNum = totalClearNum % 4;
         }
 
-        if (totalClearNum > 7) totalClearNum = 7;
+
 
         // 前回選択ステージを復元
         if (dataManager)
@@ -168,8 +171,7 @@ public class NewStageSelectManager : MonoBehaviour
             stageImageObjects[selectNum].GetComponent<RectTransform>().anchoredPosition.y);
 
         // ステージ名表示
-        stageNameText.GetComponent<TextMeshProUGUI>().text =
-            $"{clearFieldNum + 1} - {clearStageNum + 1}";
+        stageNameText.GetComponent<TextMeshProUGUI>().text = $"{clearFieldNum + 1} - {clearStageNum + 1}";
 
         windowImages[3].SetActive(false);
         WindowControl();
@@ -407,7 +409,12 @@ public class NewStageSelectManager : MonoBehaviour
     /// </summary>
     void WindowControl()
     {
-        if (selectFieldNum - 1 == clearFieldNum)
+        if (allClearFlag)
+        {
+            windowImages[2].GetComponent<RectTransform>().sizeDelta = new Vector2(600f, 1200f);
+            windowImages[2].GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, 600f);
+        }
+        else if (selectFieldNum - 1 == clearFieldNum)
         {
             int nowStageNum = clearStageNum;
             windowImages[2].GetComponent<RectTransform>().sizeDelta = new Vector2(600f, 250f * nowStageNum);
@@ -419,11 +426,11 @@ public class NewStageSelectManager : MonoBehaviour
             y += 100f + ((4 - nowStageNum) * 250f / 2);
             windowImages[0].GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, y);
         }
-        else
-        {
-            windowImages[2].GetComponent<RectTransform>().sizeDelta = new Vector2(600f, 1200f);
-            windowImages[2].GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, 600f);
-        }
+        //else
+        //{
+        //    windowImages[2].GetComponent<RectTransform>().sizeDelta = new Vector2(600f, 1200f);
+        //    windowImages[2].GetComponent<RectTransform>().anchoredPosition = new Vector2(0f, 600f);
+        //}
     }
 
     /// <summary>
@@ -439,6 +446,8 @@ public class NewStageSelectManager : MonoBehaviour
         selectFieldNum = selectFielddataNum;
         selectStageNum = selectStagedataNum;
         totalClearNum = dataManager.data[dataManager.useDataNum].clearStageNum;
+        if (totalClearNum > 7) allClearFlag = true;
+        if (totalClearNum > 7) totalClearNum = 7;
         clearFieldNum = totalClearNum / 4;
         clearStageNum = totalClearNum % 4;
     }

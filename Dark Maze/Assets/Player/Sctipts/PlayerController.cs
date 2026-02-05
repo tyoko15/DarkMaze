@@ -164,9 +164,12 @@ public class PlayerController : MonoBehaviour
             case 4: // over                
                 OverControl();
                 break;
-            case 5: // clear
-                animator.SetTrigger("Clear");
-                if (clearEffect == null) clearEffect = Instantiate(clearEffectOrigin, transform.position, Quaternion.identity);
+            case 5: // clear               
+                if (clearEffect == null)
+                {
+                    animator.SetTrigger("Clear");
+                    clearEffect = Instantiate(clearEffectOrigin, transform.position, Quaternion.identity);
+                }
                 break;
         }
         PlayerItemSelectControl();                 

@@ -1380,7 +1380,7 @@ MonoBehaviour:
   enterFlag: 0
   menuSelectNum: 0
   overSelectNum: 0
-  clearAnimeTime: 2.5
+  clearAnimeTime: 3
 --- !u!1001 &581721302
 PrefabInstance:
   m_ObjectHideFlags: 0

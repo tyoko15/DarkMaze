@@ -1962,7 +1962,7 @@ GameObject:
   - component: {fileID: 1001537020}
   - component: {fileID: 1001537018}
   m_Layer: 0
-  m_Name: GameMamager
+  m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -2068,7 +2068,7 @@ MonoBehaviour:
   enterFlag: 0
   menuSelectNum: 0
   overSelectNum: 0
-  clearAnimeTime: 2.5
+  clearAnimeTime: 3
 --- !u!4 &1001537019
 Transform:
   m_ObjectHideFlags: 0
