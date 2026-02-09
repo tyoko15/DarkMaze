@@ -775,10 +775,6 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 8981066294722036156}
     - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
-      propertyPath: maxEnemyHP
-      value: 3
-      objectReference: {fileID: 0}
-    - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
       propertyPath: gameManager
       value: 
       objectReference: {fileID: 1001537018}
@@ -841,10 +837,6 @@ PrefabInstance:
     - target: {fileID: 7508215649130946902, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
       propertyPath: m_Name
       value: Enemy1 (1)
-      objectReference: {fileID: 0}
-    - target: {fileID: 7508215649130946902, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -1983,6 +1975,7 @@ MonoBehaviour:
   stageNum: 1
   fadeManagerObject: {fileID: 8267548131005766601, guid: 4640189f3bb3f43458f839336d723fa6, type: 3}
   fadeManager: {fileID: 0}
+  audioManagerObject: {fileID: 7419314631761978824, guid: e3aebe9d9ace6454987245c96f8d9ea3, type: 3}
   fadeFlag: 0
   status: 0
   playerController: {fileID: 0}
@@ -2965,6 +2958,14 @@ PrefabInstance:
     - target: {fileID: 6349677792785084775, guid: bfbfefa9c4cb8954aa14e64a45895adf, type: 3}
       propertyPath: m_LocalPosition.z
       value: -4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6503275569505958887, guid: bfbfefa9c4cb8954aa14e64a45895adf, type: 3}
+      propertyPath: m_Size.y
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 6503275569505958887, guid: bfbfefa9c4cb8954aa14e64a45895adf, type: 3}
+      propertyPath: m_Center.y
+      value: -5
       objectReference: {fileID: 0}
     - target: {fileID: 6603081891949028086, guid: bfbfefa9c4cb8954aa14e64a45895adf, type: 3}
       propertyPath: m_LocalPosition.x
@@ -4231,10 +4232,6 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 8981066294722036156}
-    - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
-      propertyPath: maxEnemyHP
-      value: 3
-      objectReference: {fileID: 0}
     - target: {fileID: 639645180567357884, guid: 17c4fdb5bcbdde645b170586da7a0993, type: 3}
       propertyPath: gameManager
       value: 

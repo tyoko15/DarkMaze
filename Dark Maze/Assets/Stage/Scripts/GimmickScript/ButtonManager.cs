@@ -121,11 +121,13 @@ public class ButtonManager : MonoBehaviour
             if (somethingFlag && (collision.gameObject.tag == "Attack" || collision.gameObject.tag == "Arrow") && !buttonFlag)
             {
                 buttonFlag = true;
+                AudioManager.Instance.PlayOneShotSE(AudioManager.SEName.gimmickSes, 0);
             }
             else if (!somethingFlag && somethingNum == 0 && (collision.gameObject.tag == "Attack" || collision.gameObject.tag == "Arrow") && !buttonFlag)
             {
                 buttonFlag = true;
                 somethingNum++;
+                AudioManager.Instance.PlayOneShotSE(AudioManager.SEName.gimmickSes, 0);
             }
         }
     }
@@ -137,11 +139,13 @@ public class ButtonManager : MonoBehaviour
             {
                 buttonFlag = true;
                 intervalFlag = true;
+                AudioManager.Instance.PlayOneShotSE(AudioManager.SEName.gimmickSes, 0);
             }
             else if (!somethingFlag && somethingNum == 0 && (collision.gameObject.tag == "Attack" || collision.gameObject.tag == "Arrow") && !buttonFlag)
             {
                 buttonFlag = true;
                 somethingNum++;
+                AudioManager.Instance.PlayOneShotSE(AudioManager.SEName.gimmickSes, 0);
             }
         }
 
@@ -154,10 +158,16 @@ public class ButtonManager : MonoBehaviour
     }
     private void OnTriggerStay(Collider other)
     {
-        if (senceFlag && (other.gameObject.tag == "Player" || other.gameObject.tag == "Box")) buttonFlag = true;
+        if (senceFlag && (other.gameObject.tag == "Box"))
+        {
+            buttonFlag = true;
+        }
     }
     private void OnTriggerExit(Collider other)
     {
-        if (senceFlag && (other.gameObject.tag == "Player" || other.gameObject.tag == "Box")) buttonFlag = false;
+        if (senceFlag && (other.gameObject.tag == "Box"))
+        {
+            buttonFlag = false;
+        }
     }
 }

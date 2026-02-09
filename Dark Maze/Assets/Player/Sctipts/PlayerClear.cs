@@ -7,6 +7,7 @@ public class PlayerClear : MonoBehaviour
     [SerializeField] Animator animator;
     void Start()
     {
+        if (!AudioManager.Instance.gameSEs[3].isPlaying) AudioManager.Instance.PlayOneShotSE(AudioManager.SEName.gameSes, 3);
         GameObject gameManager = GameObject.Find("GameManager").gameObject;
         if (gameManager != null)
         {

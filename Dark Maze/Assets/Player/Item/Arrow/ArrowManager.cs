@@ -49,7 +49,8 @@ public class ArrowManager : MonoBehaviour
         }
         else
         {
-            arrowObject.transform.position = position;
+            //arrowObject.transform.position = position;
+            rb.linearVelocity = Vector3.zero;
             boxCollider.isTrigger = false;
             if (lostTimer > lostTime)
             {
@@ -71,5 +72,6 @@ public class ArrowManager : MonoBehaviour
         }
         else stopFlag = true;
         position = arrowObject.transform.position;
+        transform.parent = collision.transform;
     }
 }

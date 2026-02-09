@@ -47,6 +47,17 @@ public class NewStageSelectManager : MonoBehaviour
     bool endFadeFlag;
 
     // ==============================
+    // Audio関連
+    // ==============================
+    [SerializeField] GameObject audioManagerObject;
+    public GameObject audioManager;
+    public AudioSource[] gameBgms;
+    public AudioSource[] gameSes;
+    public AudioSource[] playerSes;
+    public AudioSource[] enemySes;
+    public AudioSource[] gimmickSes;
+
+    // ==============================
     // クリア情報
     // ==============================
     [SerializeField] int totalClearNum;
@@ -130,7 +141,6 @@ public class NewStageSelectManager : MonoBehaviour
             if (totalClearNum > 7) totalClearNum = 7;
             clearFieldNum = totalClearNum / 4 + 1;
             clearStageNum = totalClearNum % 4 + 1;
-            Debug.Log($"{clearFieldNum} - {clearStageNum}");
         }
 
 
@@ -150,12 +160,12 @@ public class NewStageSelectManager : MonoBehaviour
         }
 
         // 新フィールド解放演出時の補正
-        if (cloudFlag)
-        {
-            selectNum--;
-            selectFieldNum--;
-            selectStageNum--;
-        }
+        //if (cloudFlag)
+        //{
+        //    selectNum--;
+        //    selectFieldNum--;
+        //    selectStageNum--;
+        //}
 
         // ステージ画像の初期配置
         int n = selectNum / 4 - 1;
@@ -172,7 +182,7 @@ public class NewStageSelectManager : MonoBehaviour
             stageImageObjects[selectNum].GetComponent<RectTransform>().anchoredPosition.y);
 
         // ステージ名表示
-        stageNameText.GetComponent<TextMeshProUGUI>().text = $"{clearFieldNum} - {clearStageNum}";
+        stageNameText.GetComponent<TextMeshProUGUI>().text = $"{selectFieldNum} - {selectStageNum}";
 
         windowImages[3].SetActive(false);
         WindowControl();
@@ -255,14 +265,16 @@ public class NewStageSelectManager : MonoBehaviour
             fadeManager.fadeInFlag = true;
             fadeFlag = true;
             enterFlag = false;
+            AudioManager.Instance.PlayOneShotSE(AudioManager.SEName.gameSes, 1);
         }
 
         // 左右入力（戻るボタン切り替え）
-        if (!returnMoveFlag && !fadeFlag)
+        if (!returnMoveFlag && !fadeManager.fadeFlag)
         {
             if (selectAction.ReadValue<Vector2>().x != 0)
             {
-                returnMoveFlag = true;
+                bool old = selectReturnFlag;
+                returnMoveFlag = true;                
                 if (selectAction.ReadValue<Vector2>().x > 0.5f) selectReturnFlag = true;
                 else if (selectAction.ReadValue<Vector2>().x < -0.5f) selectReturnFlag = false;
 
@@ -276,6 +288,7 @@ public class NewStageSelectManager : MonoBehaviour
                     returnButton.GetComponent<RectTransform>().localScale = Vector3.one;
                     selectObject.transform.GetChild(0).GetComponent<RectTransform>().localScale = new Vector2(1.2f, 1.2f);
                 }
+                if (selectReturnFlag != old) AudioManager.Instance.PlayOneShotSE(AudioManager.SEName.gameSes, 1);
             }
         }
         else if (returnMoveFlag)
@@ -289,10 +302,12 @@ public class NewStageSelectManager : MonoBehaviour
         }
 
         // 上下入力（ステージ移動）
-        if (!selectReturnFlag && !fadeFlag)
+        if (!selectReturnFlag && !fadeManager.fadeFlag)
         {
             if (selectAction.ReadValue<Vector2>().y > 0.5f && !selectMoveFlag)
             {
+                int old = selectNum;
+
                 selectMoveFlag = true;
                 selectVector.y = 1f;
                 selectNum++;
@@ -313,9 +328,12 @@ public class NewStageSelectManager : MonoBehaviour
                     selectNum = 7;
                     selectMoveFlag = false;
                 }
+                if (selectNum != old) AudioManager.Instance.PlayOneShotSE(AudioManager.SEName.gameSes, 1);
             }
             else if (selectAction.ReadValue<Vector2>().y < -0.5f && !selectMoveFlag)
             {
+                int old = selectNum;
+               
                 selectMoveFlag = true;
                 selectVector.y = -1f;
                 selectNum--;
@@ -331,6 +349,7 @@ public class NewStageSelectManager : MonoBehaviour
                     selectNum = 0;
                     selectMoveFlag = false;
                 }
+                if (selectNum != old) AudioManager.Instance.PlayOneShotSE(AudioManager.SEName.gameSes, 1);
             }
         }
         if (selectMoveFlag)
@@ -442,8 +461,8 @@ public class NewStageSelectManager : MonoBehaviour
         Debug.Log("セーブデータを読み込みます。");
         totalClearNum = dataManager.data[dataManager.useDataNum].clearStageNum;
         int dateNum = dataManager.useDataNum;
-        int selectFielddataNum = dataManager.data[dateNum].selectStageNum / 5;
-        int selectStagedataNum = dataManager.data[dateNum].selectStageNum % 5;
+        int selectFielddataNum = dataManager.data[dateNum].selectStageNum / 4;
+        int selectStagedataNum = dataManager.data[dateNum].selectStageNum % 4;
         selectFieldNum = selectFielddataNum;
         selectStageNum = selectStagedataNum;
         totalClearNum = dataManager.data[dataManager.useDataNum].clearStageNum;

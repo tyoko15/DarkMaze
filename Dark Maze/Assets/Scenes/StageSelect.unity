@@ -654,13 +654,20 @@ MonoBehaviour:
   - {fileID: 1243694812}
   - {fileID: 1786121283}
   fadeManagerObject: {fileID: 8267548131005766601, guid: 4640189f3bb3f43458f839336d723fa6, type: 3}
-  totalClearNum: 0
+  audioManagerObject: {fileID: 7419314631761978824, guid: e3aebe9d9ace6454987245c96f8d9ea3, type: 3}
+  audioManager: {fileID: 0}
+  gameBgms: []
+  gameSes: []
+  playerSes: []
+  enemySes: []
+  gimmickSes: []
+  totalClearNum: 7
   clearFieldNum: 0
   clearStageNum: 0
   selectReturnFlag: 0
   selectFieldNum: 1
   selectStageNum: 1
-  selectNum: 0
+  selectNum: 3
   selectMoveTime: 0.2
   changeStageTime: 0.5
   returnMoveTime: 0.2

@@ -32,6 +32,7 @@ public class FadeManager : MonoBehaviour
     [SerializeField] float fadeBannerFadeOutSecond;
     public bool fadeBannerFadeOutFlag;
     [Header("フェイド共通関連")]
+    bool startFlag;
     public bool endFlag; 
     float[] timer;
     float[] moveX;
@@ -137,6 +138,11 @@ public class FadeManager : MonoBehaviour
 
     void InFade()
     {
+        if (!startFlag)
+        {
+            AudioManager.Instance.PlayOneShotSE(AudioManager.SEName.gameSes, 0);
+            startFlag = true;
+        }
         for (int i = 0; i < fadeObjects.Length; i++)
         {
             if (fadeObjects[i].gameObject.GetComponent<RectTransform>().anchoredPosition.x == 0)
@@ -150,6 +156,7 @@ public class FadeManager : MonoBehaviour
                         timer[j] -= j * fadeOutTimer;
                     }
                     //fadeInFlag = false;
+                    startFlag = false;
                     endFlag = true;
                 }
             }
@@ -164,6 +171,11 @@ public class FadeManager : MonoBehaviour
 
     void OutFade()
     {
+        if (!startFlag)
+        {
+            AudioManager.Instance.PlayOneShotSE(AudioManager.SEName.gameSes, 0);
+            startFlag = true;
+        }
         for (int i = 0;i < fadeObjects.Length;i++)
         {
             if (fadeObjects[i].gameObject.GetComponent<RectTransform>().anchoredPosition.x == -fadeObjectWidth - i * 300f)
@@ -177,6 +189,7 @@ public class FadeManager : MonoBehaviour
                         timer[j] -= j * fadeInTimer;
                     }
                     //fadeOutFlag = false;
+                    startFlag = false;
                     endFlag = true;
                 }
             }

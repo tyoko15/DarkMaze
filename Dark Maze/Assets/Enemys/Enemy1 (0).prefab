@@ -968,7 +968,7 @@ MonoBehaviour:
   stanTime: 3
   maxEnemyHP: 3
   enemyDamage: 10
-  knockbackPower: 5
+  knockbackPower: 50
   isDamageFlag: 0
   isAttackFlag: 0
   isDamageTime: 0.5

@@ -148,12 +148,17 @@ public class BoxManager : MonoBehaviour
         // ¶‚Ö
         if (direction == 0)
         {
-            if(moveTimer == 0) originPosition = box.transform.position;
+            if (moveTimer == 0)
+            {
+                originPosition = box.transform.position;
+                AudioManager.Instance.PlaySE(AudioManager.SEName.gimmickSes, 4);
+            }
             if (moveTimer > moveTime)
             {
                 moveTimer = 0;
                 lockFlag = false;
-            } 
+                AudioManager.Instance.StopSE(AudioManager.SEName.gimmickSes, 4);
+            }
             else if(moveTimer < moveTime)
             {
                 moveTimer += Time.deltaTime;
@@ -164,11 +169,16 @@ public class BoxManager : MonoBehaviour
         // ‰E‚Ö
         else if (direction == 1)
         {
-            if (moveTimer == 0) originPosition = box.transform.position; 
+            if (moveTimer == 0)
+            {
+                originPosition = box.transform.position;
+                AudioManager.Instance.PlaySE(AudioManager.SEName.gimmickSes, 4);
+            }
             if (moveTimer > moveTime)
             {
                 moveTimer = 0;
                 lockFlag = false;
+                AudioManager.Instance.StopSE(AudioManager.SEName.gimmickSes, 4);
             }
             else if (moveTimer < moveTime)
             {
@@ -180,11 +190,16 @@ public class BoxManager : MonoBehaviour
         // ‘O‚Ö
         else if (direction == 2)
         {
-            if (moveTimer == 0) originPosition = box.transform.position; 
+            if (moveTimer == 0)
+            {
+                originPosition = box.transform.position;
+                AudioManager.Instance.PlaySE(AudioManager.SEName.gimmickSes, 4);
+            }
             if (moveTimer > moveTime)
             {
                 moveTimer = 0;
                 lockFlag = false;
+                AudioManager.Instance.StopSE(AudioManager.SEName.gimmickSes, 4);
             }
             else if (moveTimer < moveTime)
             {
@@ -196,11 +211,16 @@ public class BoxManager : MonoBehaviour
         // Œã‚Ö
         else if (direction == 3)
         {
-            if (moveTimer == 0) originPosition = box.transform.position; 
+            if (moveTimer == 0)
+            {
+                originPosition = box.transform.position;
+                AudioManager.Instance.PlaySE(AudioManager.SEName.gimmickSes, 4);
+            }
             if (moveTimer > moveTime)
             {
                 moveTimer = 0;
                 lockFlag = false;
+                AudioManager.Instance.StopSE(AudioManager.SEName.gimmickSes, 4);
             }
             else if (moveTimer < moveTime)
             {

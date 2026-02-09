@@ -1,5 +1,6 @@
 using UnityEngine;
 using TMPro;
+using System.Collections;
 using UnityEngine.SceneManagement;
 
 /// <summary>
@@ -17,9 +18,16 @@ public class TitleManager : MonoBehaviour
     [SerializeField] GameObject fadeManagerObject;          // FadeManager生成用Prefab
     [SerializeField] GameObject dataManagerObject;          // DataManager生成用Prefab
 
+    // ==============================
+    // Audio関連
+    // ==============================
+    [SerializeField] GameObject audioManagerObject;
+    public AudioManager audioManager;
+
     // ===== UI参照 =====
     [Header("UIの取得")]
     [SerializeField] GameObject titleUIObject;               // タイトルUI
+    [SerializeField] GameObject infoUIObject;               // 遊び方UI
     [SerializeField] GameObject selectDataUIObject;          // データ選択UI
     [SerializeField] TextMeshProUGUI[] selectDataText;       // 各データ表示テキスト
     [SerializeField] GameObject selectDataDecisionUIObject;  // データ決定UI
@@ -105,6 +113,17 @@ public class TitleManager : MonoBehaviour
         // 名前入力UIの初期化
         GetInputText();
         SetCharactersInputText();
+
+        if (GameObject.Find("AudioManager") != null)
+        {
+            audioManager = AudioManager.Instance;
+        }
+        else
+        {
+            GameObject ob = Instantiate(audioManagerObject, Vector3.zero, Quaternion.identity);
+            audioManager = ob.GetComponent<AudioManager>();
+        }
+        StartCoroutine(GetAudio());
     }
 
     void Update()
@@ -117,6 +136,14 @@ public class TitleManager : MonoBehaviour
             FadeControl();          // フェード演出制御
         }
     }
+
+    IEnumerator GetAudio()
+    {
+        yield return new WaitUntil(() =>
+            AudioManager.Instance != null & AudioManager.Instance.isReady
+        );
+    }
+
 
     /// <summary>
     /// セーブデータ情報をUIに反映する
@@ -156,6 +183,7 @@ public class TitleManager : MonoBehaviour
             if (progressNum == 0)
             {
                 TitleUIActive(true);
+                infoUIObject.SetActive(false);
                 SelectDataUIActive(false);
             }
             else if (progressNum == 1)
@@ -173,6 +201,11 @@ public class TitleManager : MonoBehaviour
             {
                 SceneManager.LoadScene("StageSelect");
             }
+            else if (progressNum == 4)
+            {
+                TitleUIActive(false);
+                infoUIObject.SetActive(true);
+            }  
         }
         // フェードインターバル終了
         else if (fadeManager.endFlag && fadeManager.fadeIntervalFlag)

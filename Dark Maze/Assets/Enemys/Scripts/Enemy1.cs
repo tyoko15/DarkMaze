@@ -46,6 +46,8 @@ public class Enemy1 : MonoBehaviour
 
     void Update()
     {
+        if (moveFlag) AudioManager.Instance.PlaySE(AudioManager.SEName.enemySes, 0);
+        else AudioManager.Instance.StopSE(AudioManager.SEName.enemySes, 0);
         switch (gameManager.status) 
         {
             case GameStatus.start: // start
@@ -87,11 +89,13 @@ public class Enemy1 : MonoBehaviour
             animator.SetBool("Down", true);
             animator.SetBool("Move", false);
             animator.SetBool("Attack", false);
+            if (!AudioManager.Instance.enemySEs[2].isPlaying) AudioManager.Instance.PlaySE(AudioManager.SEName.enemySes, 2);
             isAttackFlag = false;
             if (stanTimer > stanTime)
             {
                 stanFlag = false;
                 stanTimer = 0;
+                if (AudioManager.Instance.enemySEs[2].isPlaying) AudioManager.Instance.StopSE(AudioManager.SEName.enemySes, 2);
             }
             else if (stanTimer < stanTime)
             {
@@ -106,6 +110,7 @@ public class Enemy1 : MonoBehaviour
             if (moveFlag)
             {
                 animator.SetBool("Move", true);
+                AudioManager.Instance.PlaySE(AudioManager.SEName.enemySes, 0);
                 // ’ÇÕ’†
                 if (trackFlag)
                 {
@@ -116,6 +121,7 @@ public class Enemy1 : MonoBehaviour
                     if (trackDistance < 1f)
                     {
                         animator.SetBool("Attack", true);
+                        if (!AudioManager.Instance.enemySEs[1].isPlaying) AudioManager.Instance.PlayOneShotSE(AudioManager.SEName.enemySes, 1);
                         isAttackFlag = true;
                     }
                     else
@@ -147,6 +153,7 @@ public class Enemy1 : MonoBehaviour
                 agent.isStopped = true;
                 animator.SetBool("Move", false);
                 animator.SetBool("Attack", false);
+                if (AudioManager.Instance.enemySEs[0].isPlaying) AudioManager.Instance.StopSE(AudioManager.SEName.enemySes, 0);
             }
         }            
     }
@@ -173,21 +180,22 @@ public class Enemy1 : MonoBehaviour
         if (enemyHP <= 0)
         {
             animator.SetTrigger("Die");
+            AudioManager.Instance.PlayOneShotSE(AudioManager.SEName.enemySes, 3);
             GameObject effect = Instantiate(dieEffect, transform.position, Quaternion.identity);
             effect.transform.parent = transform;
             effect.transform.eulerAngles = new Vector3(-90, 0, 0);
             enemyHP = -1;
             agent.enabled = false;
             dieFlag = true;
+
         }
         else if (enemyHP > 0)
         {
             GameObject effect = Instantiate(damageEffect, transform.position, Quaternion.identity);
             effect.transform.parent = transform;
             effect.transform.localScale = new Vector3(2, 2, 2);
-            agent.enabled = false;
-            Vector3 back = ((transform.position - player.transform.position) + Vector3.up).normalized;
-            rb.AddForce(back * knockbackPower, ForceMode.Impulse);
+            Vector3 knockback = (transform.position - player.transform.position).normalized;
+            rb.AddForce(knockback * knockbackPower * Time.deltaTime, ForceMode.Impulse);
         }
     }
 
@@ -205,26 +213,30 @@ public class Enemy1 : MonoBehaviour
     public void EnemyDestroy()
     {
         Destroy(gameObject);
+        AudioManager.Instance.StopEnemySE();
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        if(collision.gameObject.tag == "Player" && isAttackFlag)
+        if (!dieFlag)
         {
-            collision.gameObject.GetComponent<PlayerController>().damageFlag = true;
-            collision.gameObject.GetComponent<PlayerController>().damageAmount = enemyDamage;
-            Vector3 knockback = (collision.gameObject.transform.position - transform.position).normalized;
-            collision.gameObject.GetComponent<Rigidbody>().AddForce(knockback * 10f, ForceMode.Impulse);
-        }
-        else if(collision.gameObject.tag == "Arrow" && !isDamageFlag)
-        {
-            isDamageFlag = true;
-            EnemyDamageHit();
+            if (collision.gameObject.tag == "Player" && isAttackFlag)
+            {
+                collision.gameObject.GetComponent<PlayerController>().damageFlag = true;
+                collision.gameObject.GetComponent<PlayerController>().damageAmount = enemyDamage;
+                Vector3 knockback = (collision.gameObject.transform.position - transform.position).normalized;
+                //collision.gameObject.GetComponent<Rigidbody>().AddForce(knockback * knockbackPower * Time.deltaTime, ForceMode.Impulse);
+            }
+            else if (collision.gameObject.tag == "Arrow" && !isDamageFlag)
+            {
+                isDamageFlag = true;
+                EnemyDamageHit();
+            }
         }
     }
     private void OnCollisionStay(Collision collision)
     {
-        if(collision.gameObject.tag == "Player" && isAttackFlag)
+        if(collision.gameObject.tag == "Player" && isAttackFlag && !dieFlag)
         {
             PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
             if (!playerController.damageFlag)
@@ -232,7 +244,7 @@ public class Enemy1 : MonoBehaviour
                 playerController.damageAmount = enemyDamage;
                 playerController.damageFlag = true;
                 Vector3 knockback = (collision.gameObject.transform.position - transform.position).normalized;
-                collision.gameObject.GetComponent<Rigidbody>().AddForce(knockback * 10f, ForceMode.Impulse);
+                //collision.gameObject.GetComponent<Rigidbody>().AddForce(knockback * knockbackPower * Time.deltaTime, ForceMode.Impulse);
             }
         }
     }

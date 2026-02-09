@@ -1,5 +1,6 @@
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
@@ -25,6 +26,8 @@ public class TitleButtonManager : MonoBehaviour
     // ==============================
     [Header("Buttonの取得")]
     [SerializeField] GameObject[] titleUIButtons;                 // タイトル画面のボタン群
+    [SerializeField] GameObject[] infoUIButtons;                  // 遊び方画面のボタン群
+    [SerializeField] Sprite[] infoBanners;                        // バナー
     [SerializeField] GameObject[] selectDataUIButtons;            // データ選択UIのボタン群
     [SerializeField] GameObject selectDataDecisionUI;             // データ選択決定UI
     [SerializeField] GameObject[] selectDataDecisionUIButtons;    // データ選択決定UI内ボタン
@@ -52,6 +55,10 @@ public class TitleButtonManager : MonoBehaviour
     [SerializeField] float inputIntervalTime;
     float inputIntervalTimer;
 
+    int infoBannerNum;
+    [SerializeField] GameObject infoBannerImage;
+    [SerializeField] GameObject infoNumberText;
+
     [Header("コントローラー情報")]
     [SerializeField] int selectNum;        // 現在選択中の番号
     int oldSelectNum;                      // 1つ前の選択番号
@@ -76,6 +83,8 @@ public class TitleButtonManager : MonoBehaviour
             Cursor.visible = true;
         }
         fadeManager = GameObject.Find("FadeManager").GetComponent<FadeManager>();
+
+        infoNumberText.GetComponent<TextMeshProUGUI>().text = $"1 / {infoBanners.Length}";
     }
 
     // ==============================
@@ -127,14 +136,19 @@ public class TitleButtonManager : MonoBehaviour
                 if (selectNum == 0)
                 {
                     EnterStartButton();
-                    if (oldSelectNum == 1) ExitEndButton();
+                    if (oldSelectNum != 0) AudioManager.Instance.PlayOneShotSE(AudioManager.SEName.gameSes, 1);
                 }
                 if (selectNum == 1)
                 {
-                    EnterEndButton();
-                    if (oldSelectNum == 0) ExitStartButton();
+                    EnterInfoButton();
+                    if (oldSelectNum != 1) AudioManager.Instance.PlayOneShotSE(AudioManager.SEName.gameSes, 1);
                 }
-                oldSelectNum = selectNum;
+                if (selectNum == 2)
+                {
+                    EnterEndButton();
+                    if (oldSelectNum != 2) AudioManager.Instance.PlayOneShotSE(AudioManager.SEName.gameSes, 1);
+                }
+                oldSelectNum = selectNum;                
                 oneFlag = false;
             }
 
@@ -142,13 +156,15 @@ public class TitleButtonManager : MonoBehaviour
             if (EnterFlag)
             {
                 if (selectNum == 0) ClickStartButton();
-                else if (selectNum == 1) ClickEndButton();
+                else if (selectNum == 1) ClickInfoButton();
+                else if (selectNum == 2) ClickEndButton();
 
                 // 選択状態リセット
+                EnterStartButton();
                 selectNum = 0;
                 oldSelectNum = 0;
                 EnterFlag = false;
-                oneFlag = true;
+                //oneFlag = true;
             }
         }
         else if (titleManager.progressNum == 1)
@@ -183,6 +199,7 @@ public class TitleButtonManager : MonoBehaviour
                         if (oldSelectNum == 0) ExitData1();
                         else if (oldSelectNum == 2) ExitData3();
                     }
+                    if (selectNum != oldSelectNum) AudioManager.Instance.PlayOneShotSE(AudioManager.SEName.gameSes, 1);
                     oldSelectNum = selectNum;
                     oneFlag = false;
                 }
@@ -217,7 +234,7 @@ public class TitleButtonManager : MonoBehaviour
                     {
                         EnterSelectDataDecisionButton();
                         if (oldSelectNum == 0) ExitSelectDataReturnButton();
-                    }                    
+                    }
                     oldSelectNum = selectNum;
                     oneFlag = false;
                 }
@@ -232,7 +249,7 @@ public class TitleButtonManager : MonoBehaviour
                 }
             }
         }
-        else if(titleManager.progressNum == 2)
+        else if (titleManager.progressNum == 2)
         {
             // ---------- データ作成画面 ----------
             if (decisionFlag)
@@ -247,8 +264,9 @@ public class TitleButtonManager : MonoBehaviour
                     else if (selectNum == 1)
                     {
                         EnterCreateDataDecisionUIDecisionButton();
-                        if (oldSelectNum == 0) ExitCreateDataDecisionUIReturnButton();
+                        if (oldSelectNum == 0) ExitCreateDataDecisionUIReturnButton();                    
                     }
+                    if (selectNum != oldSelectNum) AudioManager.Instance.PlayOneShotSE(AudioManager.SEName.gameSes, 1);
                     oldSelectNum = selectNum;
                     oneFlag = false;
                 }
@@ -262,6 +280,48 @@ public class TitleButtonManager : MonoBehaviour
                     oneFlag = true;
                 }
             }            
+        }
+        else if (titleManager.progressNum == 4)
+        {
+            // ---------- 遊び方画面 ----------
+            if (oneFlag)
+            {
+                if (selectNum == 0)
+                {
+                    infoUIButtons[0].SetActive(true);
+                    infoUIButtons[1].GetComponent<RectTransform>().localScale = Vector3.one;
+                }
+                else if (selectNum == 1)
+                {
+                    infoUIButtons[0].SetActive(false);
+                    infoUIButtons[1].GetComponent<RectTransform>().localScale = new Vector3(1.2f, 1.2f, 1.2f);
+                }
+                oneFlag = false;
+            }
+            if (EnterFlag)
+            {
+                if (selectNum == 0)
+                {
+                    infoBannerNum++;
+                    if (infoBannerNum > infoBanners.Length - 1) infoBannerNum = 0;
+                    infoNumberText.GetComponent<TextMeshProUGUI>().text = $"{infoBannerNum + 1} / {infoBanners.Length}";
+                    infoBannerImage.GetComponent<Image>().sprite = infoBanners[infoBannerNum];
+                }
+                else if (selectNum == 1)
+                {
+                    // 初期化
+                    infoBannerNum = 0;
+                    infoNumberText.GetComponent<TextMeshProUGUI>().text = $"{infoBannerNum + 1} / {infoBanners.Length}";
+                    infoBannerImage.GetComponent<Image>().sprite = infoBanners[infoBannerNum];
+                    infoUIButtons[0].SetActive(true);
+                    infoUIButtons[1].GetComponent<RectTransform>().localScale = Vector3.one;
+                    // 切り替え
+                    titleManager.progressNum = 0;
+                    titleManager.fadeFlag = true;
+                }
+                selectNum = 0;
+                EnterFlag = false;
+            }
         }
     }
 
@@ -298,7 +358,19 @@ public class TitleButtonManager : MonoBehaviour
         titleManager.enterTitleUINum = 1;
         titleUIButtons[0].SetActive(true);
         titleUIButtons[1].SetActive(false);
+        titleUIButtons[2].SetActive(false);
         //TextAnime(ref titleUIButtons, 0, true);
+    }
+
+    /// <summary>
+    /// 「How to Play」ボタンにカーソルが乗ったときの処理
+    /// </summary>
+    public void EnterInfoButton()
+    {
+        titleManager.enterTitleUINum = 3;
+        titleUIButtons[0].SetActive(false);
+        titleUIButtons[1].SetActive(true);
+        titleUIButtons[2].SetActive(false);
     }
 
     /// <summary>
@@ -308,7 +380,8 @@ public class TitleButtonManager : MonoBehaviour
     {
         titleManager.enterTitleUINum = 2;
         titleUIButtons[0].SetActive(false);
-        titleUIButtons[1].SetActive(true);
+        titleUIButtons[1].SetActive(false);
+        titleUIButtons[2].SetActive(true);
         //TextAnime(ref titleUIButtons, 1, true);
     }
 
@@ -323,6 +396,12 @@ public class TitleButtonManager : MonoBehaviour
         //TextAnime(ref titleUIButtons, 0, false);
         titleManager.fadeFlag = true;
         titleManager.progressNum = 1;
+    }
+
+    public void ClickInfoButton()
+    {
+        titleManager.fadeFlag = true;
+        titleManager.progressNum = 4;
     }
 
     /// <summary>
@@ -854,7 +933,7 @@ public class TitleButtonManager : MonoBehaviour
             if (context.ReadValue<Vector2>().y < -0.5f)
             {
                 selectNum++;
-                if (selectNum > 1) selectNum = 1;
+                if (selectNum > 2) selectNum = 2;
                 oneFlag = true;
             }
             else if (context.ReadValue<Vector2>().y > 0.5f)
@@ -939,6 +1018,23 @@ public class TitleButtonManager : MonoBehaviour
             }
             inputIntervalFlag = true;
         }
+        // ==============================
+        // InfoUI
+        // ==============================
+        else if (titleManager.progressNum == 4 && !fadeManager.fadeFlag && !inputIntervalFlag)
+        {
+            if (context.ReadValue<Vector2>().x < -0.5f)
+            {
+                selectNum = 0;
+                oneFlag = true;
+            }
+            else if (context.ReadValue<Vector2>().x > 0.5f)
+            {
+                selectNum = 1;
+                oneFlag = true;
+            }
+            inputIntervalFlag = true;
+        }
     }
 
     /// <summary>
@@ -946,18 +1042,37 @@ public class TitleButtonManager : MonoBehaviour
     /// </summary>
     public void InputEnter(InputAction.CallbackContext context)
     {
-        // タイトル画面・データ選択画面
-        if (titleManager.progressNum == 0 || titleManager.progressNum == 1)
+        if (!fadeManager.fadeFlag)
         {
-            if (context.started && !fadeManager.fadeFlag) EnterFlag = true;
-        }
-        // データ作成画面
-        else if (titleManager.progressNum == 2)
-        {
-            // 名前入力中
-            if (context.started && !decisionFlag && !fadeManager.fadeFlag) titleManager.enterInputFlag = true;
-            // 決定確認UI中
-            if (context.started && decisionFlag && !fadeManager.fadeFlag) EnterFlag = true;
+            // タイトル画面・データ選択画面
+            if (titleManager.progressNum == 0 || titleManager.progressNum == 1)
+            {
+                if (context.started && !fadeManager.fadeFlag)
+                {
+                    EnterFlag = true; 
+                    AudioManager.Instance.PlayOneShotSE(AudioManager.SEName.gameSes, 2);
+                }
+            }
+            // データ作成画面
+            else if (titleManager.progressNum == 2)
+            {
+                // 名前入力中
+                if (context.started && !decisionFlag && !fadeManager.fadeFlag)
+                {
+                    titleManager.enterInputFlag = true;
+                    AudioManager.Instance.PlayOneShotSE(AudioManager.SEName.gameSes, 2);
+                }
+                // 決定確認UI中
+                if (context.started && decisionFlag && !fadeManager.fadeFlag)
+                {
+                    EnterFlag = true;
+                    AudioManager.Instance.PlayOneShotSE(AudioManager.SEName.gameSes, 2);
+                }
+            }
+            else if (titleManager.progressNum == 4)
+            {
+                if (context.started) EnterFlag = true;
+            }
         }
     }
 }

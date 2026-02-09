@@ -3660,6 +3660,13 @@ MonoBehaviour:
   stageNum: 7
   fadeManagerObject: {fileID: 8267548131005766601, guid: 4640189f3bb3f43458f839336d723fa6, type: 3}
   fadeManager: {fileID: 0}
+  audioManagerObject: {fileID: 7419314631761978824, guid: e3aebe9d9ace6454987245c96f8d9ea3, type: 3}
+  audioManager: {fileID: 0}
+  gameBgms: []
+  gameSes: []
+  playerSes: []
+  enemySes: []
+  gimmickSes: []
   fadeFlag: 0
   status: 0
   playerController: {fileID: 1450197468}

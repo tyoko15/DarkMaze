@@ -12,7 +12,7 @@ public class GameManagerStage1to1 : GeneralStageManager
             case GameStatus.start:
                 playerController.status = 0;
                 StartAnime();
-            break;
+                break;
             case GameStatus.play:
                 Gimmick1();
                 Gimmick2();

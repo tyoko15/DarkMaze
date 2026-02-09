@@ -3,12 +3,15 @@ using Unity.AI.Navigation;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class GeneralStageManager : MonoBehaviour
 {
     [SerializeField] public int stageNum;
     [SerializeField] public GameObject fadeManagerObject;
     public FadeManager fadeManager;
+    [SerializeField] GameObject audioManagerObject;
+    AudioManager audioManager;
     public bool fadeFlag;
     public enum GameStatus
     {
@@ -102,6 +105,14 @@ public class GeneralStageManager : MonoBehaviour
         menuTexts = new GameObject[3];
     }
 
+    IEnumerator GetAudio()
+    {
+        yield return new WaitUntil(() =>
+            AudioManager.Instance != null & AudioManager.Instance.isReady
+        );
+        audioManager.PlayBGM(AudioManager.BGMName.gameBgms, 0);
+    }
+
     public void StartData()
     {
         GetUIandPlayer();
@@ -127,6 +138,17 @@ public class GeneralStageManager : MonoBehaviour
             player.GetComponent<PlayerController>().clearStageNum = GameObject.Find("DataManager").GetComponent<DataManager>().data[dataNum].clearStageNum;
         }
         else if (GameObject.Find("DataManager") == null) player.GetComponent<PlayerController>().clearStageNum = stageNum - 1;
+        
+        if (GameObject.Find("AudioManager") != null)
+        {
+            audioManager = AudioManager.Instance;
+        }
+        else
+        {
+            GameObject ob = Instantiate(audioManagerObject, Vector3.zero, Quaternion.identity);
+            audioManager = ob.GetComponent<AudioManager>();
+        }
+        StartCoroutine(GetAudio());
     }
 
     public void StartAnime()
@@ -148,7 +170,7 @@ public class GeneralStageManager : MonoBehaviour
             {
                 startTimer = 0;
                 startUI.SetActive(false);
-                status = GameStatus.play;
+                status = GameStatus.play;                
             }
             else if (startTimer < startTime)
             {
@@ -183,9 +205,11 @@ public class GeneralStageManager : MonoBehaviour
             {
                 DataManager dataManager = GameObject.Find("DataManager").GetComponent<DataManager>();
                 int dataNum = dataManager.useDataNum;
-                if (dataManager.data[dataNum].clearStageNum == stageNum - 1) dataManager.data[dataNum].clearStageNum = stageNum;
-                dataManager.SaveData(dataNum, dataManager.data[dataNum].playerName, dataManager.data[dataNum].clearStageNum, stageNum-1);
-                if (stageNum % 4 == 0) dataManager.nextFieldFlag = true;
+                if (stageNum != 8)
+                {
+                    if (dataManager.data[dataNum].clearStageNum == stageNum - 1) dataManager.data[dataNum].clearStageNum = stageNum;
+                    dataManager.SaveData(dataNum, dataManager.data[dataNum].playerName, dataManager.data[dataNum].clearStageNum, stageNum - 1);
+                }
             }
             SceneManager.LoadScene("StageSelect");
         }
@@ -213,6 +237,7 @@ public class GeneralStageManager : MonoBehaviour
             SceneManager.LoadScene("Clear", LoadSceneMode.Additive);
             clearUI.SetActive(true);
             playUI.SetActive(false);
+            audioManager.StopBGM(AudioManager.BGMName.gameBgms, 0);
         }
     }
 
@@ -222,6 +247,7 @@ public class GeneralStageManager : MonoBehaviour
         {
             status = GameStatus.over;
             overFlag = true;
+            audioManager.PlayOneShotSE(AudioManager.SEName.gameSes, 4);
         }
     }
 
@@ -260,6 +286,7 @@ public class GeneralStageManager : MonoBehaviour
                     cameraTimer[i] = 0f;
                     mainCamera.transform.position = cameraPoint.transform.position;
                     mainCamera.transform.rotation = Quaternion.Euler(cameraPoint.transform.eulerAngles);
+                    audioManager.PlaySE(AudioManager.SEName.gimmickSes, 1);
                 }
                 else if (cameraWorkStartFlag[i] && cameraTimer[i] < 0.5f)
                 {
@@ -279,6 +306,7 @@ public class GeneralStageManager : MonoBehaviour
                     cameraPosi = new Vector3(player.transform.position.x, player.transform.position.y + 10f, player.transform.position.z - 2f);
                     cameraRota = new Vector3(80f, 0f, 0f);
                     cameraWorkEndFlag[i] = true;
+                    audioManager.StopSE(AudioManager.SEName.gimmickSes, 1);
                 }
                 else if (rotationTimer[i] < time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
                 {
@@ -413,6 +441,7 @@ public class GeneralStageManager : MonoBehaviour
                     // 最初のカメラ移動
                     if (cameraWorkStartFlag[i] && cameraTimer[i] > 0.5f)
                     {
+                        audioManager.PlaySE(AudioManager.SEName.gimmickSes, 5);
                         cameraWorkStartFlag[i] = false;
                         cameraTimer[i] = 0f;
                         if (cameraPoint.transform.eulerAngles.y >= 180f) mainCamera.transform.position = cameraPoint.transform.position;
@@ -430,6 +459,7 @@ public class GeneralStageManager : MonoBehaviour
                     }
                     if (openTimer[i] > time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
                     {
+                        audioManager.StopSE(AudioManager.SEName.gimmickSes, 5);
                         openTimer[i] = 2;
                         gate.transform.position = new Vector3(gate.transform.position.x, 0f, gate.transform.position.z);
                         cameraWorkEndFlag[i] = true;
@@ -482,6 +512,7 @@ public class GeneralStageManager : MonoBehaviour
                     // 最初のカメラ移動
                     if (cameraWorkStartFlag[i] && cameraTimer[i] > 0.5f)
                     {
+                        audioManager.PlaySE(AudioManager.SEName.gimmickSes, 5);                        
                         cameraWorkStartFlag[i] = false;
                         cameraTimer[i] = 0f;
                         if (cameraPoint.transform.eulerAngles.y >= 180f) mainCamera.transform.position = cameraPoint.transform.position;
@@ -499,6 +530,7 @@ public class GeneralStageManager : MonoBehaviour
                     }
                     if (openTimer[i] > time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
                     {
+                        audioManager.StopSE(AudioManager.SEName.gimmickSes, 5);
                         openTimer[i] = 2;
                         gate.transform.position = new Vector3(gate.transform.position.x, -2.1f, gate.transform.position.z);
                         cameraWorkEndFlag[i] = true;
@@ -597,6 +629,7 @@ public class GeneralStageManager : MonoBehaviour
                 // 最初のカメラ移動
                 if (cameraWorkStartFlag[i] && cameraTimer[i] > 0.5f)
                 {
+                    audioManager.PlaySE(AudioManager.SEName.gimmickSes, 5);
                     cameraWorkStartFlag[i] = false;
                     cameraTimer[i] = 0f;
                     mainCamera.transform.position = cameraPoint.transform.position;
@@ -617,6 +650,7 @@ public class GeneralStageManager : MonoBehaviour
                 // GateOpen
                 if (openTimer[i] > time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
                 {
+                    audioManager.StopSE(AudioManager.SEName.gimmickSes, 5);
                     openTimer[i] = 0f;
                     gate.transform.position = new Vector3(gate.transform.position.x, -2.1f, gate.transform.position.z);
                     gate.SetActive(false);
@@ -727,6 +761,7 @@ public class GeneralStageManager : MonoBehaviour
                 // 最初のカメラ移動
                 if (cameraWorkStartFlag[i] && cameraTimer[i] > 0.5f)
                 {
+                    audioManager.PlaySE(AudioManager.SEName.gimmickSes, 5);
                     cameraWorkStartFlag[i] = false;
                     cameraTimer[i] = 0f;
                     mainCamera.transform.position = cameraPoint.transform.position;
@@ -745,6 +780,7 @@ public class GeneralStageManager : MonoBehaviour
                 // GateClose
                 if (openTimer[i] > time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
                 {
+                    audioManager.StopSE(AudioManager.SEName.gimmickSes, 5);
                     openTimer[i] = 0f;
                     gate.transform.position = new Vector3(gate.transform.position.x, 0f, gate.transform.position.z);
                     cameraWorkEndFlag[i] = true;
@@ -856,6 +892,7 @@ public class GeneralStageManager : MonoBehaviour
                 L.spotAngle = 60f;
                 L.intensity = 30f;
             }
+            //audioManager.PlaySE(AudioManager.SEName.gimmickSes, 2);
             cameraWorkStartFlag[i] = true;
         }
         if (cameraWorkStartFlag[i] && cameraTimer[i] > 0.5f)
@@ -879,9 +916,18 @@ public class GeneralStageManager : MonoBehaviour
             activeOb.SetActive(false);
             limitActiveObTimer[i] = 0;
             cameraWorkEndFlag[i] = true;
+            audioManager.StopSE(AudioManager.SEName.gimmickSes, 3);
         }
         else if (limitActiveObTimer[i] < limitActiveObTime && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
         {
+            // Audio
+            if (limitActiveObTimer[i] == 0) audioManager.PlaySE(AudioManager.SEName.gimmickSes, 2);
+            else if (limitActiveObTimer[i] > limitActiveObTime - 1.1f)
+            {
+                if (!audioManager.gimmickSEs[3].isPlaying) audioManager.PlaySE(AudioManager.SEName.gimmickSes, 3);
+                if (audioManager.gimmickSEs[2].isPlaying) audioManager.StopSE(AudioManager.SEName.gimmickSes, 2);                
+            }
+
             // FadeIn
             if (limitActiveObTimer[i] < 0.2f && !endFadeInFlag)
             {
@@ -1249,7 +1295,8 @@ public class GeneralStageManager : MonoBehaviour
     {
         if (activeLightTimer[i] == 0)
         {
-            lightOb.SetActive(true);
+            audioManager.PlayOneShotSE(AudioManager.SEName.gimmickSes, 6);
+                lightOb.SetActive(true);
             lightOb.GetComponent<Light>().intensity = 30f;
         }
         if (activeLightTimer[i] > time)
@@ -1269,6 +1316,7 @@ public class GeneralStageManager : MonoBehaviour
         }
     }
 
+    
     public void GetUIandPlayer()
     {
         GameObject playerSet = GameObject.Find("Player (Set)");
@@ -1324,6 +1372,7 @@ public class GeneralStageManager : MonoBehaviour
                 menuSelectNum = 0;
                 for (int i = 0; i < menuTexts.Length; i++) TextAnime(menuTexts[i], false);
                 menuFlag = false;
+                audioManager.ResumeAll();
             }
             else if (fadeMenuTimer < fadeMenuTime)
             {
@@ -1350,9 +1399,15 @@ public class GeneralStageManager : MonoBehaviour
                 {
                     if (menuSelectNum == 0)
                     {
-                        int fieldNum = stageNum / 5;
-                        int number = stageNum % 5;
-                        SceneManager.LoadScene($"{fieldNum + 1}-{number}");
+                        int f = f = stageNum / 4;
+                        int s = 0;
+                        if (stageNum % 4 == 0)
+                        {
+                            f--;
+                            s = 4;
+                        }
+                        else s = stageNum - f * 4;
+                        SceneManager.LoadScene($"{f + 1}-{s}");
                     }
                     else if (menuSelectNum == 1)
                     {
@@ -1453,11 +1508,13 @@ public class GeneralStageManager : MonoBehaviour
             playUI.SetActive(false);
             menuUI.SetActive(true);
             menuUI.GetComponent<RectTransform>().localScale = new Vector3(0f, 0f, 0f);
+            audioManager.PauseAll();
         }
         else if (context.started && menuFlag && status == GameStatus.menu)
         {
             menuSelectNum = 2;
             enterFlag = true;
+            audioManager.ResumeAll();
         }
     }
     //Enter
@@ -1477,7 +1534,7 @@ public class GeneralStageManager : MonoBehaviour
     // Select
     public void InputSelectControl(InputAction.CallbackContext context)
     {
-        if (menuFlag)
+        if (menuFlag && !fadeFlag)
         {
             if (context.started && context.ReadValue<Vector2>().y > 0)
             {

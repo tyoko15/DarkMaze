@@ -2,11 +2,14 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using TMPro;
+using System.Collections;
 public class PlayerController : MonoBehaviour
 {
     // 0.start 1.play 2.stop 3.over 4.clear
     [Header("GameManger制御用")]
     [SerializeField] public int status;
+    [Header("AudioManager")]
+    AudioManager audioManager;
 
     [Header("プレイヤーの基本情報")]
     [SerializeField] GameObject playerObject;
@@ -86,6 +89,7 @@ public class PlayerController : MonoBehaviour
     bool endUseFlag;
     Vector3 itemUseDirection;
     [Header("弓矢詳細")]
+    [SerializeField] GameObject bow;
     [SerializeField] GameObject arrowSpawer;
     [SerializeField] GameObject arrowPrefab;
     [SerializeField] GameObject arrowObject;
@@ -138,6 +142,7 @@ public class PlayerController : MonoBehaviour
 
     void Update()
     {
+        if (audioManager == null) audioManager = AudioManager.Instance;
         switch (status) 
         {
             case 0: // start
@@ -156,12 +161,15 @@ public class PlayerController : MonoBehaviour
                 break;
             case 2: // stop
                 PlayerAttackControl();
+                audioManager.PausePlayerSE();
                 animator.speed = 0f;
                 break;
             case 3: // menu
+                audioManager.PausePlayerSE();
                 animator.speed = 0f;
                 break;
-            case 4: // over                
+            case 4: // over
+                audioManager.PausePlayerSE();
                 OverControl();
                 break;
             case 5: // clear               
@@ -169,6 +177,7 @@ public class PlayerController : MonoBehaviour
                 {
                     animator.SetTrigger("Clear");
                     clearEffect = Instantiate(clearEffectOrigin, transform.position, Quaternion.identity);
+                    audioManager.PausePlayerSE();
                 }
                 break;
         }
@@ -253,11 +262,16 @@ public class PlayerController : MonoBehaviour
                 {
                     animator.SetBool("Idle", false);
                     animator.SetBool("Move", true);
+                    if (!audioManager.playerSEs[0].isPlaying) audioManager.PlaySE(AudioManager.SEName.playerSes, 0);
+                    float magunitude = Vector3.Magnitude(new Vector3(playerHorizontal, 0, playerVertical));
+                    if (onLight == 1 || magunitude < 0.5f) audioManager.playerSEs[0].pitch = 1f;
+                    else audioManager.playerSEs[0].pitch = 2f;
                 }
                 else if (playerHorizontal == 0f && playerVertical == 0f)
                 {
                     animator.SetBool("Move", false);
                     animator.SetBool("Idle", true);
+                    if (audioManager.playerSEs[0].isPlaying) audioManager.StopSE(AudioManager.SEName.playerSes, 0);
                 }
             }
             //進む方向に滑らかに向く。
@@ -318,6 +332,7 @@ public class PlayerController : MonoBehaviour
             damageTimer += Time.deltaTime;
             if (!farstDamageFlag)
             {
+                audioManager.PlayOneShotSE(AudioManager.SEName.playerSes, 5);
                 playerDamageGauge.enabled = true;
                 beforeHP = playerHP;
                 afterHP = playerHP - damageAmount;
@@ -348,6 +363,7 @@ public class PlayerController : MonoBehaviour
             recoveryTimer += Time.deltaTime;
             if (!farstRecoveryFlag)
             {
+                audioManager.PlayOneShotSE(AudioManager.SEName.playerSes, 4);
                 playerRecoveryGauge.enabled = true;
                 farstRecoveryFlag = true;
                 beforeHP = playerHP;
@@ -403,7 +419,8 @@ public class PlayerController : MonoBehaviour
         // 最拡大した際、インターバル中
         else if (onLight == 2 && lightMaxIntervalTimer < lightMaxIntervalTime)
         {
-            lightMaxIntervalTimer += Time.deltaTime;
+            if (audioManager.playerSEs[2].isPlaying) audioManager.StopSE(AudioManager.SEName.playerSes, 2); 
+                lightMaxIntervalTimer += Time.deltaTime;
             float normal = Mathf.InverseLerp(lightMaxIntervalTime, 0f, lightMaxIntervalTimer);
             lightMaxIntervalTimerGauge.fillAmount = normal;
         }
@@ -414,11 +431,12 @@ public class PlayerController : MonoBehaviour
             lightSpreadTimer = 0;
             onLight = 2;
             lightRangeObject.tag = "StanRange";
-            GameObject effect = Instantiate(maxEffectOrigin, transform.position, Quaternion.identity);
+            Vector3 posi = new Vector3(transform.position.x, 0f, transform.position.z);
+            GameObject effect = Instantiate(maxEffectOrigin, posi, Quaternion.identity);
             maxEffect = effect;
             maxEffect.transform.parent = transform;
             onMaxEffectFlag = true;
-
+            audioManager.PlayOneShotSE(AudioManager.SEName.playerSes, 3);
         }
         // 縮小中
         if (onLight == 0 && playerLightRange > 30f)
@@ -432,6 +450,8 @@ public class PlayerController : MonoBehaviour
         // 拡大中
         else if (onLight == 1 && playerLightRange < 180f)
         {
+            float volume = Mathf.Lerp(0.05f, 0.25f, lightSpreadTimer / lightSpreadTime);
+            audioManager.playerSEs[2].volume = volume;
             // ライト拡大時の演出部分
             if (propotrion < 0.2f) lightSpreadTimer += Time.deltaTime * 10f;
             else if (propotrion < 0.4f) lightSpreadTimer += Time.deltaTime;
@@ -658,12 +678,15 @@ public class PlayerController : MonoBehaviour
                     }
                 }
                 Quaternion rotation = Quaternion.LookRotation(itemUseDirection);
+                if (!audioManager.playerSEs[8].isPlaying) audioManager.PlaySE(AudioManager.SEName.playerSes, 8);
+                bow.SetActive(true);
                 //進む方向に滑らかに向く。
                 transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 10f);
             }
             else if (itemUseFlag && !arrowAnimeFlag && arrowCount == 0) itemUseFlag = false;
             if (endUseFlag && arrowCount > 0)
             {
+                bow.SetActive(false);
                 arrowCount--;
                 Ray ray = new Ray(new Vector3(playerObject.transform.position.x, playerObject.transform.position.y + 1f, playerObject.transform.position.z), playerObject.transform.forward);
                 RaycastHit hit;
@@ -683,6 +706,8 @@ public class PlayerController : MonoBehaviour
                     betweenObjectFlag = false;
                 }
                 arrowObject = Instantiate(arrowPrefab, arrowSpawer.transform.position, Quaternion.identity);
+                audioManager.StopSE(AudioManager.SEName.playerSes, 8);
+                audioManager.PlayOneShotSE(AudioManager.SEName.playerSes, 9);
                 if (arrowAnimeFlag)
                 {
                     arrowObject.GetComponent<ArrowManager>().speed = 10f;
@@ -776,6 +801,7 @@ public class PlayerController : MonoBehaviour
                     //playerObject.transform.LookAt(new Vector3(rangeRopeTargetPosition.x, rangeRopeTargetPosition.y-1f, rangeRopeTargetPosition.z));
                 }
                 Quaternion rotation = Quaternion.LookRotation(itemUseDirection);
+                if (!audioManager.playerSEs[10].isPlaying) audioManager.PlaySE(AudioManager.SEName.playerSes, 10);
                 //進む方向に滑らかに向く。
                 transform.rotation = Quaternion.Slerp(transform.rotation, rotation, Time.deltaTime * 10f);
             }
@@ -796,6 +822,8 @@ public class PlayerController : MonoBehaviour
                 {
                     if (ropeMoveTimer == 0)
                     {
+                        audioManager.StopSE(AudioManager.SEName.playerSes, 10);
+                        audioManager.PlayOneShotSE(AudioManager.SEName.playerSes, 11);
                         originPlayerObjectPosition = playerObject.transform.position;
                         float x = rangeRopeTargetPosition.x - playerObject.transform.position.x;
                         float z = rangeRopeTargetPosition.z - playerObject.transform.position.z;
@@ -931,11 +959,16 @@ public class PlayerController : MonoBehaviour
 
     public void InputPlayerLightButton(InputAction.CallbackContext context)
     {
-        if (context.started && playerLightRange == 30) onLight = 1;
+        if (context.started && playerLightRange == 30)
+        {
+            onLight = 1;
+            audioManager.PlaySE(AudioManager.SEName.playerSes, 2);
+        }
         else if (context.canceled && onLight == 1)
         {
             lightRangeMinRange = playerLightRange;
             onLight = 0;
+            audioManager.StopSE(AudioManager.SEName.playerSes, 2);
         }
     }
 
@@ -945,6 +978,7 @@ public class PlayerController : MonoBehaviour
         {
             attackFlag = true;
             animator.SetTrigger("Attack");
+            audioManager.PlayOneShotSE(AudioManager.SEName.playerSes, 1);
         }
     }
 
@@ -954,11 +988,13 @@ public class PlayerController : MonoBehaviour
         {
             itemSelectFlag = true;
             endSelectFlag = false;
+            audioManager.PlayOneShotSE(AudioManager.SEName.playerSes, 7);
         }
         if (context.canceled) 
         {
             itemSelectFlag = false; 
             startSelectFlag = false;
+            audioManager.PlayOneShotSE(AudioManager.SEName.playerSes, 7);
         }
     }
 
@@ -971,6 +1007,7 @@ public class PlayerController : MonoBehaviour
             else if (context.started && context.ReadValue<Vector2>().x < 0) itemSelectNum++;
             if (itemSelectNum > 2) itemSelectNum = 0;
             if (itemSelectNum < 0) itemSelectNum = 2;
+            if (context.started && context.ReadValue<Vector2>().x != 0) audioManager.PlayOneShotSE(AudioManager.SEName.playerSes, 6);
         }
     }
     public void InputPlayerUseItemButton(InputAction.CallbackContext context)
