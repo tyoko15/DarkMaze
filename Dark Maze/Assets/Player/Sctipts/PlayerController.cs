@@ -1,8 +1,9 @@
-using UnityEngine;
-using UnityEngine.UI;
-using UnityEngine.InputSystem;
-using TMPro;
 using System.Collections;
+using TMPro;
+using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.UI;
+using static UnityEngine.GraphicsBuffer;
 public class PlayerController : MonoBehaviour
 {
     // 0.start 1.play 2.stop 3.over 4.clear
@@ -102,6 +103,22 @@ public class PlayerController : MonoBehaviour
     [SerializeField] GameObject ropeObject;
     [SerializeField] GameObject[] ropeTargetObjects;
     [SerializeField] GameObject rangeRopeTargetObject;
+    [SerializeField] GameObject handObject;
+    [SerializeField] GameObject ropeAnimeObject;
+    // selectéû
+    float handRadius = 0.1f;
+    float ropeRadius = 1f;
+    float handSpeed = 370f;
+    float ropeSpeed = 360f;
+
+    float handAngle;
+    float ropeAngle;
+
+    [SerializeField] LineRenderer line;
+    Vector3[] points;
+    [SerializeField] int segmentCount = 2;
+    [SerializeField] float followSpeed = 10f;
+    // à⁄ìÆéû
     Vector3 originPlayerObjectPosition;
     Vector3 rangeRopeTargetPosition;
     [SerializeField] bool ropeMoveFlag;
@@ -138,6 +155,13 @@ public class PlayerController : MonoBehaviour
         playerHP = maxPlayerHp;
         itemCountText.SetActive(false);
         arrowCount = maxArrowCount;
+        //rope
+        line.positionCount = segmentCount;
+        line.gameObject.transform.SetParent(null);
+        points = new Vector3[segmentCount];
+        for (int i = 0; i < segmentCount; i++) points[i] = playerObject.transform.position;
+
+
     }
 
     void Update()
@@ -637,6 +661,8 @@ public class PlayerController : MonoBehaviour
 
             if (itemUseFlag && !arrowAnimeFlag && arrowCount > 0)
             {
+                animator.SetBool("Move", false);
+                animator.SetBool("Idle", true);
                 Ray ray = new Ray(new Vector3(playerObject.transform.position.x, playerObject.transform.position.y + 1f, playerObject.transform.position.z), playerObject.transform.forward);
                 RaycastHit hit;
                 if (Physics.SphereCast(ray.origin, 0.2f, ray.direction, out hit, 30f))
@@ -726,6 +752,10 @@ public class PlayerController : MonoBehaviour
             itemCountText.SetActive(false);
             if (itemUseFlag)
             {
+                animator.SetBool("Move", false);
+                animator.SetBool("Idle", true);
+                IdleRopeAnimation();
+                RotationRoteTopObject();
                 for (int i = 0; i < ropeTargetObjects.Length; i++)
                 {
                     Ray ray = new Ray(new Vector3(playerObject.transform.position.x, playerObject.transform.position.y + 1f, playerObject.transform.position.z), playerObject.transform.forward);
@@ -780,8 +810,9 @@ public class PlayerController : MonoBehaviour
                             if (ropeObject == null)
                             {
                                 ropeObject = Instantiate(ropePrefab, playerObject.transform.parent.position, Quaternion.identity);
-                                ropeObject.transform.position = new Vector3(ropeObject.transform.position.x, ropeObject.transform.position.y, ropeObject.transform.position.z);
+                                ropeObject.transform.position = new Vector3(ropeObject.transform.position.x, ropeObject.transform.position.y + 1f, ropeObject.transform.position.z);
                                 ropeObject.transform.parent = playerObject.transform;
+                                ropeObject.SetActive(false);
                             }
                             ropeMoveFlag = true;
                         }
@@ -796,7 +827,7 @@ public class PlayerController : MonoBehaviour
                 }              
                 if (rangeRopeTargetObject != null)
                 {
-                    rangeRopeTargetPosition = rangeRopeTargetObject.transform.position;
+                    rangeRopeTargetPosition = new Vector3(rangeRopeTargetObject.transform.position.x, rangeRopeTargetObject.transform.position.y + 1f, rangeRopeTargetObject.transform.position.z);
                     ropeObject.transform.position = rangeRopeTargetPosition;
                     //playerObject.transform.LookAt(new Vector3(rangeRopeTargetPosition.x, rangeRopeTargetPosition.y-1f, rangeRopeTargetPosition.z));
                 }
@@ -811,7 +842,7 @@ public class PlayerController : MonoBehaviour
                 betweenObject = null;
             }
             if (endUseFlag)
-            {
+            {                
                 itemUseFlag = false;
                 if (betweenObject != null)
                 {
@@ -820,11 +851,13 @@ public class PlayerController : MonoBehaviour
                 }
                 if (ropeMoveFlag)
                 {
+                    TargetAnimation();
                     if (ropeMoveTimer == 0)
                     {
                         audioManager.StopSE(AudioManager.SEName.playerSes, 10);
                         audioManager.PlayOneShotSE(AudioManager.SEName.playerSes, 11);
                         originPlayerObjectPosition = playerObject.transform.position;
+                        ropeObject.SetActive(true);
                         float x = rangeRopeTargetPosition.x - playerObject.transform.position.x;
                         float z = rangeRopeTargetPosition.z - playerObject.transform.position.z;
                         if (Mathf.Abs(x) > Mathf.Abs(z)) // ç∂âE
@@ -858,7 +891,7 @@ public class PlayerController : MonoBehaviour
                     }
                     else if (ropeMoveTimer < ropeMoveTime)
                     {
-                        ropeObject.transform.position = rangeRopeTargetObject.transform.position;
+                       ropeObject.transform.position = new Vector3(rangeRopeTargetObject.transform.position.x, rangeRopeTargetObject.transform.position.y + 1f, rangeRopeTargetObject.transform.position.z);
                         float x = Mathf.Lerp(originPlayerObjectPosition.x, rangeRopeTargetPosition.x, ropeMoveTimer / ropeMoveTime);
                         float z = Mathf.Lerp(originPlayerObjectPosition.z, rangeRopeTargetPosition.z, ropeMoveTimer / ropeMoveTime);
                         playerObject.transform.position = new Vector3(x, originPlayerObjectPosition.y, z);
@@ -867,6 +900,9 @@ public class PlayerController : MonoBehaviour
                 }
                 else
                 {
+                    ropeAnimeObject.SetActive(false);
+                    handObject.SetActive(false);
+                    line.gameObject.SetActive(false);
                     Destroy(ropeObject);
                     rangeRopeTargetObject = null;
                     ropeObject = null;
@@ -896,6 +932,62 @@ public class PlayerController : MonoBehaviour
             itemUseFlag = false;
             endUseFlag = false;
         }
+    }
+
+    void IdleRopeAnimation()
+    {
+        line.positionCount = 10;
+        line.gameObject.transform.position = playerObject.transform.position;
+        handAngle += handSpeed * Time.deltaTime;
+
+        float handRad = handAngle * Mathf.Deg2Rad;
+        Vector3 playerPos = playerObject.transform.position;
+        Vector3 handPos = handObject.transform.position;
+        Vector3 handOffset = new Vector3(Mathf.Cos(handRad) * handRadius + playerPos.x, playerPos.y + 1f, Mathf.Sin(handRad) * handRadius + playerPos.z);
+        handObject.transform.position = handOffset;
+
+        ropeAngle += ropeSpeed * Time.deltaTime;
+
+        float ropeRad = ropeAngle * Mathf.Deg2Rad;
+        Vector3 ropeOffset = new Vector3(Mathf.Cos(ropeRad) * ropeRadius + playerPos.x, playerObject.transform.position.y + 2f, Mathf.Sin(ropeRad) * ropeRadius + playerPos.z);
+        ropeAnimeObject.transform.position = ropeOffset;
+
+        line.SetPosition(0, handObject.transform.position);
+        line.SetPosition(line.positionCount - 1, ropeAnimeObject.transform.position);
+        //Debug.Log($"0:{line.GetPosition(0)}");
+        //Debug.Log($"1:{line.GetPosition(1)}");
+        for (int i = 0; i < line.positionCount; i++)
+        {
+            float t = i / 9f;
+            Vector3 pos = Vector3.Lerp(handObject.transform.localPosition, ropeAnimeObject.transform.localPosition, t);
+            pos.x += Mathf.Cos(t * Mathf.PI) * 0.2f;
+            pos.z += Mathf.Sin(t * Mathf.PI) * 0.2f;
+            line.SetPosition(i, pos);
+        }
+    }
+
+    void RotationRoteTopObject()
+    {
+        ropeAnimeObject.SetActive(true);
+        handObject.SetActive(true);
+        line.gameObject.SetActive(true);
+        ropeAnimeObject.transform.eulerAngles += new Vector3(0f, Time.deltaTime * 200f, 0f);
+    }
+
+    void TargetAnimation()
+    {
+        ropeAnimeObject.SetActive(false);
+        line.transform.position = new Vector3(playerObject.transform.position.x, playerObject.transform.position.y + 1f, playerObject.transform.position.z);
+        Vector3 linePos = line.transform.position;
+        linePos.y += 1f;
+        Vector3 targetPos = rangeRopeTargetObject.transform.position;
+        Vector3 diff = new Vector3(linePos.x - targetPos.x, 0, linePos.z - targetPos.z);
+        line.positionCount = 2;
+        ropeObject.SetActive(true);
+        //ropeObject.transform.position = new Vector3(rangeRopeTargetObject.transform.localPosition.x, rangeRopeTargetObject.transform.localPosition.y + 1f, rangeRopeTargetObject.transform.localPosition.z);
+        line.SetPosition(0, Vector3.zero);
+        line.SetPosition(1, diff);
+        //Debug.Log($"range.Pos({(int)rangeRopeTargetObject.transform.position.x}, {(int)rangeRopeTargetObject.transform.position.y}, {(int)rangeRopeTargetObject.transform.position.z})");
     }
 
     public void GetItemControl(int itemNum)
