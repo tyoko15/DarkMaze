@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PortfolioEnemy : MonoBehaviour
+public class StadioEnemy : MonoBehaviour
 {
     [SerializeField] Animator animator;
     [SerializeField] int a;

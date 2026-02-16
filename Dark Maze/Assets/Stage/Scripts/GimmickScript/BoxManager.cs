@@ -2,22 +2,25 @@ using UnityEngine;
 
 public class BoxManager : MonoBehaviour
 {
-    [SerializeField] GameObject box;
-    [SerializeField] GameObject player;
-    [SerializeField] float moveTime;
-    [SerializeField] float completeTime;
+    [Header("参照・設定")]
+    [SerializeField] GameObject box;      // 箱本体
+    [SerializeField] GameObject player;   // プレイヤー
+    [SerializeField] float moveTime;      // 1マス動くのにかかる時間
+    [SerializeField] float completeTime;  // スイッチを起動させるまでの静止時間
+
     float moveTimer;
     float completeTimer;
-    int directionNum;
-    bool lockFlag;
-    bool buttonFlag;
-    bool wallFlag;
-    int[] wallDirectionNum = new int[4];
-    Vector3 originPosition;
+    int directionNum;                     // 0:左(X+), 1:右(X-), 2:前(Z+), 3:後(Z-)
+    bool lockFlag;                        // 移動中フラグ
+    bool buttonFlag;                      // ボタンの上に乗っているか
+    bool wallFlag;                        // 壁に接しているか
+    int[] wallDirectionNum = new int[4];  // どの方向に壁があるか(1が壁あり)
+    Vector3 originPosition;               // 移動開始時の座標
 
     private Camera mainCamera;
-    GameObject canvas;
+    GameObject canvas;                    // 操作ガイドUI
     bool canvasFlag;
+
     void Start()
     {
         mainCamera = Camera.main;
@@ -25,25 +28,28 @@ public class BoxManager : MonoBehaviour
         canvas = transform.GetChild(last - 1).gameObject;
         canvas.SetActive(false);
         canvasFlag = true;
+        // UIを少し斜めに傾けて配置
         canvas.transform.eulerAngles = new Vector3(75f, 0, 0);
     }
 
     void Update()
     {
+        // 移動処理
         if (lockFlag && !buttonFlag)
         {
             MoveBox(directionNum);
-            gameObject.tag = "Untagged";
+            gameObject.tag = "Untagged"; // 移動中は他の判定を避ける
         }
         else
         {
             gameObject.tag = "Box";
         }
 
-
+        // --- プレイヤーの明かりに応じたUI表示 ---
         if (buttonFlag) canvas.SetActive(false);
         else
         {
+            // プレイヤーの光の範囲内にいる時だけ「！」などのUIを出す
             Vector3 playerPos = new Vector3(player.transform.position.x, 0, player.transform.position.z);
             Vector3 myPos = new Vector3(transform.position.x, 0, transform.position.z);
             float distance = Vector3.Distance(playerPos, myPos);
@@ -55,7 +61,7 @@ public class BoxManager : MonoBehaviour
         }
     }
 
-
+    // プレイヤーがぶつかった瞬間に方向を計算
     private void OnCollisionEnter(Collision collision)
     {
         if(collision.gameObject == player && !lockFlag)
@@ -63,8 +69,11 @@ public class BoxManager : MonoBehaviour
             Direction();
         }
     }
+
+    // 壁の検知とスイッチの判定
     private void OnTriggerStay(Collider other)
     {
+        // 壁が自分のどっち側にあるかを判定して移動を制限するロジック
         if (other.gameObject.tag == "Wall")
         {
             float x = box.transform.position.x - other.transform.position.x;
@@ -97,6 +106,8 @@ public class BoxManager : MonoBehaviour
             }
             wallFlag = true;
         }
+
+        // 地面スイッチ（10個まで対応）の判定
         for (int i = 0; i < 10; i++)
         {
             if (!lockFlag && other.gameObject.name == $"GroundButton ({i})")
@@ -143,6 +154,7 @@ public class BoxManager : MonoBehaviour
         else lockFlag = true;
     }
 
+    // 移動処理（Mathf.Lerpで2ユニット分スライド）
     void MoveBox(int direction)
     {
         // 左へ
@@ -151,7 +163,7 @@ public class BoxManager : MonoBehaviour
             if (moveTimer == 0)
             {
                 originPosition = box.transform.position;
-                AudioManager.Instance.PlaySE(AudioManager.SEName.gimmickSes, 4);
+                AudioManager.Instance.PlaySE(AudioManager.SEName.gimmickSes, 4); // ズズズ...という音
             }
             if (moveTimer > moveTime)
             {

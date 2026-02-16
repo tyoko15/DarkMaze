@@ -2,39 +2,49 @@ using UnityEngine;
 using UnityEngine.AI;
 using static GeneralStageManager;
 
+/// <summary>
+/// 基本的な敵AI：徘徊、追跡、攻撃、ダメージ、スタン（混乱）処理を管理
+/// </summary>
 public class Enemy1 : MonoBehaviour
 {
+    [Header("システム参照")]
     [SerializeField] GeneralStageManager gameManager;
     [SerializeField] EnemyHpUIManager hpUIManager;
-    [SerializeField] int enemyStatus;
     [SerializeField] NavMeshAgent agent;
     Rigidbody rb;
     [SerializeField] GameObject player;
-    [SerializeField] GameObject[] wanderPoints;
-    [SerializeField] int wanderPointNum;
-    [SerializeField] Animator animator;
-    [SerializeField] float trackingRange;
-    [SerializeField] float trackingSpeed;
-    [SerializeField] float wanderingSpeed;
-    public bool moveFlag;
-    public bool stanFlag;
-    bool dieFlag;
-    [SerializeField] GameObject confusionObject;
-    [SerializeField] float stanTime;
-    float stanTimer;
-    bool trackFlag;
 
+    [Header("移動・巡回設定")]
+    [SerializeField] GameObject[] wanderPoints;    // 徘徊する地点のリスト
+    [SerializeField] int wanderPointNum;           // 現在目指している地点の番号
+    [SerializeField] float wanderingSpeed;         // 徘徊時の移動速度
+    [SerializeField] float trackingRange;          // 追跡を開始する距離
+    [SerializeField] float trackingSpeed;          // 追跡時の移動速度
+
+
+    [Header("状態フラグ")]
+    public bool moveFlag;      // ライトに照らされて動ける状態か
+    public bool stanFlag;      // スタン（混乱）中か
+    bool dieFlag;              // 死亡済みか
+    bool trackFlag;            // 追跡中か
+    [SerializeField] bool isDamageFlag; // ダメージ硬直中か
+    [SerializeField] bool isAttackFlag; // 攻撃アニメーション中か
+
+
+
+    [Header("ステータス")]
     [SerializeField] float maxEnemyHP = 3;
     float enemyHP;
-    [SerializeField] float enemyDamage;
-    [SerializeField] float knockbackPower;
-    [SerializeField] bool isDamageFlag;
-    [SerializeField] bool isAttackFlag;
-
-    [SerializeField] float isDamageTime;
+    [SerializeField] float enemyDamage;      // プレイヤーに与えるダメージ
+    [SerializeField] float knockbackPower;   // ノックバックの強さ
+    [SerializeField] float stanTime;         // スタン持続時間
+    float stanTimer;
+    [SerializeField] float isDamageTime;     // 被ダメージ後の硬直時間
     float isDamageTimer;
 
-    [Header("Effect")]
+    [Header("演出関連")]
+    [SerializeField] Animator animator;
+    [SerializeField] GameObject confusionObject; // スタン中のピヨピヨ演出など
     [SerializeField] GameObject dieEffect;
     [SerializeField] GameObject damageEffect;
     void Start()
@@ -46,42 +56,39 @@ public class Enemy1 : MonoBehaviour
 
     void Update()
     {
+        // 移動SEの管理
         if (moveFlag) AudioManager.Instance.PlaySE(AudioManager.SEName.enemySes, 0);
         else AudioManager.Instance.StopSE(AudioManager.SEName.enemySes, 0);
+
+        // ゲーム全体の進行状況（GameStatus）に合わせて処理を分岐
         switch (gameManager.status) 
         {
-            case GameStatus.start: // start
-                break;
-            case GameStatus.play: // play
+            case GameStatus.play:
                 if (!dieFlag) EnemyControl();
                 EnemyHpGaugeControl();
                 animator.speed = 1f;
                 break;
-            case GameStatus.stop: // stop
+            case GameStatus.stop:
+            case GameStatus.menu:
+            case GameStatus.over:
+            case GameStatus.clear:
                 agent.isStopped = true;
-                animator.speed = 0f;
-                break;
-            case GameStatus.menu: // menu
-                agent.isStopped = true;
-                animator.speed = 0f; 
-                break;
-            case GameStatus.over: // over
-                agent.isStopped = true;
-                break;
-            case GameStatus.clear: // clear
-                agent.isStopped = true;
+                animator.speed = 0f; // アニメーション一時停止
                 break;
         }        
     }
 
+    /// <summary>
+    /// 敵の行動ロジック（ダメージ・スタン・通常行動）
+    /// </summary>
     void EnemyControl()
     {
-        // damage中
+        // 1. 被ダメージ硬直
         if (isDamageFlag)
         {
             EnemyDamage();
         }
-        // Stan中
+        // 2. スタン状態（混乱中
         else if (stanFlag)
         {
             confusionObject.SetActive(true);
@@ -102,16 +109,17 @@ public class Enemy1 : MonoBehaviour
                 stanTimer += Time.deltaTime;
             }
         }
+        // 3. 通常の状態
         else if (!stanFlag)
         {
             confusionObject.SetActive(false);
             animator.SetBool("Down", false);
-            // Light内
-            if (moveFlag)
+
+            if (moveFlag) // ライトに照らされている（動ける）
             {
                 animator.SetBool("Move", true);
                 AudioManager.Instance.PlaySE(AudioManager.SEName.enemySes, 0);
-                // 追跡中
+                // 追跡モード
                 if (trackFlag)
                 {
                     if (agent.isStopped) agent.isStopped = false;
@@ -130,7 +138,7 @@ public class Enemy1 : MonoBehaviour
                         isAttackFlag = false;
                     }
                 }
-                // 徘徊中
+                // 徘徊モード
                 else
                 {
                     if (agent.isStopped) agent.isStopped = false;
@@ -147,7 +155,7 @@ public class Enemy1 : MonoBehaviour
                     if (trackDistance < trackingRange) trackFlag = true;
                 }
             }
-            // Light外
+            // ライトの外（停止
             else if (!moveFlag)
             {
                 agent.isStopped = true;
@@ -158,6 +166,9 @@ public class Enemy1 : MonoBehaviour
         }            
     }
 
+    /// <summary>
+    /// HPゲージの表示/非表示と残量更新
+    /// </summary>
     void EnemyHpGaugeControl()
     {
         Vector3 playerPos = new Vector3(player.transform.position.x, 0 , player.transform.position.z);
@@ -167,14 +178,18 @@ public class Enemy1 : MonoBehaviour
         bool flag = false;
         if (lightDistance > distance) flag = true;
         else flag = false;
+
+        // プレイヤーのライトの範囲内ならHPを表示
         hpUIManager.HpActive(flag);
         hpUIManager.HpControl(enemyHP);
     }
 
+    /// <summary>
+    /// ダメージを受けた瞬間の処理
+    /// </summary>
     void EnemyDamageHit()
     {
         enemyHP--;
-        //isDamageFlag = false;
         confusionObject.SetActive(false);
         if (!hpUIManager.damageFlag) hpUIManager.damageFlag = true;
         if (enemyHP <= 0)
@@ -191,6 +206,7 @@ public class Enemy1 : MonoBehaviour
         }
         else if (enemyHP > 0)
         {
+            // ダメージ演出とノックバック
             GameObject effect = Instantiate(damageEffect, transform.position, Quaternion.identity);
             effect.transform.parent = transform;
             effect.transform.localScale = new Vector3(2, 2, 2);
@@ -216,17 +232,19 @@ public class Enemy1 : MonoBehaviour
         AudioManager.Instance.StopEnemySE();
     }
 
+    // --- 衝突検知 ---
     private void OnCollisionEnter(Collision collision)
     {
         if (!dieFlag)
         {
+            // プレイヤーへのダメージ判定
             if (collision.gameObject.tag == "Player" && isAttackFlag)
             {
                 collision.gameObject.GetComponent<PlayerController>().damageFlag = true;
                 collision.gameObject.GetComponent<PlayerController>().damageAmount = enemyDamage;
                 Vector3 knockback = (collision.gameObject.transform.position - transform.position).normalized;
-                //collision.gameObject.GetComponent<Rigidbody>().AddForce(knockback * knockbackPower * Time.deltaTime, ForceMode.Impulse);
             }
+            // 矢が当たった
             else if (collision.gameObject.tag == "Arrow" && !isDamageFlag)
             {
                 isDamageFlag = true;
@@ -236,7 +254,7 @@ public class Enemy1 : MonoBehaviour
     }
     private void OnCollisionStay(Collision collision)
     {
-        if(collision.gameObject.tag == "Player" && isAttackFlag && !dieFlag)
+        if (collision.gameObject.tag == "Player" && isAttackFlag && !dieFlag)
         {
             PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
             if (!playerController.damageFlag)
@@ -244,7 +262,6 @@ public class Enemy1 : MonoBehaviour
                 playerController.damageAmount = enemyDamage;
                 playerController.damageFlag = true;
                 Vector3 knockback = (collision.gameObject.transform.position - transform.position).normalized;
-                //collision.gameObject.GetComponent<Rigidbody>().AddForce(knockback * knockbackPower * Time.deltaTime, ForceMode.Impulse);
             }
         }
     }
@@ -258,8 +275,10 @@ public class Enemy1 : MonoBehaviour
     }
     private void OnTriggerStay(Collider other)
     {
-        if(other.gameObject.tag == "LightRange") moveFlag = true;
-        else if(other.gameObject.tag == "StanRange")
+        // 照らされている判定（トリガーに入っている間は移動可能）
+        if (other.gameObject.tag == "LightRange") moveFlag = true;
+        // スタン判定（罠など）
+        else if (other.gameObject.tag == "StanRange")
         {
             stanFlag = true;
             moveFlag = false;

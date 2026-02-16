@@ -133,7 +133,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] LineRenderer line;                      // 縄の描画
     Vector3[] points;                                        // LineRendererの座標群
     [SerializeField] int segmentCount = 2;                   // 縄の分割数
-    [SerializeField] float followSpeed = 10f;                // 縄の追従速度
     Vector3 originPlayerObjectPosition;                      // 移動開始時の座標
     Vector3 rangeRopeTargetPosition;                         // 縄の接地点
     [SerializeField] bool ropeMoveFlag;                      // 縄移動中か
@@ -262,7 +261,8 @@ public class PlayerController : MonoBehaviour
         }
 
         // 砂地（Layer 7）への接触判定
-        if (Physics.Raycast(ray, out hit, 0.001f) && !ropeMoveFlag && hit.collider.gameObject.layer == 7) onSandFlag = true;
+        Ray underRay = new Ray(playerObject.transform.position, Vector3.down);
+        if (Physics.Raycast(underRay, out hit, 0.001f) && !ropeMoveFlag && hit.collider.gameObject.layer == 7) onSandFlag = true;
         
         // 砂地での沈下演出とダメージ処理
         if (onSandFlag)
@@ -426,18 +426,18 @@ public class PlayerController : MonoBehaviour
         {
             recoveryTimer += Time.deltaTime;
             if (!farstRecoveryFlag)
-            {
-                audioManager.PlayOneShotSE(AudioManager.SEName.playerSes, 4);
+            {                
                 playerRecoveryGauge.enabled = true;
                 farstRecoveryFlag = true;
                 beforeHP = playerHP;
                 afterHP = playerHP + recoveryAmount;
-                if (afterHP > 100f)
+                if (beforeHP == maxPlayerHp) // 元のHPが最大の場合
                 {
-                    afterHP = 100f;
                     farstRecoveryFlag = false;
                     recoveryFlag = false;
                 }
+                else audioManager.PlayOneShotSE(AudioManager.SEName.playerSes, 4);
+                if (afterHP > 100f) afterHP = 100f;
                 float v = Mathf.InverseLerp(0f, maxPlayerHp, afterHP);
                 playerRecoveryGauge.fillAmount = v;
                 playerHpText.text = $"HP : {afterHP} / {maxPlayerHp}";
@@ -977,6 +977,7 @@ public class PlayerController : MonoBehaviour
                     itemUseFlag = false;
                     endUseFlag = false;
                     betweenObjectFlag = false;
+                    audioManager.StopSE(AudioManager.SEName.playerSes, 10);
                 }
             }
         }

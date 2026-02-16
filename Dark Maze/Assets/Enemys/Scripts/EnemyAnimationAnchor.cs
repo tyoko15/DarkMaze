@@ -1,17 +1,9 @@
 using UnityEngine;
 
+// 敵のAnimator経由用スクリプト
 public class EnemyAnimationAnchor : MonoBehaviour
 {
     [SerializeField] Enemy1 enemy1;
-    void Start()
-    {
-        
-    }
-
-    void Update()
-    {
-        
-    }
 
     public void EnemyDestroy()
     {

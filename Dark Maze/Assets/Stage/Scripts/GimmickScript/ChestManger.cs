@@ -1,25 +1,37 @@
 using UnityEngine;
 
+/// <summary>
+/// 宝箱の挙動を管理するクラス
+/// 攻撃を受けると蓋が開き、アイテムフラグをプレイヤーに与える
+/// </summary>
 public class ChestManger : MonoBehaviour
 {
-    [SerializeField] GameObject chestObject;
-    GameObject chestTopObject;
-    Vector3 originRotation;
-    [SerializeField] GameObject player;
-    [SerializeField] int itemNum;
-    bool openFlag;
-    [SerializeField] float openedTime;
+    [Header("オブジェクト参照")]
+    [SerializeField] GameObject chestObject;      // 宝箱全体
+    GameObject chestTopObject;                   // 宝箱の「蓋」の部分
+    Vector3 originRotation;                      // 蓋の初期角度
+    [SerializeField] GameObject player;           // プレイヤーへの参照
+
+    [Header("アイテム設定")]
+    [SerializeField] int itemNum;                // どのアイテムを解放するか
+    bool openFlag;                               // 開いている最中か
+    [SerializeField] float openedTime;           // 開き始めてから消滅するまでの時間
     float openedTimer;
-    [SerializeField] bool hideFlag;
+    [SerializeField] bool hideFlag;              // 最初は隠しておくか
 
     private Camera mainCamera;
-    GameObject canvas;
+    private GameObject canvas;                   // 近づいた時のUI
     bool canvasFlag;
     void Start()
     {
+        // 初期状態で隠す設定なら非アクティブにする
         if (hideFlag) chestObject.SetActive(false);
+
+        // 子オブジェクトの0番目を「蓋」として取得（階層構造に依存
         if (chestObject.transform.childCount > 1) chestTopObject = chestObject.transform.GetChild(0).gameObject;
         originRotation = chestTopObject.transform.eulerAngles;
+
+        // UI（キャンバス）の設定
         mainCamera = Camera.main;
         int last = transform.childCount;
         canvas = transform.GetChild(last - 1).gameObject;
@@ -29,13 +41,10 @@ public class ChestManger : MonoBehaviour
 
     void Update()
     {
-        if (!openFlag)
+        if (openFlag)        
         {
-
-        }
-        else
-        {
-            if(openedTimer > openedTime)
+            // 消滅タイマーが規定時間を超えたら削除
+            if (openedTimer > openedTime)
             {
                 openedTimer = 0;
                 Destroy(chestObject);
@@ -43,11 +52,14 @@ public class ChestManger : MonoBehaviour
             else if(openedTimer < openedTime)
             {
                 openedTimer += Time.deltaTime;
+                // --- 蓋が開くアニメーション処理 ---
                 if (chestTopObject != null)
                 {
+                    // 開き始めてから前半（50%）の時間で回転させる
                     if (openedTimer > openedTime * 0.5f) chestTopObject.transform.eulerAngles = new Vector3(290f, originRotation.y, originRotation.z);
                     else if (openedTimer < openedTime * 0.5f)
                     {
+                        // 360度から290度へ滑らかに変化（Mathf.Lerp）
                         float x = Mathf.Lerp(360f, 290f, openedTimer / (openedTime * 0.5f));
                         chestTopObject.transform.eulerAngles = new Vector3(x, originRotation.y, originRotation.z);
                     }
@@ -66,22 +78,24 @@ public class ChestManger : MonoBehaviour
         canvas.transform.rotation = Quaternion.LookRotation(rotation);
     }
 
+    // --- 接触判定 ---
+
     private void OnCollisionEnter(Collision collision)
     {
+        // 攻撃タグのオブジェクトが当たったら開く
         if (collision.gameObject.tag == "Attack")
         {
             if (!openFlag) openFlag = true;
             player.GetComponent<PlayerController>().canItemFlag[itemNum] = true;            
         }
+        // プレイヤーが近づいたらUI表示
         if (collision.gameObject == player && canvasFlag) canvas.SetActive(true);
     }
 
-    private void OnCollisionStay(Collision collision)
-    {
-    }
 
     private void OnTriggerEnter(Collider other)
     {
+        // トリガー判定の攻撃（弓矢など）でも開く
         if (other.gameObject.tag == "Attack")
         {
             if (!openFlag) openFlag = true;
@@ -91,6 +105,7 @@ public class ChestManger : MonoBehaviour
 
     private void OnCollisionExit(Collision collision)
     {
+        // プレイヤーが離れたらUI非表示
         if (collision.gameObject == player && canvasFlag) canvas.SetActive(false);
     }
 }

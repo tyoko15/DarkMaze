@@ -4,71 +4,85 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
+/// <summary>
+/// シーン遷移時のフェード演出（イン・インターバル・アウト）を管理するクラス
+/// </summary>
 public class FadeManager : MonoBehaviour
 {
     [Header("フェイドUIの取得")]
-    [SerializeField] GameObject[] fadeObjects;
-    [SerializeField] List<Sprite> fadeBannerSpriteList;
-    [SerializeField] int fadeBannerSpriteNum;
-    [SerializeField] float fadeObjectWidth;
-    public bool fadeFlag;
-    [Header("フェイドイン関連")]
-    [SerializeField] float fadeInSecond;
-    float fadeInTimer;
+    [SerializeField] GameObject[] fadeObjects;      // スライドさせる複数のフェード用パネル
+    [SerializeField] List<Sprite> fadeBannerSpriteList; // ロード中に表示する画像リスト
+    [SerializeField] int fadeBannerSpriteNum;      // 現在表示中のバナー番号
+    [SerializeField] float fadeObjectWidth;        // フェードオブジェクトの横幅
+    public bool fadeFlag;                          // いずれかのフェードが動作中か
+
+    [Header("フェイドイン関連 (画面が隠れる動き)")]
+    [SerializeField] float fadeInSecond;           // 全体が隠れるまでの秒数
+    float fadeInTimer;                             // オブジェクト1つあたりの移動時間
     public bool fadeInFlag;
-    [Header("フェイドアウト関連")]
-    [SerializeField] float fadeOutSecond;
+
+    [Header("フェイドアウト関連 (画面が見える動き)")]
+    [SerializeField] float fadeOutSecond;          // 全体がハケるまでの秒数
     float fadeOutTimer;
     public bool fadeOutFlag;
-    [Header("フェイド中間関連")]
-    [SerializeField,Range(2f, 10f)] float fadeIntervalSecond;
+
+    [Header("フェイド中間関連 (ロード中演出)")]
+    [SerializeField, Range(2f, 10f)] float fadeIntervalSecond; // 最低保持時間
     [SerializeField] float fadeIntervalTimer;
     public bool fadeIntervalFlag;
-    [SerializeField] Image fadeBannerObject;
-    [SerializeField] Color fadeBannerColor;
+    [SerializeField] Image fadeBannerObject;       // バナーを表示するUI要素
+    [SerializeField] Color fadeBannerColor;        // バナーの透過度管理用
     [SerializeField] float fadeBannerFadeTimer;
-    [SerializeField] float fadeBannerFadeInSecond;
+    [SerializeField] float fadeBannerFadeInSecond; // バナーがふわっと出る時間
     public bool fadeBannerFadeInFlag;
-    [SerializeField] float fadeBannerFadeOutSecond;
+    [SerializeField] float fadeBannerFadeOutSecond;// バナーがふわっと消える時間
     public bool fadeBannerFadeOutFlag;
+
     [Header("フェイド共通関連")]
-    bool startFlag;
-    public bool endFlag; 
-    float[] timer;
-    float[] moveX;
+    bool startFlag;                                // 各フェード開始時のSE再生用
+    public bool endFlag;                           // 各フェード工程の完了通知
+    float[] timer;                                 // 各パネル個別のタイマー
+    float[] moveX;                                 // 各パネルの現在のX座標
 
     public bool titleFlag;
-    public bool finishFlag;
+    public bool finishFlag;                        // アプリ終了処理中か
 
-    public bool saveDirection;
-    [SerializeField] GameObject saveText;
+    public bool saveDirection;                     // セーブ中テキストを表示するか
+    [SerializeField] GameObject saveText;          // 「セーブ中」UI
 
-    // Input
+    // Input System
     public InputActionAsset inputActions;
     InputAction enterAction;
     void Start()
     {
+        // シーンを跨いでも破棄しない
         DontDestroyOnLoad(this.gameObject);
+
+        // 初期設定
         fadeObjectWidth = fadeObjects[0].GetComponent<RectTransform>().sizeDelta.x;
         fadeBannerObject.enabled = false;
+
         timer = new float[fadeObjects.Length];
         moveX = new float[fadeObjects.Length];
+
+        // パネルごとの時間配分を計算
         fadeInTimer = fadeInSecond / fadeObjects.Length;
-        fadeOutTimer = fadeInSecond / fadeObjects.Length; 
-        for(int i = 0; i < fadeObjects.Length; i++)
-        {
-            //fadeObjects[i].gameObject.GetComponent<RectTransform>().anchoredPosition = new Vector3(-fadeObjectWidth - i * 300f, fadeObjects[i].gameObject.GetComponent<RectTransform>().anchoredPosition.y);
-            timer[i] -= i * fadeInTimer;
-        }
+        fadeOutTimer = fadeInSecond / fadeObjects.Length;
+
+        // 開始時間をずらすことで時間差（ディレイ）を作る
+        for (int i = 0; i < fadeObjects.Length; i++) timer[i] -= i * fadeInTimer;
+
+        // 入力アクションの取得
         enterAction = inputActions.FindActionMap("Player")["Enter"];
     }
 
     void Update()
     {
+        // 動作状況の集約
         if (fadeInFlag || fadeIntervalFlag || fadeOutFlag) fadeFlag = true;
         else if (!fadeInFlag && !fadeIntervalFlag && !fadeOutFlag) fadeFlag = false;
-        fadeInTimer = fadeInSecond / fadeObjects.Length;
-        fadeOutTimer = fadeInSecond / fadeObjects.Length; 
+
+        // 各フェード状態に応じたメソッドの呼び出し
         if (fadeInFlag)
         {
             fadeOutFlag = false;
@@ -80,7 +94,8 @@ public class FadeManager : MonoBehaviour
             fadeInFlag = false;
             fadeOutFlag = false;
             IntervalFade();
-            // セーブ演出
+
+            // 特定のステージ名の場合にセーブ中演出を表示
             for (int i = 0; i < 3; i++)
             {
                 for (int j = 0; j < 5; j++)
@@ -136,6 +151,9 @@ public class FadeManager : MonoBehaviour
 
     }
 
+    /// <summary>
+    /// 画面が隠れる演出（左からパネルが流れてくる）
+    /// </summary>
     void InFade()
     {
         if (!startFlag)
@@ -145,11 +163,12 @@ public class FadeManager : MonoBehaviour
         }
         for (int i = 0; i < fadeObjects.Length; i++)
         {
+            // 目標地点（X=0）に到達したか確認
             if (fadeObjects[i].gameObject.GetComponent<RectTransform>().anchoredPosition.x == 0)
             {
                 timer[i] = 0;
                 moveX[i] = 0;
-                if (i == fadeObjects.Length - 1)
+                if (i == fadeObjects.Length - 1)　// 最後のパネルが終わったら
                 {
                     for(int j = 0; j < fadeObjects.Length; j++)
                     {
@@ -163,12 +182,16 @@ public class FadeManager : MonoBehaviour
             else if (fadeObjects[i].gameObject.GetComponent<RectTransform>().anchoredPosition.x != 0)
             {
                 timer[i] += Time.deltaTime;
+                // Lerpを使って滑らかにスライド
                 moveX[i] = Mathf.Lerp(-fadeObjectWidth - i * 300f, 0, timer[i] / fadeInTimer);
             }
             fadeObjects[i].gameObject.GetComponent<RectTransform>().anchoredPosition = new Vector3(moveX[i], fadeObjects[i].gameObject.GetComponent<RectTransform>().anchoredPosition.y);
         }
     }
 
+    /// <summary>
+    /// 画面が再び見える演出（パネルが左へハケる）
+    /// </summary>
     void OutFade()
     {
         if (!startFlag)
@@ -202,8 +225,12 @@ public class FadeManager : MonoBehaviour
         }
     }
 
+    /// <summary>
+    /// フェード中間の待機時間（バナーのフェードイン・アウト処理）
+    /// </summary>
     void IntervalFade()
     {
+        // 開始時
         if (fadeIntervalTimer == 0)
         {
             fadeBannerFadeInFlag = true;
@@ -211,8 +238,11 @@ public class FadeManager : MonoBehaviour
             // フェイドバナーを交換する
             ChangeBanner();
         }
+        // 終了間際になったらバナーをフェードアウトさせ始める
         if (fadeIntervalTimer > fadeIntervalSecond - fadeBannerFadeOutSecond && !fadeBannerFadeOutFlag) fadeBannerFadeOutFlag = true;
         fadeIntervalTimer += Time.deltaTime;
+
+        // バナーのアルファ値制御（イン）
         if (fadeBannerFadeInFlag)
         {
             fadeBannerFadeTimer += Time.deltaTime;
@@ -227,6 +257,7 @@ public class FadeManager : MonoBehaviour
                 fadeBannerFadeInFlag = false;
             }
         }
+        // バナーのアルファ値制御（アウト）
         else if (fadeBannerFadeOutFlag)
         {
             fadeBannerFadeTimer += Time.deltaTime;
@@ -242,6 +273,7 @@ public class FadeManager : MonoBehaviour
             }
         }
 
+        // 全工程終了
         if (fadeIntervalTimer > fadeIntervalSecond && !fadeBannerFadeOutFlag)
         {
             fadeBannerObject.enabled = false;
@@ -256,7 +288,7 @@ public class FadeManager : MonoBehaviour
     {
         fadeBannerObject.sprite = fadeBannerSpriteList[fadeBannerSpriteNum];
     }
-
+    // 外部から一瞬で状態を切り替える用
     public void AfterFade()
     {
         for (int i = 0; i < fadeObjects.Length; i++) fadeObjects[i].gameObject.GetComponent<RectTransform>().anchoredPosition = new Vector3(0, fadeObjects[i].gameObject.GetComponent<RectTransform>().anchoredPosition.y);
@@ -266,7 +298,9 @@ public class FadeManager : MonoBehaviour
         for (int i = 0; i < fadeObjects.Length; i++) fadeObjects[i].gameObject.GetComponent<RectTransform>().anchoredPosition = new Vector3(-fadeObjectWidth - i * 300f, fadeObjects[i].gameObject.GetComponent<RectTransform>().anchoredPosition.y);
     }
 
-    // 流れを管理
+    /// <summary>
+    /// シーン遷移スクリプトなどから呼ばれ、フェードの工程を次に進める
+    /// </summary>
     public void FadeControl()
     {
         // フェイドイン終了時

@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PortfolioPlayer : MonoBehaviour
+public class StadioPlayer : MonoBehaviour
 {
     [SerializeField] Animator animator;
 
@@ -8,11 +8,5 @@ public class PortfolioPlayer : MonoBehaviour
     {
         animator.SetTrigger("Attack");
         animator.SetFloat("AttackSpeed", 0.5f);
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        
     }
 }

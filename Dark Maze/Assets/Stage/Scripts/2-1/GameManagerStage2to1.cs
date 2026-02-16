@@ -1,34 +1,43 @@
 using UnityEngine;
+
+/// <summary>
+/// ステージ 2-1 専用の進行管理クラス
+/// 複数ボタンの同時押し判定や、オブジェクトのマテリアル状態によるフラグ制御を導入
+/// </summary>
 public class GameManagerStage2to1 : GeneralStageManager
 {
     void Start()
     {
+        // 親クラスで定義されている初期化処理（参照の取得など）を実行
         StartData();
     }
 
     void Update()
     {
+        // ゲームの現在の状態に応じて処理を分岐
         switch (status)
         {
             case GameStatus.start:
-                playerController.status = 0;
-                StartAnime();
+                playerController.status = 0; // プレイヤーを「開始演出待ち」状態に
+                StartAnime();                // ステージ開始のアニメーション
                 break;
             case GameStatus.play:
+                // プレイ中のメインロジック
                 Gimmick1();
                 Gimmick2();
                 Gimmick3();
-                JudgeOver();
-                Goal();
+                JudgeOver();                 // 死亡判定チェック
+                Goal();                      // ゴール判定チェック
                 if (menuFlag) status = GameStatus.menu;
                 playerController.status = 1;
                 break;
             case GameStatus.stop:
+                // ギミック演出中などの一時停止状態
                 Gimmick1();
                 Gimmick2();
                 Gimmick3();
                 Goal();
-                playerController.status = 2;
+                playerController.status = 2; // プレイヤーを「停止」状態に
                 break;
             case GameStatus.menu:
                 MenuUIControl();
@@ -47,28 +56,48 @@ public class GameManagerStage2to1 : GeneralStageManager
         }
     }
 
-    // 左下エリアの敵撃破でボタン出現
-    // ボタンは左下エリアの回転ギミック
+    // --- ギミック詳細 ---
+
+    /// <summary>
+    /// 左下エリア：敵全滅でスイッチが出現し、エリアを回転させる
+    /// </summary>
     public void Gimmick1()
     {
+        // エリア進入時に門を閉じる
         if (enterArea[2].enterAreaFlag) Gate(gateObjects[0], lightObjects[0], cameraPointObjects[0], false, 2, 0, true, ref enterArea[2].enterAreaFlag);
+
+        // 敵が全滅したら、門を開けて「地形回転スイッチ」を出現させる
         if (enemys[0].transform.childCount == 0 && defeatGateFlag[0])
         {
             ActiveLight(areaLightObjects[0], 2, 0, false, ref defeatGateFlag[0]);
             Gate(gateObjects[0], lightObjects[1], null, true, 2, 0, false, ref defeatGateFlag[0]);
             ActiveObject(buttonObjects[0], lightObjects[2], cameraPointObjects[1], 2, 1, true, ref defeatGateFlag[0]);
         }
+
+        // 出現したスイッチを押すと、エリア[2]が90度回転
         if (buttonObjects[0].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[2], null, cameraPointObjects[2],  1, 90, 2, 0, true, ref buttonObjects[0].GetComponent<ButtonManager>().buttonFlag);
     }
-    // 右下エリアのボタンを同時押しでボタン出現
-    // ボタンは右下エリアの回転ギミック
+
+    /// <summary>
+    /// 右下エリア：2つのボタン同時押しギミック
+    /// 演出中（不透明度が1になるまで）はリセット処理を行う工夫が見られる
+    /// </summary>
     public void Gimmick2()
     {
-        if (buttonObjects[1].GetComponent<ButtonManager>().buttonFlag && buttonObjects[2].GetComponent<ButtonManager>().buttonFlag) ActiveObject(buttonObjects[3], lightObjects[3], cameraPointObjects[3], 2, 1, true, ref buttonObjects[2].GetComponent<ButtonManager>().buttonFlag);        
+        // 1. ボタン[1]と[2]が両方押されたら、次のボタン[3]を出現させる
+        if (buttonObjects[1].GetComponent<ButtonManager>().buttonFlag && buttonObjects[2].GetComponent<ButtonManager>().buttonFlag) ActiveObject(buttonObjects[3], lightObjects[3], cameraPointObjects[3], 2, 1, true, ref buttonObjects[2].GetComponent<ButtonManager>().buttonFlag);
+
+        // 2. ボタン[3]が出現演出中（アルファ値が1になるまで）に、片方のフラグを管理する
+        // ※ refで渡されたbuttonFlagが演出終了でfalseになる仕組みを利用したリセット処理
         if (!buttonObjects[2].GetComponent<ButtonManager>().buttonFlag && buttonObjects[3].activeSelf && buttonObjects[3].GetComponent<MeshRenderer>().materials[1].color.a == 1f) buttonObjects[1].GetComponent<ButtonManager>().buttonFlag = false;
+
+        // 3. 出現したボタン[3]を押すとエリア[3]が回転
         if (buttonObjects[3].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[3], lightObjects[4], cameraPointObjects[4], 1, 90, 2, 1, true, ref buttonObjects[3].GetComponent<ButtonManager>().buttonFlag);
     }
-    // 右上エリアの敵撃破で扉開放ギミック
+
+    /// <summary>
+    /// 右上エリア：オーソドックスな敵撃破による扉開放
+    /// </summary>
     public void Gimmick3()
     {
         if (enterArea[1].enterAreaFlag) Gate(gateObjects[1], lightObjects[5], cameraPointObjects[5], false, 2, 1, true, ref enterArea[1].enterAreaFlag);

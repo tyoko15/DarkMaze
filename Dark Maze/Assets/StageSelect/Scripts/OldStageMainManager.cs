@@ -3,11 +3,11 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 
-public class StageMainManager : MonoBehaviour
+public class OldStageMainManager : MonoBehaviour
 {
     // スクリプトの取得
     [SerializeField] DataManager dataManager;
-    [SerializeField] StageSelectManager[] stageSelectManagers;
+    [SerializeField] OldStageSelectManager[] stageSelectManagers;
     [SerializeField] GameObject fadeManagerObject;
     FadeManager fadeManager;
     bool startFadeFlag;
