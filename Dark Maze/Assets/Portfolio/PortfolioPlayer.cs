@@ -6,7 +6,8 @@ public class PortfolioPlayer : MonoBehaviour
 
     void Start()
     {
-        animator.SetBool("Attack", true);
+        animator.SetTrigger("Attack");
+        animator.SetFloat("AttackSpeed", 0.5f);
     }
 
     // Update is called once per frame

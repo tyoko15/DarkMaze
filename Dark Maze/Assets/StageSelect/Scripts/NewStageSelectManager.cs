@@ -50,7 +50,7 @@ public class NewStageSelectManager : MonoBehaviour
     // Audio関連
     // ==============================
     [SerializeField] GameObject audioManagerObject;
-    public GameObject audioManager;
+    public AudioManager audioManager;
     public AudioSource[] gameBgms;
     public AudioSource[] gameSes;
     public AudioSource[] playerSes;
@@ -120,6 +120,16 @@ public class NewStageSelectManager : MonoBehaviour
             fadeManager = fade.GetComponent<FadeManager>();
         }
         else fadeManager = fade.GetComponent<FadeManager>();
+
+        if (GameObject.Find("AudioManager") != null)
+        {
+            audioManager = AudioManager.Instance;
+        }
+        else
+        {
+            GameObject ob = Instantiate(audioManagerObject, Vector3.zero, Quaternion.identity);
+            audioManager = ob.GetComponent<AudioManager>();
+        }
 
         // フェード初期設定
         fadeManager.AfterFade();
@@ -254,7 +264,7 @@ public class NewStageSelectManager : MonoBehaviour
     void SelectControl()
     {
         // 決定入力
-        if (enterAciton.ReadValue<float>() > 0 && !fadeFlag)
+        if (enterAciton.ReadValue<float>() > 0 && !fadeManager.fadeFlag)
         {
             enterFlag = true;
         }

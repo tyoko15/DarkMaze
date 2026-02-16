@@ -2929,12 +2929,6 @@ MonoBehaviour:
   fadeManagerObject: {fileID: 8267548131005766601, guid: 4640189f3bb3f43458f839336d723fa6, type: 3}
   fadeManager: {fileID: 0}
   audioManagerObject: {fileID: 7419314631761978824, guid: e3aebe9d9ace6454987245c96f8d9ea3, type: 3}
-  audioManager: {fileID: 0}
-  gameBgms: []
-  gameSes: []
-  playerSes: []
-  enemySes: []
-  gimmickSes: []
   fadeFlag: 0
   status: 0
   playerController: {fileID: 1151901779}
@@ -3630,6 +3624,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3459514890847290368, guid: bfbfefa9c4cb8954aa14e64a45895adf, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 4194969713706561882, guid: bfbfefa9c4cb8954aa14e64a45895adf, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -3686,6 +3684,10 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: -6
       objectReference: {fileID: 0}
+    - target: {fileID: 5699668204974812112, guid: bfbfefa9c4cb8954aa14e64a45895adf, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: -2
+      objectReference: {fileID: 0}
     - target: {fileID: 6602735745519129867, guid: bfbfefa9c4cb8954aa14e64a45895adf, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -3697,6 +3699,10 @@ PrefabInstance:
     - target: {fileID: 6603081891949028086, guid: bfbfefa9c4cb8954aa14e64a45895adf, type: 3}
       propertyPath: m_LocalPosition.z
       value: -6
+      objectReference: {fileID: 0}
+    - target: {fileID: 6648784050369057492, guid: bfbfefa9c4cb8954aa14e64a45895adf, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6783941187338907905, guid: bfbfefa9c4cb8954aa14e64a45895adf, type: 3}
       propertyPath: m_LocalPosition.x
@@ -3915,22 +3921,26 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1161777444518870130, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
+      propertyPath: m_Radius
+      value: 0.4
+      objectReference: {fileID: 0}
     - target: {fileID: 2001776747580249404, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
       propertyPath: m_Name
       value: Player (Set)
       objectReference: {fileID: 0}
-    - target: {fileID: 2072169943675430115, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -9
-      objectReference: {fileID: 0}
-    - target: {fileID: 2072169943675430115, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 9
+    - target: {fileID: 2880329463882600666, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
+      propertyPath: gravity.y
+      value: -50
       objectReference: {fileID: 0}
     - target: {fileID: 2880329463882600666, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
       propertyPath: mainCamera
       value: 
       objectReference: {fileID: 1076361131}
+    - target: {fileID: 2880329463882600666, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
+      propertyPath: playerSpeed
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 9212233892112901566, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

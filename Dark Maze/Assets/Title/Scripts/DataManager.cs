@@ -1,5 +1,5 @@
-using UnityEngine;
 using System.IO;
+using UnityEngine;
 
 /// <summary>
 /// セーブデータ1枠分の情報をまとめたクラス
@@ -45,12 +45,27 @@ public class DataManager : MonoBehaviour
     }
 
     void Start()
-    {       
+    {
+        string rootPath = Directory.GetParent(Application.dataPath).FullName;
+
+        // SaveDataフォルダのパスを作る
+        string saveFolderPath = Path.Combine(rootPath, "SaveData");
+
+        // フォルダが存在するか確認
+        if (!Directory.Exists(saveFolderPath))
+        {
+            // 無ければ作成
+            Directory.CreateDirectory(saveFolderPath);
+
+            // 隠し属性を付ける
+            File.SetAttributes(saveFolderPath, FileAttributes.Hidden);
+        }
         // 各セーブスロットの初期化と読み込み
         for (int i = 0; i < 3; i++)
         {
             // 端末ごとの永続保存パスを使用
-            filePath[i] = Application.persistentDataPath + $"/savefile{i}.json";
+            filePath[i] = Path.Combine(saveFolderPath, $"savefile{i}.json");
+
 
             // 保存データの読み込み
             LoadData(
@@ -110,15 +125,30 @@ public class DataManager : MonoBehaviour
                 if(dataNum == 0)
                 {
                     Debug.Log("TestDataを追加");
-                    SaveData(dataNum, "Test", 8, 0);
+                    SaveData(dataNum, "All", 8, 0);
                 }
                 else SaveData(dataNum, "", 0, 0);
             }
             else if (data[dataNum] != null)
             {
-                name = data[dataNum].playerName;
-                stage = data[dataNum].clearStageNum;
-                selectNum = data[dataNum].selectStageNum;
+                if (data[dataNum].playerName.Length > 8)                
+                {
+                    name = "Bug";
+                    data[dataNum].playerName = name;                    
+                }
+                else name = data[dataNum].playerName;
+                if (data[dataNum].clearStageNum <= 8 && data[dataNum].clearStageNum >= 0) stage = data[dataNum].clearStageNum;
+                else
+                {
+                    stage = (data[dataNum].clearStageNum > 8) ? 8 : 0;
+                    data[dataNum].clearStageNum = stage;
+                }
+                if (data[dataNum].selectStageNum <= 8 && data[dataNum].selectStageNum >= 0) selectNum = data[dataNum].selectStageNum;
+                else
+                {
+                    selectNum = (data[dataNum].selectStageNum > 8) ? 8 : 0;
+                    data[dataNum].selectStageNum = selectNum;
+                }
             }
         }
         else
@@ -128,7 +158,7 @@ public class DataManager : MonoBehaviour
             if (dataNum == 0)
             {
                 Debug.Log("TestDataを追加");
-                SaveData(dataNum, "Test", 8, 0);
+                SaveData(dataNum, "AllClear", 8, 0);
             }
             else SaveData(dataNum, "", 0, 0);
         }
