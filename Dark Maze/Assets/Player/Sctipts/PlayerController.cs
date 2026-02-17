@@ -173,7 +173,10 @@ public class PlayerController : MonoBehaviour
         arrowCount = maxArrowCount;
 
         line.positionCount = segmentCount;
+        ropeAnimeObject.transform.SetParent(null);
         line.gameObject.transform.SetParent(null);
+        handObject.transform.SetParent(null);
+
         points = new Vector3[segmentCount];
         for (int i = 0; i < segmentCount; i++) points[i] = playerObject.transform.position;
     }
@@ -828,18 +831,18 @@ public class PlayerController : MonoBehaviour
                     Ray ray = new Ray(new Vector3(playerObject.transform.position.x, playerObject.transform.position.y + 1f, playerObject.transform.position.z), playerObject.transform.forward);
                     RaycastHit hit;
                     // playerとwoodの間にobjectがないか検知
-                    if (Physics.SphereCast(ray.origin, 0.2f, ray.direction, out hit, 15f))
+                    Debug.DrawRay(ray.origin, ray.direction * 10f, Color.red);
+                    if (Physics.SphereCast(ray.origin, 0.2f, ray.direction, out hit, 10f))
                     {
                         if (!hit.collider.gameObject.GetComponent<Collider>().isTrigger)
                         {
                             if (hit.collider.gameObject.tag != "Wood")
-                            {
-                                Debug.DrawRay(ray.origin, ray.direction * 30f, Color.red);
+                            {                                
                                 betweenObjectFlag = true;
                             }
                             else if (hit.collider.gameObject.tag == "Wood")
                             {
-                                Debug.DrawRay(ray.origin, ray.direction * 30f, Color.green);
+                                Debug.DrawRay(ray.origin, ray.direction * 10f, Color.green);
                                 betweenObjectFlag = false;
                             }
                         }
@@ -847,7 +850,7 @@ public class PlayerController : MonoBehaviour
                         {
                             if (hit.collider.gameObject.tag != "Wood" && hit.collider.gameObject.tag != "Rope")
                             {
-                                Debug.DrawRay(ray.origin, ray.direction * 30f, Color.red);
+                                Debug.DrawRay(ray.origin, ray.direction * 10f, Color.red);
                                 betweenObjectFlag = true;
                                 if (betweenObject == null)
                                 {
@@ -863,22 +866,23 @@ public class PlayerController : MonoBehaviour
                             }
                             else if (hit.collider.gameObject.tag == "Wood" || hit.collider.gameObject.tag == "Rope")
                             {
-                                Debug.DrawRay(ray.origin, ray.direction * 30f, Color.green);
+                                Debug.DrawRay(ray.origin, ray.direction * 10f, Color.green);
                                 betweenObjectFlag = false;
                             }
                         }
                     }
                     // woodを検知
-                    if (Physics.SphereCast(ray.origin, 0.2f, ray.direction, out hit, 30f, woodLayer) && !betweenObjectFlag)
+                    if (Physics.SphereCast(ray.origin, 0.2f, ray.direction, out hit, 10f, woodLayer) && !betweenObjectFlag)
                     {
                         if (hit.collider.gameObject == ropeTargetObjects[i])
                         {
                             rangeRopeTargetObject = ropeTargetObjects[i];
+                            rangeRopeTargetPosition = new Vector3(rangeRopeTargetObject.transform.position.x, rangeRopeTargetObject.transform.position.y + 1f, rangeRopeTargetObject.transform.position.z);
+
                             if (ropeObject == null)
                             {
                                 ropeObject = Instantiate(ropePrefab, playerObject.transform.parent.position, Quaternion.identity);
-                                ropeObject.transform.position = new Vector3(ropeObject.transform.position.x, ropeObject.transform.position.y + 1f, ropeObject.transform.position.z);
-                                ropeObject.transform.parent = playerObject.transform;
+                                ropeObject.transform.position = rangeRopeTargetPosition;
                                 ropeObject.SetActive(false);
                             }
                             ropeMoveFlag = true;
@@ -896,7 +900,6 @@ public class PlayerController : MonoBehaviour
                 {
                     rangeRopeTargetPosition = new Vector3(rangeRopeTargetObject.transform.position.x, rangeRopeTargetObject.transform.position.y + 1f, rangeRopeTargetObject.transform.position.z);
                     ropeObject.transform.position = rangeRopeTargetPosition;
-                    //playerObject.transform.LookAt(new Vector3(rangeRopeTargetPosition.x, rangeRopeTargetPosition.y-1f, rangeRopeTargetPosition.z));
                 }
                 Quaternion rotation = Quaternion.LookRotation(itemUseDirection);
                 if (!audioManager.playerSEs[10].isPlaying) audioManager.PlaySE(AudioManager.SEName.playerSes, 10);
@@ -959,7 +962,7 @@ public class PlayerController : MonoBehaviour
                     }
                     else if (ropeMoveTimer < ropeMoveTime)
                     {
-                       ropeObject.transform.position = new Vector3(rangeRopeTargetObject.transform.position.x, rangeRopeTargetObject.transform.position.y + 1f, rangeRopeTargetObject.transform.position.z);
+                        ropeObject.transform.position = new Vector3(rangeRopeTargetObject.transform.position.x, rangeRopeTargetObject.transform.position.y + 1, rangeRopeTargetObject.transform.position.z);
                         float x = Mathf.Lerp(originPlayerObjectPosition.x, rangeRopeTargetPosition.x, ropeMoveTimer / ropeMoveTime);
                         float z = Mathf.Lerp(originPlayerObjectPosition.z, rangeRopeTargetPosition.z, ropeMoveTimer / ropeMoveTime);
                         playerObject.transform.position = new Vector3(x, originPlayerObjectPosition.y, z);
@@ -998,6 +1001,7 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
+            itemCountText.SetActive(false);
             itemSelect.GetComponent<Image>().sprite = itemImageSprites[3];
             itemUseFlag = false;
             endUseFlag = false;
@@ -1009,13 +1013,15 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     void IdleRopeAnimation()
     {
+        Vector3 playerPos = playerObject.transform.position;
+        Vector3 playerForward = playerObject.transform.forward;
+        handObject.transform.position = playerPos + playerForward * 0.5f;
         line.positionCount = 10; // LineRendererを10点で構成
-        line.gameObject.transform.position = playerObject.transform.position;
+        line.gameObject.transform.position = Vector3.zero;
         handAngle += handSpeed * Time.deltaTime;
 
         // 手の回転位置
         float handRad = handAngle * Mathf.Deg2Rad;
-        Vector3 playerPos = playerObject.transform.position;
         Vector3 handPos = handObject.transform.position;
         Vector3 handOffset = new Vector3(Mathf.Cos(handRad) * handRadius + playerPos.x, playerPos.y + 1f, Mathf.Sin(handRad) * handRadius + playerPos.z);
         handObject.transform.position = handOffset;
@@ -1026,14 +1032,15 @@ public class PlayerController : MonoBehaviour
         Vector3 ropeOffset = new Vector3(Mathf.Cos(ropeRad) * ropeRadius + playerPos.x, playerObject.transform.position.y + 2f, Mathf.Sin(ropeRad) * ropeRadius + playerPos.z);
         ropeAnimeObject.transform.position = ropeOffset;
 
+        line.useWorldSpace = true;
         line.SetPosition(0, handObject.transform.position);
         line.SetPosition(line.positionCount - 1, ropeAnimeObject.transform.position);
 
         // 手から先端までをベジェ曲線のように少したわませて描画
-        for (int i = 0; i < line.positionCount; i++)
+        for (int i = 1; i < line.positionCount - 1; i++)
         {
             float t = i / 9f;
-            Vector3 pos = Vector3.Lerp(handObject.transform.localPosition, ropeAnimeObject.transform.localPosition, t);
+            Vector3 pos = Vector3.Lerp(handObject.transform.position, ropeAnimeObject.transform.position, t);
             pos.x += Mathf.Cos(t * Mathf.PI) * 0.2f;
             pos.z += Mathf.Sin(t * Mathf.PI) * 0.2f;
             line.SetPosition(i, pos);
@@ -1058,14 +1065,15 @@ public class PlayerController : MonoBehaviour
     {
         ropeAnimeObject.SetActive(false);
         line.transform.position = new Vector3(playerObject.transform.position.x, playerObject.transform.position.y + 1f, playerObject.transform.position.z);
-        Vector3 linePos = line.transform.position;
-        linePos.y += 1f;
-        Vector3 targetPos = rangeRopeTargetObject.transform.position;
-        Vector3 diff = new Vector3(linePos.x - targetPos.x, 0, linePos.z - targetPos.z);
+        Vector3 playerPos = playerObject.transform.position;
+        playerPos.y += 1f;
+        Vector3 targetPos = rangeRopeTargetObject.transform.position;        
+        targetPos.y += 1f;
         line.positionCount = 2; // 移動中は直線にする
         ropeObject.SetActive(true);
-        line.SetPosition(0, Vector3.zero);
-        line.SetPosition(1, diff); // ターゲットから自身への相対ベクトル
+        line.useWorldSpace = true;
+        line.SetPosition(0, playerPos);
+        line.SetPosition(1, targetPos); // ターゲットから自身への相対ベクトル
     }
 
     /// <summary>
