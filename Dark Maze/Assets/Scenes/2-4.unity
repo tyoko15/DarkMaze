@@ -3512,6 +3512,7 @@ MonoBehaviour:
   enterFlag: 0
   menuSelectNum: 0
   overSelectNum: 0
+  inputIntervalTime: 0.2
   clearAnimeTime: 3
 --- !u!4 &1280718333
 Transform:
@@ -3541,7 +3542,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Actions: {fileID: -944628639613478452, guid: beff8c50cce179148bdcce3c5210adbf, type: 3}
-  m_NotificationBehavior: 2
+  m_NotificationBehavior: 0
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:

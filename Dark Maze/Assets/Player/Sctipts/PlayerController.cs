@@ -1,4 +1,5 @@
 using TMPro;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -163,6 +164,78 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float overEffectTime;                   // エフェクト持続（オーバー）
     float overEffectTimer;
     bool onOverEffectFlag;
+
+    // ===== Input =====
+    public InputActionAsset inputAsset;
+    InputAction[] inputActions;
+
+
+    void Awake()
+    {
+        inputActions = new InputAction[7];
+        inputActions[0] = inputAsset.FindAction("PlayerControl");
+        inputActions[1] = inputAsset.FindAction("LightButton");
+        inputActions[2] = inputAsset.FindAction("AttackButton");
+        inputActions[3] = inputAsset.FindAction("ItemSelectButton");
+        inputActions[4] = inputAsset.FindAction("ItemSelectControl");
+        inputActions[5] = inputAsset.FindAction("UseItemButton");
+        inputActions[6] = inputAsset.FindAction("UseItemControl");
+    }
+
+    void OnEnable()
+    {
+        for (int i = 0; i < inputActions.Length; i++) inputActions[i].Enable();
+
+        inputActions[0].started += InputPlayerControl;
+        inputActions[1].started += InputPlayerLightButton;
+        inputActions[2].started += InputPlayerAttackButton;
+        inputActions[3].started += InputPlayerSelectItemButton;
+        inputActions[4].started += InputPlayerSelectItemControl;
+        inputActions[5].started += InputPlayerUseItemButton;
+        inputActions[6].started += InputPlayerUseItemControl;
+        inputActions[0].performed += InputPlayerControl;
+        inputActions[1].performed += InputPlayerLightButton;
+        inputActions[2].performed += InputPlayerAttackButton;
+        inputActions[3].performed += InputPlayerSelectItemButton;
+        inputActions[4].performed += InputPlayerSelectItemControl;
+        inputActions[5].performed += InputPlayerUseItemButton;
+        inputActions[6].performed += InputPlayerUseItemControl;
+        inputActions[0].canceled += InputPlayerControl;
+        inputActions[1].canceled += InputPlayerLightButton;
+        inputActions[2].canceled += InputPlayerAttackButton;
+        inputActions[3].canceled += InputPlayerSelectItemButton;
+        inputActions[4].canceled += InputPlayerSelectItemControl;
+        inputActions[5].canceled += InputPlayerUseItemButton;
+        inputActions[6].canceled += InputPlayerUseItemControl;
+
+    }
+
+    private void OnDisable()
+    {
+        inputActions[0].started -= InputPlayerControl;
+        inputActions[1].started -= InputPlayerLightButton;
+        inputActions[2].started -= InputPlayerAttackButton;
+        inputActions[3].started -= InputPlayerSelectItemButton;
+        inputActions[4].started -= InputPlayerSelectItemControl;
+        inputActions[5].started -= InputPlayerUseItemButton;
+        inputActions[6].started -= InputPlayerUseItemControl;
+        inputActions[0].performed -= InputPlayerControl;
+        inputActions[1].performed -= InputPlayerLightButton;
+        inputActions[2].performed -= InputPlayerAttackButton;
+        inputActions[3].performed -= InputPlayerSelectItemButton;
+        inputActions[4].performed -= InputPlayerSelectItemControl;
+        inputActions[5].performed -= InputPlayerUseItemButton;
+        inputActions[6].performed -= InputPlayerUseItemControl;
+        inputActions[0].canceled -= InputPlayerControl;
+        inputActions[1].canceled -= InputPlayerLightButton;
+        inputActions[2].canceled -= InputPlayerAttackButton;
+        inputActions[3].canceled -= InputPlayerSelectItemButton;
+        inputActions[4].canceled -= InputPlayerSelectItemControl;
+        inputActions[5].canceled -= InputPlayerUseItemButton;
+        inputActions[6].canceled -= InputPlayerUseItemControl;
+
+        for (int i = 0; i < inputActions.Length; i++) inputActions[i].Disable();
+    }
 
     void Start()
     {
@@ -1145,6 +1218,119 @@ public class PlayerController : MonoBehaviour
     // InputAction管理関数 (Input Systemからのメッセージ)
     // ==========================================
 
+    // ------------------------------------------
+    // 新しい
+    // ------------------------------------------
+
+    /// <summary>
+    /// スティック/十字キーによる移動入力
+    /// </summary>
+    public void OnPlayerControl(InputValue value)
+    {
+        // アイテム選択中や使用中でなければ入力を受け付ける
+        if (!itemSelectFlag && (!itemUseFlag || !endUseFlag))
+        {
+            Vector2 input = value.Get<Vector2>();
+            playerHorizontal = input.x;
+            playerVertical = input.y;
+        }
+    }
+
+    /// <summary>
+    /// ライトボタンの入力（押しっぱなしで拡大、離して縮小開始）
+    /// </summary>
+    public void OnLightButton(InputValue value)
+    {
+        if (value.isPressed && playerLightRange == 30) // 押し始め
+        {
+            onLight = 1; // 拡大モード
+            audioManager.PlaySE(AudioManager.SEName.playerSes, 2);
+        }
+        else if (!value.isPressed && onLight == 1) // 離した時
+        {
+            lightRangeMinRange = playerLightRange;
+            onLight = 0; // 縮小モード
+            audioManager.StopSE(AudioManager.SEName.playerSes, 2);
+        }
+    }
+
+    /// <summary>
+    /// 近接攻撃ボタン
+    /// </summary>
+    public void AttackButton(InputValue value)
+    {
+        if (value.isPressed && status == 1 && !attackFlag)
+        {
+            attackFlag = true;
+            animator.SetTrigger("Attack");
+            audioManager.PlayOneShotSE(AudioManager.SEName.playerSes, 1);
+        }
+    }
+
+    /// <summary>
+    /// アイテム選択メニューの表示切り替え
+    /// </summary>
+    public void OnItemSelectButton(InputValue value)
+    {
+        if (value.isPressed && status == 1 && !itemUseFlag && !endUseFlag)
+        {
+            itemSelectFlag = true;
+            endSelectFlag = false;
+            audioManager.PlayOneShotSE(AudioManager.SEName.playerSes, 7);
+        }
+        if (!value.isPressed)
+        {
+            itemSelectFlag = false;
+            startSelectFlag = false;
+            audioManager.PlayOneShotSE(AudioManager.SEName.playerSes, 7);
+        }
+    }
+
+    /// <summary>
+    /// アイテム選択メニュー表示中の項目切り替え
+    /// </summary>
+    public void OnItemSelectControl(InputValue value)
+    {
+        Vector2 input = value.Get<Vector2>();
+        if (itemSelectFlag)
+        {
+            // 移動を止める
+            if (input.x == 0) playerHorizontal = 0;
+
+            // スティックの左右で選択番号を増減
+            if (value.isPressed && input.x > 0) itemSelectNum--;
+            else if (value.isPressed && input.x < 0) itemSelectNum++;
+
+            // インデックスのループ処理 (0-2)
+            if (itemSelectNum > 2) itemSelectNum = 0;
+            if (itemSelectNum < 0) itemSelectNum = 2;
+            if (value.isPressed && input.x != 0) audioManager.PlayOneShotSE(AudioManager.SEName.playerSes, 6);
+        }
+    }
+
+    /// <summary>
+    /// アイテム使用ボタン（押しっぱなしで構え、離して発動）
+    /// </summary>
+    public void OnUseItemButton(InputValue value)
+    {
+        // 押し始め：使用フラグON
+        if (value.isPressed && status == 1 && !itemSelectFlag && !itemIntervalFlag) itemUseFlag = true;
+        // 離した時：終了フラグON（PlayerItemUseControl内で実際の使用処理が行われる）
+        if (!value.isPressed && status == 1 && !itemSelectFlag && !itemIntervalFlag && itemUseFlag) endUseFlag = true;
+    }
+
+    /// <summary>
+    /// アイテム使用中（構え中）の方向指定
+    /// </summary>
+    public void OnUseItemControl(InputValue value)
+    {
+        if (itemUseFlag && (value.Get<Vector2>().x != 0 || value.Get<Vector2>().y != 0)) itemUseDirection = new Vector3(value.Get<Vector2>().x, 0f, value.Get<Vector2>().y);
+    }
+
+    // -------------------------------------------
+    // 古い
+    // -------------------------------------------
+
     /// <summary>
     /// スティック/十字キーによる移動入力
     /// </summary>
@@ -1189,7 +1375,6 @@ public class PlayerController : MonoBehaviour
             audioManager.PlayOneShotSE(AudioManager.SEName.playerSes, 1);
         }
     }
-
 
     /// <summary>
     /// アイテム選択メニューの表示切り替え

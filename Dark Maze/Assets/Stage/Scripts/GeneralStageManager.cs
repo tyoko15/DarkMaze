@@ -114,6 +114,10 @@ public class GeneralStageManager : MonoBehaviour
     [SerializeField] public bool enterFlag;                // 決定キー入力
     [SerializeField] public int menuSelectNum;             // 現在のメニュー選択位置
     [SerializeField] public int overSelectNum;             // 現在のオーバー画面選択位置
+    Vector2 inputSelectVector;
+    bool inputIntervalFlag;
+    [SerializeField] float inputIntervalTime = 0.2f;
+    float inputIntervalTimer;
 
     [Header("クリア演出設定")]
     bool clearAnimeFlag;
@@ -1509,6 +1513,38 @@ public class GeneralStageManager : MonoBehaviour
     /// </summary>
     public void MenuUIControl()
     {
+        // Input
+        if (!inputIntervalFlag)
+        {
+            if (inputSelectVector.y == -1)
+            {
+                menuSelectNum--;
+                if (menuSelectNum < 0)
+                {
+                    menuSelectNum = 0;
+                }
+                inputIntervalFlag = true;
+            }
+            else if (inputSelectVector.y == 1)
+            {
+                menuSelectNum++;
+                if (menuSelectNum > 2)
+                {
+                    menuSelectNum = 2;
+                }
+                inputIntervalFlag = true;
+            }
+        }
+        else
+        {
+            if (inputIntervalTimer > inputIntervalTime)
+            {
+                inputIntervalTimer = 0;
+                inputIntervalFlag = false;
+            }
+            else inputIntervalTimer += Time.deltaTime;
+        }
+
         // メニューを開く時のズームイン演出
         if (fadeMenuFlag && menuSelectNum == 0)
         {
@@ -1601,6 +1637,37 @@ public class GeneralStageManager : MonoBehaviour
     /// </summary>
     public void OverUIControl()
     {
+        if (!inputIntervalFlag)
+        {
+            if (inputSelectVector.y == 1)
+            {
+                overSelectNum++;
+                if (overSelectNum > 1)
+                {
+                    overSelectNum = 1;
+                }
+                inputIntervalFlag = true;
+            }
+            else if (inputSelectVector.y == -1)
+            {
+                overSelectNum--;
+                if (overSelectNum < 0)
+                {
+                    overSelectNum = 0;
+                }
+                inputIntervalFlag = true;
+            }
+        }
+        else
+        {
+            if (inputIntervalTimer > inputIntervalTime)
+            {
+                inputIntervalTimer = 0;
+                inputIntervalFlag = false;
+            }
+            else inputIntervalTimer += Time.deltaTime;
+        }
+
         if (overSelectNum == 0)
         {
             TextAnime(overTexts[0], true);
@@ -1652,6 +1719,83 @@ public class GeneralStageManager : MonoBehaviour
     }
 
     // --- 入力コールバック群 ---
+
+    // -----------------------------------------
+    // 新しい
+    // -----------------------------------------
+
+    // メニューUIとオーバーUIの選択
+    public void OnMove(InputValue value)
+    {
+        // ゲームオーバー
+        if (overFlag && !fadeFlag && !inputIntervalFlag)
+        {
+            if (value.Get<Vector2>().y > 0.5f)
+            {
+                inputSelectVector.y = -1;
+            }
+            else if (value.Get<Vector2>().y < -0.5f)
+            {
+                inputSelectVector.y = 1;
+            }
+        }
+        // スティック/方向キーによる項目選択
+        if (menuFlag && !fadeFlag && !inputIntervalFlag)
+        {
+            if (value.Get<Vector2>().y > 0.5f)
+            {
+                inputSelectVector.y = -1;
+            }
+            else if (value.Get<Vector2>().y < -0.5f)
+            {
+                inputSelectVector.y = 1;
+            }
+        }
+
+        if (value.Get<Vector2>() == Vector2.zero) inputSelectVector.y = 0;
+    }
+
+    // メニューボタンが押された時
+    public void OnMenuButton(InputValue value)
+    {
+        if (value.isPressed && !menuFlag && status == GameStatus.play)
+        {
+            // ポーズ処理・UI表示
+            menuFlag = true;
+            fadeMenuFlag = true;
+            playUI.SetActive(false);
+            menuUI.SetActive(true);
+            menuUI.GetComponent<RectTransform>().localScale = new Vector3(0f, 0f, 0f);
+            audioManager.PauseAll();
+        }
+        else if (value.isPressed && menuFlag && status == GameStatus.menu)
+        {
+            // メニューを閉じて再開
+            menuSelectNum = 2;
+            enterFlag = true;
+            audioManager.ResumeAll();
+        }
+    }
+
+    // 決定ボタン（Enter/Space等）が押された時
+    public void OnEnter(InputValue value)
+    {
+        if (menuFlag && value.isPressed && !enterFlag && !fadeMenuFlag)
+        {
+            enterFlag = true;
+            // フェードが必要な遷移（リトライ等）ならフェード開始
+            if (menuSelectNum != 2)
+            {
+                fadeManager.fadeInFlag = true;
+                fadeFlag = true;
+            }
+        }
+        else if (overFlag) enterFlag = true;
+    }
+
+    // ------------------------------------------
+    // 古い
+    // ------------------------------------------
 
     // ゲームオーバー関数
     public void OverUIControl(InputAction.CallbackContext context)

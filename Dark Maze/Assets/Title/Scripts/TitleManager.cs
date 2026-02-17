@@ -27,6 +27,7 @@ public class TitleManager : MonoBehaviour
     // ===== UI参照 =====
     [Header("UIの取得")]
     [SerializeField] GameObject titleUIObject;               // タイトルUI
+    [SerializeField] TextMeshProUGUI versionText;
     [SerializeField] GameObject infoUIObject;               // 遊び方UI
     [SerializeField] GameObject selectDataUIObject;          // データ選択UI
     [SerializeField] TextMeshProUGUI[] selectDataText;       // 各データ表示テキスト
@@ -72,6 +73,8 @@ public class TitleManager : MonoBehaviour
 
     void Start()
     {
+        versionText.text = $"Ver {Application.version}";
+
         // FadeManagerが存在しない場合は生成する
         GameObject fade = GameObject.Find("FadeManager");
         if (fade == null)

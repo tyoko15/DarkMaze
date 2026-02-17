@@ -1034,7 +1034,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Actions: {fileID: -944628639613478452, guid: beff8c50cce179148bdcce3c5210adbf, type: 3}
-  m_NotificationBehavior: 2
+  m_NotificationBehavior: 0
   m_UIInputModule: {fileID: 0}
   m_DeviceLostEvent:
     m_PersistentCalls:
@@ -1306,12 +1306,6 @@ MonoBehaviour:
   fadeManagerObject: {fileID: 8267548131005766601, guid: 4640189f3bb3f43458f839336d723fa6, type: 3}
   fadeManager: {fileID: 0}
   audioManagerObject: {fileID: 7419314631761978824, guid: e3aebe9d9ace6454987245c96f8d9ea3, type: 3}
-  audioManager: {fileID: 0}
-  gameBgms: []
-  gameSes: []
-  playerSes: []
-  enemySes: []
-  gimmickSes: []
   fadeFlag: 0
   status: 0
   playerController: {fileID: 52529359}
@@ -1404,6 +1398,7 @@ MonoBehaviour:
   enterFlag: 0
   menuSelectNum: 0
   overSelectNum: 0
+  inputIntervalTime: 0.2
   clearAnimeTime: 3
 --- !u!1001 &581721302
 PrefabInstance:

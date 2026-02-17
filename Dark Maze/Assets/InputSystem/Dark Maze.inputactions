@@ -357,17 +357,6 @@
                 },
                 {
                     "name": "",
-                    "id": "8d0dda98-ce1c-487d-b18f-3dc2c2870d11",
-                    "path": "<Mouse>/leftButton",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": "Keyboard&Mouse",
-                    "action": "Enter",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
                     "id": "d0a3f400-95dc-4b94-932a-ab456e688408",
                     "path": "<Gamepad>/buttonEast",
                     "interactions": "",
