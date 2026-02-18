@@ -368,6 +368,17 @@
                 },
                 {
                     "name": "",
+                    "id": "020c60dc-87c5-43b3-83ab-ed5613cf42f6",
+                    "path": "<Mouse>/leftButton",
+                    "interactions": "",
+                    "processors": "",
+                    "groups": "",
+                    "action": "Enter",
+                    "isComposite": false,
+                    "isPartOfComposite": false
+                },
+                {
+                    "name": "",
                     "id": "1bb7a66e-5928-4c9d-84b2-30ffb3caa1b8",
                     "path": "<Gamepad>/leftStick",
                     "interactions": "",

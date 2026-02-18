@@ -1125,7 +1125,7 @@ public class TitleButtonManager : MonoBehaviour
                 else if (selectVector.y > 0.5f) inputDirectionNum = 4;
 
                 // “ü—Í‰ğœ
-                if (selectVector.y == 0) inputDirectionNum = 0;
+                if (selectVector == Vector2.zero) inputDirectionNum = 0;
             }
             // Œˆ’èŠm”FUI’†
             else

@@ -1,5 +1,4 @@
 using TMPro;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.UI;
@@ -168,7 +167,6 @@ public class PlayerController : MonoBehaviour
     // ===== Input =====
     public InputActionAsset inputAsset;
     InputAction[] inputActions;
-
 
     void Awake()
     {
