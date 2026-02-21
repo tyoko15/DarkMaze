@@ -8,27 +8,45 @@ public class ItemManager : MonoBehaviour
     [Header("設定")]
     [SerializeField] public int itemNum;        // アイテムの識別番号（どのアイテムか）
     [SerializeField] GameObject itemObject;    // 回転・消去させるアイテムのモデル
+    [SerializeField] BoxCollider boxCollider;
+    public bool intervalFlag;
+    [SerializeField] float intervalTime;
+    float intervalTimer;
     [SerializeField] float rotateTime;         // 1回転（360度）にかける時間
     float rotateTimer;
     bool endFlag;                              // 二重取得を防止するためのフラグ
 
     void Update()
     {
-        // --- アイテムをY軸を中心に回転させる演出 ---
-        if (rotateTimer > rotateTime)
+        if (intervalFlag)
         {
-            // タイマーをリセットして回転をループさせる
-            rotateTimer = 0;
+            boxCollider.enabled = false;
+            if (intervalTimer > intervalTime)
+            {
+                boxCollider.enabled = true;
+                intervalFlag = false;
+                intervalTimer = 0;
+            }
+            else intervalTimer += Time.deltaTime;
         }
-        else if (rotateTimer < rotateTime)
-        {
-            rotateTimer += Time.deltaTime;
+        else
+        {        
+            // --- アイテムをY軸を中心に回転させる演出 ---
+            if (rotateTimer > rotateTime)
+            {
+                // タイマーをリセットして回転をループさせる
+                rotateTimer = 0;
+            }
+            else
+            {
+                rotateTimer += Time.deltaTime;
 
-            // Mathf.Lerpを使って0度から360度まで滑らかに補間
-            float y = Mathf.Lerp(0f, 360f, rotateTimer / rotateTime);
+                // Mathf.Lerpを使って0度から360度まで滑らかに補間
+                float y = Mathf.Lerp(0f, 360f, rotateTimer / rotateTime);
 
-            // 計算した角度をモデルに適用
-            itemObject.transform.eulerAngles = new Vector3(0f, y, 0f);
+                // 計算した角度をモデルに適用
+                itemObject.transform.eulerAngles = new Vector3(0f, y, 0f);
+            }
         }
     }
 

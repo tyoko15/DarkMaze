@@ -30,6 +30,7 @@ public class GameManagerStage2to1 : GeneralStageManager
                 Goal();                      // ゴール判定チェック
                 if (menuFlag) status = GameStatus.menu;
                 playerController.status = 1;
+                DisplayGuideTexts();
                 break;
             case GameStatus.stop:
                 // ギミック演出中などの一時停止状態

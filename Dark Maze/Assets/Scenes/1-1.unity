@@ -1064,7 +1064,7 @@ Transform:
   m_GameObject: {fileID: 493079242}
   serializedVersion: 2
   m_LocalRotation: {x: 0.6427876, y: 0, z: 0, w: 0.7660445}
-  m_LocalPosition: {x: -11, y: 9.5, z: 9}
+  m_LocalPosition: {x: -11, y: 10.6, z: 9}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2053,14 +2053,19 @@ MonoBehaviour:
   fadeClearTime: 0.2
   startText: {fileID: 0}
   menuTexts: []
+  infoButtons: []
+  infoBanners: []
   overTexts: []
   clearTexts: []
+  guideTexts: []
   menuFlag: 0
   overFlag: 0
   clearFlag: 0
   enterFlag: 0
   menuSelectNum: 0
   overSelectNum: 0
+  inputIntervalTime: 0.2
+  displayGuideTextTime: 60
   clearAnimeTime: 3
 --- !u!4 &1001537019
 Transform:
@@ -4512,6 +4517,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 295841858060861325, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2001776747580249404, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
       propertyPath: m_Name
       value: Player (Set)
@@ -4528,6 +4537,14 @@ PrefabInstance:
       propertyPath: mainCamera
       value: 
       objectReference: {fileID: 493079242}
+    - target: {fileID: 2972707508121049092, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3632565238090164669, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 7817300592305494672, guid: 8f81a721e7b409b4eb6c65c23ab6412d, type: 3}
       propertyPath: m_LocalScale.x
       value: 2
@@ -5039,10 +5056,10 @@ SceneRoots:
   m_ObjectHideFlags: 0
   m_Roots:
   - {fileID: 232992983}
-  - {fileID: 1201957830}
   - {fileID: 493079245}
   - {fileID: 1001537019}
   - {fileID: 1450626906}
   - {fileID: 1755859602}
   - {fileID: 2277165565757213525}
   - {fileID: 3010720127690417132}
+  - {fileID: 1201957830}

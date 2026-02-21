@@ -79,7 +79,7 @@ public class AudioManager : MonoBehaviour
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         //Debug.Log("ƒV[ƒ“‚ªØ‚è‘Ö‚í‚Á‚½‚æ: " + scene.name);
-        StopAll();
+        if (isReady) StopAll();
     }
 
     /// <summary>

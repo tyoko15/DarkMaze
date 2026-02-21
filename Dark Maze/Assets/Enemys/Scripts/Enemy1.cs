@@ -104,7 +104,7 @@ public class Enemy1 : MonoBehaviour
                 stanTimer = 0;
                 if (AudioManager.Instance.enemySEs[2].isPlaying) AudioManager.Instance.StopSE(AudioManager.SEName.enemySes, 2);
             }
-            else if (stanTimer < stanTime)
+            else
             {
                 stanTimer += Time.deltaTime;
             }

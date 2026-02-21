@@ -67,6 +67,22 @@ public class TitleButtonManager : MonoBehaviour
     bool oneFlag;                          // 選択変更時に一度だけ処理するためのフラグ
     bool EnterFlag;                        // 決定入力が行われたかどうか
 
+    public int GetSelectNum()
+    {
+        return selectNum;
+    }
+
+    public bool GetIntervalFlag()
+    {
+        return inputIntervalFlag;
+    }
+
+    public Vector2 GetSelectVector()
+    {
+        return selectVector;
+    }
+
+
     // ==============================
     // 初期化処理
     // ==============================
@@ -93,6 +109,8 @@ public class TitleButtonManager : MonoBehaviour
     // ==============================
     void Update()
     {
+
+
         // コントローラー接続状態によるカーソル制御
         if (dataManager == null) dataManager = GameObject.Find("DataManager").GetComponent<DataManager>();
         var controllers = Input.GetJoystickNames();
@@ -110,15 +128,13 @@ public class TitleButtonManager : MonoBehaviour
         // 入力による選択番号更新
         InputNameSelectControl();
         IntervalTimeControl();
-
+        // Input管理
+        InputSelectNum();
         // 決定UIのフェードアニメーション制御
         if (animeFlag == 1) SelectDataDecisionUIAnime(selectDataDecisionUI, true);
         else if(animeFlag == 2) SelectDataDecisionUIAnime(selectDataDecisionUI, false);
         else if(animeFlag == 3) CreateDataDecisionUIAnime(createDataDecisionUI, true);
         else if(animeFlag == 4) CreateDataDecisionUIAnime(createDataDecisionUI, false);
-
-        // Input管理
-        InputSelectNum();
     }
 
     // ==============================
@@ -462,7 +478,7 @@ public class TitleButtonManager : MonoBehaviour
                 animeFlag = 0;
                 decisionFlag = true;
             }
-            else if (fadeInDecisionUITimer < fadeInDecisionUITime)
+            else
             {
                 // 拡大アニメーション中
                 fadeInDecisionUITimer += Time.deltaTime;
@@ -483,7 +499,7 @@ public class TitleButtonManager : MonoBehaviour
                 titleManager.SelectDataDecisionUIActive(false);
                 animeFlag = 0;
             }
-            else if (fadeOutDecisionUITimer < fadeInDecisionUITime)
+            else
             {
                 // 縮小アニメーション中
                 fadeOutDecisionUITimer += Time.deltaTime;
@@ -715,7 +731,7 @@ public class TitleButtonManager : MonoBehaviour
                 animeFlag = 0;
                 decisionFlag = true;
             }
-            else if (fadeInDecisionUITimer < fadeInDecisionUITime)
+            else
             {
                 // 拡大アニメーション中
                 fadeInDecisionUITimer += Time.deltaTime;
@@ -736,7 +752,7 @@ public class TitleButtonManager : MonoBehaviour
                 titleManager.CreateDataDecisionUIActive(false);
                 animeFlag = 0;
             }
-            else if (fadeOutDecisionUITimer < fadeInDecisionUITime)
+            else
             {
                 // 縮小アニメーション中
                 fadeOutDecisionUITimer += Time.deltaTime;
@@ -861,13 +877,15 @@ public class TitleButtonManager : MonoBehaviour
         // 入力インターバル中
         if (inputIntervalFlag)
         {
+            TitleDebugManager.instance.OpenDebugTexts(5).text = $"{inputIntervalTimer.ToString("00.0")}-{Time.time.ToString("00.0")}";
             if (inputIntervalTimer > inputIntervalTime)
             {
                 inputIntervalTimer = 0;
                 inputIntervalFlag = false;
             }
-            else if (inputIntervalTimer < inputIntervalTime) inputIntervalTimer += Time.deltaTime;
-        }        
+            else  inputIntervalTimer += Time.deltaTime;
+        }     
+        else TitleDebugManager.instance.OpenDebugTexts(5).text = $"0";
     }
 
     /// <summary>
@@ -1047,7 +1065,8 @@ public class TitleButtonManager : MonoBehaviour
     public void OnMove(InputValue value)
     {
         Vector2 input = value.Get<Vector2>();
-        selectVector = input;     
+        selectVector = input;
+        //Debug.Log($"input({(int)input.x}, {(int)input.y})");
     }
 
     void InputSelectNum()
@@ -1055,21 +1074,31 @@ public class TitleButtonManager : MonoBehaviour
         // ==============================
         // TitleUI
         // ==============================
+        TitleDebugManager.instance.OpenDebugTexts(0).text = $"OUT{Time.time.ToString("00.0")}";
+        TitleDebugManager.instance.OpenDebugTexts(1).text = $"ProgressNum : {titleManager.progressNum} FadeFlag : {fadeManager.fadeFlag} InputIntervalFlag : {inputIntervalFlag}";
+        TitleDebugManager.instance.OpenDebugTexts(2).text = $"Judge : {titleManager.progressNum == 0 && !fadeManager.fadeFlag && !inputIntervalFlag}";
+
         if (titleManager.progressNum == 0 && !fadeManager.fadeFlag && !inputIntervalFlag)
         {
+            TitleDebugManager.instance.OpenDebugTexts(0).text = $"IN{Time.time.ToString("00")}";
             if (selectVector.y < -0.5f)
             {
                 selectNum++;
                 if (selectNum > 2) selectNum = 2;
                 oneFlag = true;
+                //Debug.Log("up");
+                TitleDebugManager.instance.OpenDebugTexts(3).text = $"Down";
+                inputIntervalFlag = true;
             }
             else if (selectVector.y > 0.5f)
             {
                 selectNum--;
                 if (selectNum < 0) selectNum = 0;
                 oneFlag = true;
-            }
-            inputIntervalFlag = true;
+                //Debug.Log("down");
+                TitleDebugManager.instance.OpenDebugTexts(3).text = $"Up";
+                inputIntervalFlag = true;
+            }            
         }
         // ==============================
         // SelectDataUI

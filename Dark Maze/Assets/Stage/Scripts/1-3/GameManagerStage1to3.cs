@@ -29,6 +29,7 @@ public class GameManagerStage1to3 : GeneralStageManager
                 Goal();                      // ゴール判定チェック
                 if (menuFlag) status = GameStatus.menu;
                 playerController.status = 1; // プレイヤーを「操作可能」状態に
+                DisplayGuideTexts();
                 break;
 
             case GameStatus.stop:

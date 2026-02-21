@@ -141,12 +141,14 @@ public class ButtonManager : MonoBehaviour
             if (somethingFlag && (collision.gameObject.tag == "Attack" || collision.gameObject.tag == "Arrow") && !buttonFlag)
             {
                 buttonFlag = true;
+                collision.gameObject.SetActive(false);
                 AudioManager.Instance.PlayOneShotSE(AudioManager.SEName.gimmickSes, 0);
             }
             else if (!somethingFlag && somethingNum == 0 && (collision.gameObject.tag == "Attack" || collision.gameObject.tag == "Arrow") && !buttonFlag)
             {
                 buttonFlag = true;
                 somethingNum++;
+                collision.gameObject.SetActive(false);
                 AudioManager.Instance.PlayOneShotSE(AudioManager.SEName.gimmickSes, 0);
             }
         }
@@ -161,12 +163,14 @@ public class ButtonManager : MonoBehaviour
             {
                 buttonFlag = true;
                 intervalFlag = true;
+                if (collision.gameObject.name == $"Sword") collision.gameObject.SetActive(false);
                 AudioManager.Instance.PlayOneShotSE(AudioManager.SEName.gimmickSes, 0);
             }
             else if (!somethingFlag && somethingNum == 0 && (collision.gameObject.tag == "Attack" || collision.gameObject.tag == "Arrow") && !buttonFlag)
             {
                 buttonFlag = true;
                 somethingNum++;
+                if (collision.gameObject.name == $"Sword") collision.gameObject.SetActive(false);
                 AudioManager.Instance.PlayOneShotSE(AudioManager.SEName.gimmickSes, 0);
             }
         }

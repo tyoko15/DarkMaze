@@ -113,8 +113,8 @@ public class BoxManager : MonoBehaviour
             if (!lockFlag && other.gameObject.name == $"GroundButton ({i})")
             {
                 buttonFlag = true;
-                if (completeTimer > completeTime) other.gameObject.GetComponent<ButtonManager>().completeFlag = true;
-                else if (completeTimer < completeTime) completeTimer += Time.deltaTime;
+                if (completeTimer > completeTime) other.gameObject.GetComponent<ButtonManager>().completeFlag = false;
+                else completeTimer += Time.deltaTime;
             }
         }
     }
@@ -171,7 +171,7 @@ public class BoxManager : MonoBehaviour
                 lockFlag = false;
                 AudioManager.Instance.StopSE(AudioManager.SEName.gimmickSes, 4);
             }
-            else if(moveTimer < moveTime)
+            else
             {
                 moveTimer += Time.deltaTime;
                 float x = Mathf.Lerp(originPosition.x, originPosition.x + 2f, moveTimer / moveTime);
@@ -192,7 +192,7 @@ public class BoxManager : MonoBehaviour
                 lockFlag = false;
                 AudioManager.Instance.StopSE(AudioManager.SEName.gimmickSes, 4);
             }
-            else if (moveTimer < moveTime)
+            else
             {
                 moveTimer += Time.deltaTime;
                 float x = Mathf.Lerp(originPosition.x, originPosition.x - 2f, moveTimer / moveTime);
@@ -213,7 +213,7 @@ public class BoxManager : MonoBehaviour
                 lockFlag = false;
                 AudioManager.Instance.StopSE(AudioManager.SEName.gimmickSes, 4);
             }
-            else if (moveTimer < moveTime)
+            else
             {
                 moveTimer += Time.deltaTime;
                 float z = Mathf.Lerp(originPosition.z, originPosition.z + 2f, moveTimer / moveTime);
@@ -234,7 +234,7 @@ public class BoxManager : MonoBehaviour
                 lockFlag = false;
                 AudioManager.Instance.StopSE(AudioManager.SEName.gimmickSes, 4);
             }
-            else if (moveTimer < moveTime)
+            else
             {
                 moveTimer += Time.deltaTime;
                 float z = Mathf.Lerp(originPosition.z, originPosition.z - 2f, moveTimer / moveTime);

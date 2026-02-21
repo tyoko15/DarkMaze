@@ -52,7 +52,7 @@ public class BarrelManager : MonoBehaviour
                 // 削除直前に物理判定をトリガー化してすり抜けるようにする（念のため）
                 gameObject.GetComponent<Collider>().isTrigger = true;
             }
-            else if (destroyTimer < destroyTime)
+            else
             {
                 destroyTimer += Time.deltaTime;
             }
@@ -82,7 +82,9 @@ public class BarrelManager : MonoBehaviour
     {
         if(other.gameObject.tag == "Attack")
         {
-            itemObject.SetActive(true); // 隠していたアイテムを出現させる
+            // 隠していたアイテムを出現させる
+            itemObject.SetActive(true);
+            itemObject.GetComponent<ItemManager>().intervalFlag = true; 
             destroyFlag = true;         // 破壊開始
             canvasFlag = false;         // UIを永久に消す
         }

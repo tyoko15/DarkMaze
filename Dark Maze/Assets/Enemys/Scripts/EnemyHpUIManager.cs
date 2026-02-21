@@ -50,7 +50,9 @@ public class EnemyHpUIManager : MonoBehaviour
         if (mainCamera == null) return;
 
         // ƒJƒƒ‰‚Ì•ûŒü‚ğŒü‚­
-        transform.rotation = Quaternion.LookRotation(transform.position - mainCamera.transform.position);
+        Vector3 rotation = transform.position - mainCamera.transform.position;
+        rotation = new Vector3(0f, rotation.y, rotation.z);
+        transform.rotation = Quaternion.LookRotation(rotation);
     }
 
     /// <summary>

@@ -71,6 +71,21 @@ public class TitleManager : MonoBehaviour
     public int progressNum;
     public bool fadeFlag;                                     // フェード処理中か
 
+
+    void Awake()
+    {
+        if (GameObject.Find("AudioManager") != null)
+        {
+            audioManager = AudioManager.Instance;
+        }
+        else
+        {
+            GameObject ob = Instantiate(audioManagerObject, Vector3.zero, Quaternion.identity);
+            audioManager = ob.GetComponent<AudioManager>();
+        }
+        StartCoroutine(GetAudio());
+    }
+
     void Start()
     {
         versionText.text = $"Ver {Application.version}";
@@ -116,21 +131,15 @@ public class TitleManager : MonoBehaviour
         // 名前入力UIの初期化
         GetInputText();
         SetCharactersInputText();
-
-        if (GameObject.Find("AudioManager") != null)
-        {
-            audioManager = AudioManager.Instance;
-        }
-        else
-        {
-            GameObject ob = Instantiate(audioManagerObject, Vector3.zero, Quaternion.identity);
-            audioManager = ob.GetComponent<AudioManager>();
-        }
-        StartCoroutine(GetAudio());
     }
 
     void Update()
     {
+        if (Input.anyKeyDown || Input.GetMouseButtonDown(0))
+        {
+            AudioListener.volume = 1f;
+        }
+
         DisplayData();              // セーブデータ表示更新
         SelectInputTextControl();   // 名前入力制御
 

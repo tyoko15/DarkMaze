@@ -56,6 +56,4 @@ public class PlayerAttackAnimationAnchor : MonoBehaviour
         playerController.SetAttackFlag(false);
         animator.SetBool("AttackFlag", false);
     }
-
-
 }

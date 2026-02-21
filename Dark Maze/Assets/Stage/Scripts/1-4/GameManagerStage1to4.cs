@@ -31,6 +31,7 @@ public class GameManagerStage1to4 : GeneralStageManager
                 Goal();                      // ゴール判定チェック
                 if (menuFlag) status = GameStatus.menu;
                 playerController.status = 1;
+                DisplayGuideTexts();
                 break;
 
             case GameStatus.stop:
@@ -129,7 +130,7 @@ public class GameManagerStage1to4 : GeneralStageManager
         {
             ActiveLight(areaLightObjects[3], 2, 3, false, ref defeatGateFlag[3]);
             // スイッチ2つを同時に出現させる
-            ActiveObject(buttonObjects[2], lightObjects[3], null, 2, 2, false, ref defeatGateFlag[3]);
+            ActiveObject(buttonObjects[2], null, null, 2, 2, false, ref defeatGateFlag[3]);
             ActiveObject(buttonObjects[3], lightObjects[4], null, 2, 3, false, ref defeatGateFlag[3]);
             Gate(gateObjects[2], null, cameraPointObjects[8], true, 2, 4, true, ref defeatGateFlag[3]);
         }

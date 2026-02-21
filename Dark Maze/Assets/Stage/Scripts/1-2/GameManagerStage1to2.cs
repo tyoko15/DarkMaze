@@ -29,6 +29,7 @@ public class GameManagerStage1to2 : GeneralStageManager
                 Goal();                      // ゴール判定チェック
                 if (menuFlag) status = GameStatus.menu;
                 playerController.status = 1; // プレイヤーを「操作可能」状態に
+                DisplayGuideTexts();
                 break;
 
             case GameStatus.stop:
@@ -68,7 +69,8 @@ public class GameManagerStage1to2 : GeneralStageManager
     /// </summary>
     public void Gimmick1()
     {
-        SenceGate(gateObjects[0], lightObjects[0], cameraPointObjects[0], buttonObjects[0].GetComponent<ButtonManager>().buttonFlag, buttonObjects[0].GetComponent<ButtonManager>().completeFlag, 2, 0);
+        //SenceGate(gateObjects[0], lightObjects[0], cameraPointObjects[0], buttonObjects[0].GetComponent<ButtonManager>().buttonFlag, buttonObjects[0].GetComponent<ButtonManager>().completeFlag, 2, 0);
+        if (buttonObjects[0].GetComponent<ButtonManager>().buttonFlag && buttonObjects[0].GetComponent<ButtonManager>().completeFlag) Gate(gateObjects[0], lightObjects[0], cameraPointObjects[0], true, 2, 1, true, ref buttonObjects[0].GetComponent<ButtonManager>().completeFlag);
     }
 
     /// <summary>

@@ -1,6 +1,7 @@
 using TMPro;
 using Unity.AI.Navigation;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using System.Collections;
@@ -104,11 +105,17 @@ public class GeneralStageManager : MonoBehaviour
     [Header("UIテキスト・選択管理")]
     [SerializeField] public GameObject startText;
     [SerializeField] public GameObject[] menuTexts;        // メニューの選択項目
+    [SerializeField] GameObject[] infoButtons;             // 操作説明の項目
+    [SerializeField] Sprite[] infoBanners;                 // バナー    
     [SerializeField] public GameObject[] overTexts;        // オーバー画面の項目
     [SerializeField] public GameObject[] clearTexts;       // クリア画面の項目
+    [SerializeField] TextMeshProUGUI[] guideTexts;         // ガイド画面の項目
 
     // 操作フラグ
+    bool controllerFlag;
     [SerializeField] public bool menuFlag;                 // メニューを開く入力があったか
+    bool infoFlag;
+    int infoBannerNum;
     [SerializeField] public bool overFlag;                 // 死亡が確定したか
     [SerializeField] public bool clearFlag;                // クリアが確定したか
     [SerializeField] public bool enterFlag;                // 決定キー入力
@@ -118,6 +125,12 @@ public class GeneralStageManager : MonoBehaviour
     bool inputIntervalFlag;
     [SerializeField] float inputIntervalTime = 0.2f;
     float inputIntervalTimer;
+
+    bool displayGuideTextFlag = true;
+    bool guideFixedFlag;
+    bool guideDeleteFlag;
+    [SerializeField] float displayGuideTextTime = 60f;
+    float displayGuideTextTimer;
 
     [Header("クリア演出設定")]
     bool clearAnimeFlag;
@@ -133,6 +146,32 @@ public class GeneralStageManager : MonoBehaviour
         activeFlag = new bool[activeObject.Length];
         defeatGateFlag = new bool[enemys.Length];
         menuTexts = new GameObject[3];
+    }
+
+    public float GetRotationTimer(int i)
+    {
+        return rotationTimer[i];
+    }
+
+    public bool GetEndCameraWorkFlag(int i)
+    {
+        return cameraWorkEndFlag[i];
+    }
+
+    void GetController()
+    {
+        var controllers = Input.GetJoystickNames();
+        if (controllers != null)
+        {
+            Cursor.visible = false;
+            Cursor.lockState = CursorLockMode.Locked;
+            controllerFlag = true;
+        }
+        else if (controllers == null)
+        {
+            controllerFlag = false;
+            Cursor.visible = true;
+        }
     }
 
     /// <summary>
@@ -155,7 +194,7 @@ public class GeneralStageManager : MonoBehaviour
     public void StartData()
     {
         GetUIandPlayer();　// UIとプレイヤーの参照を取得
-
+        GetController();   // コントローラーの有無
         // フェードマネージャーの生成と取得
         GameObject fade = GameObject.Find("FadeManager");
         if (fade == null)
@@ -194,6 +233,7 @@ public class GeneralStageManager : MonoBehaviour
             GameObject ob = Instantiate(audioManagerObject, Vector3.zero, Quaternion.identity);
             audioManager = ob.GetComponent<AudioManager>();
         }
+        GetUIandPlayer();
         StartCoroutine(GetAudio()); // BGM再生開始
     }
 
@@ -224,7 +264,7 @@ public class GeneralStageManager : MonoBehaviour
                 startUI.SetActive(false);
                 status = GameStatus.play;                
             }
-            else if (startTimer < startTime)
+            else
             {
                 startTimer += Time.deltaTime;
                 startUI.SetActive(true);
@@ -284,7 +324,7 @@ public class GeneralStageManager : MonoBehaviour
                 fadeFlag = true;
                 fadeManager.fadeInFlag = true; // 最後にフェードイン（暗転）させて遷移へ
             }
-            else if (clearAnimeTimer < clearAnimeTime)
+            else
             {
                 clearAnimeTimer += Time.deltaTime;
             }
@@ -369,7 +409,7 @@ public class GeneralStageManager : MonoBehaviour
                     cameraWorkStartFlag[i] = true;
                 }
                 // 2. 最初のカメラ移動（プレイヤー → ギミック地点）
-                if (cameraWorkStartFlag[i] && cameraTimer[i] > 0.5f)
+                if (cameraWorkStartFlag[i] && cameraTimer[i] >= 0.5f)
                 {
                     // 移動完了
                     cameraWorkStartFlag[i] = false;
@@ -392,7 +432,7 @@ public class GeneralStageManager : MonoBehaviour
                 }
 
                 // 3. メインのエリア回転アニメーション
-                if (rotationTimer[i] > time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
+                if (rotationTimer[i] >= time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
                 {
                     // 回転完了
                     rotationTimer[i] = 0;
@@ -413,7 +453,7 @@ public class GeneralStageManager : MonoBehaviour
                 }
 
                 // 4. 最後のカメラ移動（ギミック地点 → プレイヤー）
-                if (cameraWorkEndFlag[i] && cameraTimer[i] > 0.5f)
+                if (cameraWorkEndFlag[i] && cameraTimer[i] >= 0.5f)
                 {
                     // すべての演出が終了
                     status = GameStatus.play;
@@ -454,7 +494,7 @@ public class GeneralStageManager : MonoBehaviour
                     cameraWorkStartFlag[i] = true;
                 }
                 // 最初のカメラ移動
-                if (cameraWorkStartFlag[i] && cameraTimer[i] > 0.5f)
+                if (cameraWorkStartFlag[i] && cameraTimer[i] >= 0.5f)
                 {
                     cameraWorkStartFlag[i] = false;
                     cameraTimer[i] = 0f;
@@ -464,7 +504,7 @@ public class GeneralStageManager : MonoBehaviour
                     cameraTimer[i] += Time.deltaTime;
                 }
                 // エリア回転
-                if (rotationTimer[i] > time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
+                if (rotationTimer[i] >= time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
                 {
                     rotationTimer[i] = 0;
                     area.transform.rotation = Quaternion.Euler(0, originDegree + direction * degree, 0);
@@ -479,7 +519,7 @@ public class GeneralStageManager : MonoBehaviour
                     area.transform.rotation = Quaternion.Euler(0, y, 0);
                 }
                 // 最後のカメラ移動
-                if (cameraWorkEndFlag[i] && cameraTimer[i] > 0.5f)
+                if (cameraWorkEndFlag[i] && cameraTimer[i] >= 0.5f)
                 {
                     status = GameStatus.play;
                     cameraWorkEndFlag[i] = false;
@@ -557,7 +597,7 @@ public class GeneralStageManager : MonoBehaviour
                         cameraRota = mainCamera.transform.eulerAngles;
                     }
                     // --- 最初のカメラ移動（Lerp） ---
-                    if (cameraWorkStartFlag[i] && cameraTimer[i] > 0.5f)
+                    if (cameraWorkStartFlag[i] && cameraTimer[i] >= 0.5f)
                     {
                         audioManager.PlaySE(AudioManager.SEName.gimmickSes, 5); // 門の駆動音
                         cameraWorkStartFlag[i] = false;
@@ -611,7 +651,7 @@ public class GeneralStageManager : MonoBehaviour
                     }
                 }
                 // 3. カメラ演出がない場合（移動ロジックのみ実行）
-                else
+                if (open)
                 {
                     if (openTimer[i] == 0 && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
                     {
@@ -629,7 +669,7 @@ public class GeneralStageManager : MonoBehaviour
                         cameraRota = mainCamera.transform.eulerAngles;
                     }
                     // 最初のカメラ移動
-                    if (cameraWorkStartFlag[i] && cameraTimer[i] > 0.5f)
+                    if (cameraWorkStartFlag[i] && cameraTimer[i] >= 0.5f)
                     {
                         audioManager.PlaySE(AudioManager.SEName.gimmickSes, 5);                        
                         cameraWorkStartFlag[i] = false;
@@ -647,7 +687,7 @@ public class GeneralStageManager : MonoBehaviour
                         mainCamera.transform.position = posi;
                         mainCamera.transform.rotation = Quaternion.Euler(rota);
                     }
-                    if (openTimer[i] > time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
+                    if (openTimer[i] >= time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
                     {
                         audioManager.StopSE(AudioManager.SEName.gimmickSes, 5);
                         openTimer[i] = 2;
@@ -661,7 +701,7 @@ public class GeneralStageManager : MonoBehaviour
                         gate.transform.position = new Vector3(gate.transform.position.x, y, gate.transform.position.z);
                     }
                     // 最後のカメラ移動
-                    if (cameraWorkEndFlag[i] && cameraTimer[i] > 0.5f)
+                    if (cameraWorkEndFlag[i] && cameraTimer[i] >= 0.5f)
                     {
                         status = GameStatus.play;
                         if (light != null) light.SetActive(false);
@@ -694,7 +734,7 @@ public class GeneralStageManager : MonoBehaviour
                         openTimer[i] = 2;
                         gate.transform.position = new Vector3(gate.transform.position.x, 0f, gate.transform.position.z);
                     }
-                    else if (openTimer[i] < time)
+                    else
                     {
                         status = GameStatus.stop;
                         openTimer[i] += Time.deltaTime;
@@ -711,7 +751,7 @@ public class GeneralStageManager : MonoBehaviour
                         openTimer[i] = 2;
                         gate.transform.position = new Vector3(gate.transform.position.x, -2.1f, gate.transform.position.z);
                     }
-                    else if (openTimer[i] < time)
+                    else
                     {
                         status = GameStatus.stop;
                         openTimer[i] += Time.deltaTime;
@@ -754,7 +794,7 @@ public class GeneralStageManager : MonoBehaviour
                 }
 
                 // 2. 最初のカメラ移動（Lerp）
-                if (cameraWorkStartFlag[i] && cameraTimer[i] > 0.5f)
+                if (cameraWorkStartFlag[i] && cameraTimer[i] >= 0.5f)
                 {
                     audioManager.PlaySE(AudioManager.SEName.gimmickSes, 5);
                     cameraWorkStartFlag[i] = false;
@@ -777,7 +817,7 @@ public class GeneralStageManager : MonoBehaviour
                 }
 
                 // 3. ゲートオープン本体（0f -> -2.1f）
-                if (openTimer[i] > time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
+                if (openTimer[i] >= time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
                 {
                     audioManager.StopSE(AudioManager.SEName.gimmickSes, 5);
                     openTimer[i] = 0f;
@@ -793,7 +833,7 @@ public class GeneralStageManager : MonoBehaviour
                 }
 
                 // 4. 最後のカメラ移動（戻り）
-                if (cameraWorkEndFlag[i] && cameraTimer[i] > 0.5f)
+                if (cameraWorkEndFlag[i] && cameraTimer[i] >= 0.5f)
                 {
                     status = GameStatus.play;
                     if (light != null) light.SetActive(false);
@@ -802,6 +842,7 @@ public class GeneralStageManager : MonoBehaviour
                     cameraWorkEndFlag[i] = false;
                     cameraTimer[i] = 0f;
                     if(end) flag = false; // ギミック終了フラグ
+                    Debug.Log($"end{flag}");
                 }
                 else if (cameraWorkEndFlag[i] && cameraTimer[i] < 0.5f)
                 {
@@ -822,7 +863,7 @@ public class GeneralStageManager : MonoBehaviour
                     cameraWorkStartFlag[i] = true;
                 }
                 // 最初のカメラ移動
-                if (cameraWorkStartFlag[i] && cameraTimer[i] > 0.5f)
+                if (cameraWorkStartFlag[i] && cameraTimer[i] >= 0.5f)
                 {
                     cameraWorkStartFlag[i] = false;
                     cameraTimer[i] = 0f;
@@ -831,7 +872,7 @@ public class GeneralStageManager : MonoBehaviour
                 {
                     cameraTimer[i] += Time.deltaTime;
                 }
-                if (openTimer[i] > time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
+                if (openTimer[i] >= time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
                 {
                     gate.transform.position = new Vector3(gate.transform.position.x, -2.1f, gate.transform.position.z);
                     gate.SetActive(true);
@@ -854,7 +895,7 @@ public class GeneralStageManager : MonoBehaviour
                     gate.transform.position = new Vector3(gate.transform.position.x, y, gate.transform.position.z);
                 }
                 // 最後のカメラ移動
-                if (cameraWorkEndFlag[i] && cameraTimer[i] > 0.5f)
+                if (cameraWorkEndFlag[i] && cameraTimer[i] >= 0.5f)
                 {
                     status = GameStatus.play;
                     cameraWorkEndFlag[i] = false;
@@ -890,7 +931,7 @@ public class GeneralStageManager : MonoBehaviour
                     cameraWorkStartFlag[i] = true;
                 }
                 // 最初のカメラ移動
-                if (cameraWorkStartFlag[i] && cameraTimer[i] > 0.5f)
+                if (cameraWorkStartFlag[i] && cameraTimer[i] >= 0.5f)
                 {
                     audioManager.PlaySE(AudioManager.SEName.gimmickSes, 5);
                     cameraWorkStartFlag[i] = false;
@@ -909,7 +950,7 @@ public class GeneralStageManager : MonoBehaviour
                     mainCamera.transform.rotation = Quaternion.Euler(rota);
                 }
                 // GateClose
-                if (openTimer[i] > time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
+                if (openTimer[i] >= time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
                 {
                     audioManager.StopSE(AudioManager.SEName.gimmickSes, 5);
                     openTimer[i] = 0f;
@@ -923,7 +964,7 @@ public class GeneralStageManager : MonoBehaviour
                     gate.transform.position = new Vector3(gate.transform.position.x, y, gate.transform.position.z);
                 }
                 // 最後のカメラ移動
-                if (cameraWorkEndFlag[i] && cameraTimer[i] > 0.5f)
+                if (cameraWorkEndFlag[i] && cameraTimer[i] >= 0.5f)
                 {
                     status = GameStatus.play;
                     mainCamera.transform.position = cameraPosi;
@@ -952,7 +993,7 @@ public class GeneralStageManager : MonoBehaviour
                     cameraWorkStartFlag[i] = true;
                 }
                 // 最初のカメラ移動
-                if (cameraWorkStartFlag[i] && cameraTimer[i] > 0.5f)
+                if (cameraWorkStartFlag[i] && cameraTimer[i] >= 0.5f)
                 {
                     cameraWorkStartFlag[i] = false;
                     cameraTimer[i] = 0f;
@@ -961,7 +1002,7 @@ public class GeneralStageManager : MonoBehaviour
                 {
                     cameraTimer[i] += Time.deltaTime;
                 }
-                if (openTimer[i] > time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
+                if (openTimer[i] >= time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
                 {
                     gate.transform.position = new Vector3(gate.transform.position.x, 0f, gate.transform.position.z);
                     gate.SetActive(true);
@@ -984,7 +1025,7 @@ public class GeneralStageManager : MonoBehaviour
                     gate.transform.position = new Vector3(gate.transform.position.x, y, gate.transform.position.z);
                 }
                 // 最後のカメラ移動
-                if (cameraWorkEndFlag[i] && cameraTimer[i] > 0.5f)
+                if (cameraWorkEndFlag[i] && cameraTimer[i] >= 0.5f)
                 {
                     status = GameStatus.play;
                     cameraWorkEndFlag[i] = false;
@@ -1033,7 +1074,7 @@ public class GeneralStageManager : MonoBehaviour
         }
 
         // 2. カメラ演出のウェイト（0.5秒）
-        if (cameraWorkStartFlag[i] && cameraTimer[i] > 0.5f)
+        if (cameraWorkStartFlag[i] && cameraTimer[i] >= 0.5f)
         {
             cameraTimer[i] = 0f;
             cameraWorkStartFlag[i] = false;
@@ -1097,7 +1138,7 @@ public class GeneralStageManager : MonoBehaviour
             }
 
             // --- フェードアウト演出 (終了0.2秒前から) ---
-            if (limitActiveObTimer[i] > limitActiveObTime - 0.2f)
+            if (limitActiveObTimer[i] >= limitActiveObTime - 0.2f)
             {
                 for (int n = 0; n < activeObParentCount; n++)
                 {
@@ -1112,7 +1153,7 @@ public class GeneralStageManager : MonoBehaviour
         }
 
         // 5. 後処理
-        if (cameraWorkEndFlag[i] && cameraTimer[i] > 0.5f)
+        if (cameraWorkEndFlag[i] && cameraTimer[i] >= 0.5f)
         {
             cameraTimer[i] = 0f;
             if (light != null) light.SetActive(false);
@@ -1176,7 +1217,7 @@ public class GeneralStageManager : MonoBehaviour
             }
 
             // 2. 開始ウェイト（0.5秒の猶予）
-            if (cameraWorkStartFlag[i] && cameraTimer[i] > 0.5f)
+            if (cameraWorkStartFlag[i] && cameraTimer[i] >= 0.5f)
             {
                 cameraWorkStartFlag[i] = false;
                 cameraTimer[i] = 0f;
@@ -1187,7 +1228,7 @@ public class GeneralStageManager : MonoBehaviour
             }
 
             // 3. フェードイン処理完了（実体化終了）
-            if (activeObTimer[i] > time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
+            if (activeObTimer[i] >= time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
             {
                 if (activeOb.GetComponent<MeshRenderer>())
                 {
@@ -1242,7 +1283,7 @@ public class GeneralStageManager : MonoBehaviour
             }
 
             // 5. 終了処理（操作権の返却）
-            if (cameraWorkEndFlag[i] && cameraTimer[i] > 0.5f)
+            if (cameraWorkEndFlag[i] && cameraTimer[i] >= 0.5f)
             {
                 status = GameStatus.play;
                 cameraTimer[i] = 0f;
@@ -1316,7 +1357,7 @@ public class GeneralStageManager : MonoBehaviour
             }
 
             // 2. カメラ移動（プレイヤー → 注視点へ）
-            if (cameraWorkStartFlag[i] && cameraTimer[i] > 0.5f)
+            if (cameraWorkStartFlag[i] && cameraTimer[i] >= 0.5f)
             {
                 // 到着：位置を完全に固定
                 cameraWorkStartFlag[i] = false;
@@ -1337,7 +1378,7 @@ public class GeneralStageManager : MonoBehaviour
             }
 
             // 3. 実体化フェーズ（マテリアルのアルファ値をLerpで1.0へ）
-            if (activeObTimer[i] > time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
+            if (activeObTimer[i] >= time && !cameraWorkStartFlag[i] && !cameraWorkEndFlag[i])
             {
                 // マテリアルの取得
                 Material[] activeMaterials;
@@ -1425,7 +1466,7 @@ public class GeneralStageManager : MonoBehaviour
             }
 
             // 4. 終了演出：カメラ移動（注視点 → プレイヤーへ戻る）
-            if (cameraWorkEndFlag[i] && cameraTimer[i] > 0.5f)
+            if (cameraWorkEndFlag[i] && cameraTimer[i] >= 0.5f)
             {
                 status = GameStatus.play;
                 if (light != null) light.SetActive(false);
@@ -1461,7 +1502,7 @@ public class GeneralStageManager : MonoBehaviour
             lightOb.GetComponent<Light>().intensity = 30f;
         }
         // 規定時間に達したら、ライトの角度を最大(180)で固定
-        if (activeLightTimer[i] > time)
+        if (activeLightTimer[i] >= time)
         {
             activeLightTimer[i] = time;
             lightOb.GetComponent<Light>().spotAngle = 180f;
@@ -1494,19 +1535,108 @@ public class GeneralStageManager : MonoBehaviour
         overUI = playerSet.transform.GetChild(0).transform.GetChild(3).gameObject;
         clearUI = playerSet.transform.GetChild(0).transform.GetChild(4).gameObject;
 
-        // テキスト要素の配列化（アニメーション操作用）s
+        // テキスト要素の配列化（アニメーション操作用
         startText = startUI.transform.GetChild(0).gameObject;
-        menuTexts = new GameObject[3];
+        menuTexts = new GameObject[4];
         menuTexts[0] = menuUI.transform.GetChild(2).gameObject;
         menuTexts[1] = menuUI.transform.GetChild(3).gameObject;
         menuTexts[2] = menuUI.transform.GetChild(4).gameObject;
+        menuTexts[3] = menuUI.transform.GetChild(5).gameObject;
+
+        // InfoUIの取得
+        infoButtons = new GameObject[3];
+        FadeManager fade = (GameObject.Find("FadeManager")) ? GameObject.Find("FadeManager").GetComponent<FadeManager>() : null;
+        if (fade != null)
+        {
+            infoBanners = new Sprite[fade.fadeBannerSpriteList.Count];
+            for (int i = 0; i < infoBanners.Length; i++) infoBanners[i] = fade.fadeBannerSpriteList[i];
+            infoButtons[0] = menuUI.transform.GetChild(6).GetChild(1).gameObject;
+            infoButtons[1] = menuUI.transform.GetChild(6).GetChild(2).gameObject;
+            infoButtons[2] = menuUI.transform.GetChild(6).GetChild(3).gameObject;
+            //infoButtons[0].SetActive(true);
+            //infoButtons[1].SetActive(false);
+            infoButtons[2].GetComponent<Image>().sprite = infoBanners[0];            
+        }
+        menuUI.transform.GetChild(6).gameObject.SetActive(false);
+
         overTexts = new GameObject[2];
         overTexts[0] = overUI.transform.GetChild(2).gameObject;
         overTexts[1] = overUI.transform.GetChild(3).gameObject;
         clearTexts = new GameObject[2];
         //clearTexts[0] = clearUI.transform.GetChild(2).gameObject;
         //clearTexts[1] = clearUI.transform.GetChild(3).gameObject;
+        guideTexts = new TextMeshProUGUI[10];
+        for (int i = 0; i < 2; i++) guideTexts[i] = playUI.transform.GetChild(3).GetChild(0).GetChild(i).GetComponent<TextMeshProUGUI>();
+        for (int i = 0; i < 2; i++) guideTexts[i + 2] = playUI.transform.GetChild(3).GetChild(1).GetChild(i).GetComponent<TextMeshProUGUI>();
+        for (int i = 0; i < 3; i++) guideTexts[i + 4] = playUI.transform.GetChild(3).GetChild(2).GetChild(i).GetComponent<TextMeshProUGUI>();
+        for (int i = 0; i < 2; i++) guideTexts[i + 7] = playUI.transform.GetChild(3).GetChild(3).GetChild(i).GetComponent<TextMeshProUGUI>();
+        guideTexts[9] = playUI.transform.GetChild(3).GetChild(4).GetChild(0).GetComponent<TextMeshProUGUI>();
     }
+
+    void GuideTextControl()
+    {
+        if (controllerFlag)
+        {
+            guideTexts[0].text = $"";
+
+        }
+        else
+        {
+            guideTexts[0].text = $"";
+        }
+    }
+
+    protected void DisplayGuideTexts()
+    {
+        if (guideFixedFlag)
+        {
+            for (int i = 0; i < guideTexts.Length; i++)
+            {
+                Color color = guideTexts[i].color;
+                color.a = 1;
+                guideTexts[i].color = color;
+            }
+            return;
+        }
+        else if (guideDeleteFlag)
+        {
+            for (int i = 0; i < guideTexts.Length; i++)
+            {
+                Color color = guideTexts[i].color;
+                color.a = 0;
+                guideTexts[i].color = color;
+            }
+        }
+
+        if (displayGuideTextFlag)
+        {
+            if (displayGuideTextTimer > displayGuideTextTime)
+            {
+                for (int i = 0; i < guideTexts.Length; i++)
+                {
+                    Color color = guideTexts[i].color;
+                    color.a = 0;
+                    guideTexts[i].color = color;
+                }
+                displayGuideTextTimer = 0;
+                displayGuideTextFlag = false;
+            }
+            else
+            {
+                displayGuideTextTimer += Time.deltaTime;
+                if (displayGuideTextTimer > displayGuideTextTime * 0.75f)
+                {
+                    float timer = displayGuideTextTime * 0.75f;
+                    for (int i = 0; i < guideTexts.Length; i++)
+                    {
+                        Color color = guideTexts[i].color;
+                        color.a = Mathf.Lerp(1, 0, (displayGuideTextTimer - timer) / (displayGuideTextTime * 0.25f));
+                        guideTexts[i].color = color;
+                    }
+                }
+            }
+        }
+    } 
 
     /// <summary>
     /// メニュー画面の開閉アニメーションと選択項目のロジック制御
@@ -1516,28 +1646,47 @@ public class GeneralStageManager : MonoBehaviour
         // Input
         if (!inputIntervalFlag)
         {
-            if (inputSelectVector.y == -1)
+            if (!infoFlag)
             {
-                menuSelectNum--;
-                if (menuSelectNum < 0)
+                if (inputSelectVector.y < -0.5f)
                 {
-                    menuSelectNum = 0;
+                    menuSelectNum--;
+                    if (menuSelectNum < 0)
+                    {
+                        menuSelectNum = 0;
+                    }
+                    inputIntervalFlag = true;
                 }
-                inputIntervalFlag = true;
+                else if (inputSelectVector.y > 0.5f)
+                {
+                    menuSelectNum++;
+                    if (menuSelectNum > 3)
+                    {
+                        menuSelectNum = 3;
+                    }
+                    inputIntervalFlag = true;
+                }
             }
-            else if (inputSelectVector.y == 1)
+            else
             {
-                menuSelectNum++;
-                if (menuSelectNum > 2)
+                if (inputSelectVector.x < -0.5f)
                 {
-                    menuSelectNum = 2;
+                    inputSelectVector.x = -1f;
+                    infoButtons[0].SetActive(true);
+                    infoButtons[1].GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+
                 }
-                inputIntervalFlag = true;
-            }
+                else if (inputSelectVector.x > 0.5f)
+                {
+                    inputSelectVector.x = 1f;
+                    infoButtons[0].SetActive(false);
+                    infoButtons[1].GetComponent<RectTransform>().localScale = new Vector3(1.2f, 1.2f, 1.2f);
+                }
+            }            
         }
         else
         {
-            if (inputIntervalTimer > inputIntervalTime)
+            if (inputIntervalTimer >= inputIntervalTime)
             {
                 inputIntervalTimer = 0;
                 inputIntervalFlag = false;
@@ -1548,7 +1697,7 @@ public class GeneralStageManager : MonoBehaviour
         // メニューを開く時のズームイン演出
         if (fadeMenuFlag && menuSelectNum == 0)
         {
-            if (fadeMenuTimer > fadeMenuTime)
+            if (fadeMenuTimer >= fadeMenuTime)
             {
                 menuUI.GetComponent<RectTransform>().localScale = new Vector3(1f, 1f, 1f);
                 fadeMenuTimer = 0;
@@ -1561,9 +1710,9 @@ public class GeneralStageManager : MonoBehaviour
                 menuUI.GetComponent<RectTransform>().localScale = new Vector3(scale, scale, 1f);
             }
         }
-        else if (fadeMenuFlag && menuSelectNum == 2)
+        else if (fadeMenuFlag && menuSelectNum == 3)
         {
-            if (fadeMenuTimer > fadeMenuTime)
+            if (fadeMenuTimer >= fadeMenuTime)
             {
                 menuUI.GetComponent<RectTransform>().localScale = new Vector3(0f, 0f, 0f);
                 fadeMenuTimer = 0;
@@ -1624,7 +1773,34 @@ public class GeneralStageManager : MonoBehaviour
                     }
                     else if (menuSelectNum == 2)
                     {
+                        infoFlag = true;
+                        menuSelectNum = 4;
+                        menuUI.transform.GetChild(6).gameObject.SetActive(true);
+                        menuUI.transform.GetChild(1).gameObject.SetActive(false);
+                    }
+                    else if (menuSelectNum == 3)
+                    {
                         fadeMenuFlag = true;
+                    }
+                    else if (menuSelectNum == 4)
+                    {
+                        if (inputSelectVector.x != 1)
+                        {
+                            infoBannerNum++;
+                            if (infoBannerNum > infoBanners.Length - 1) infoBannerNum = 0;
+                            infoButtons[2].GetComponent<Image>().sprite = infoBanners[infoBannerNum];
+                        }
+                        else
+                        {
+                            infoBannerNum = 0;
+                            menuUI.transform.GetChild(6).gameObject.SetActive(false);
+                            menuUI.transform.GetChild(1).gameObject.SetActive(true);
+                            infoButtons[0].SetActive(true);
+                            infoButtons[1].GetComponent<RectTransform>().localScale = Vector3.one;
+                            menuSelectNum = 0;
+                            inputSelectVector.x = 0;
+                            infoFlag = false;
+                        }
                     }
                     enterFlag = false;
                 }
@@ -1660,7 +1836,7 @@ public class GeneralStageManager : MonoBehaviour
         }
         else
         {
-            if (inputIntervalTimer > inputIntervalTime)
+            if (inputIntervalTimer >= inputIntervalTime)
             {
                 inputIntervalTimer = 0;
                 inputIntervalFlag = false;
@@ -1750,6 +1926,8 @@ public class GeneralStageManager : MonoBehaviour
             {
                 inputSelectVector.y = 1;
             }
+            if (value.Get<Vector2>().x > 0.5f) inputSelectVector.x = 1;
+            else if (value.Get<Vector2>().x < -0.5f) inputSelectVector.x = -1;
         }
 
         if (value.Get<Vector2>() == Vector2.zero) inputSelectVector.y = 0;
@@ -1780,17 +1958,29 @@ public class GeneralStageManager : MonoBehaviour
     // 決定ボタン（Enter/Space等）が押された時
     public void OnEnter(InputValue value)
     {
+        if (infoFlag) enterFlag = true;
         if (menuFlag && value.isPressed && !enterFlag && !fadeMenuFlag)
         {
             enterFlag = true;
             // フェードが必要な遷移（リトライ等）ならフェード開始
-            if (menuSelectNum != 2)
+            if (menuSelectNum == 0  || menuSelectNum == 1)
             {
                 fadeManager.fadeInFlag = true;
                 fadeFlag = true;
             }
         }
         else if (overFlag) enterFlag = true;
+    }
+
+    public void OnGuideFixedButton(InputValue value)
+    {
+        guideFixedFlag = (!guideFixedFlag) ? true : false;
+        guideDeleteFlag = false;
+    }
+    public void OnGuideDeleteButton(InputValue value)
+    {
+        guideDeleteFlag = (!guideDeleteFlag) ? true : false;
+        guideFixedFlag = false;
     }
 
     // ------------------------------------------
@@ -1854,7 +2044,7 @@ public class GeneralStageManager : MonoBehaviour
             {
                 fadeManager.fadeInFlag = true;
                 fadeFlag = true;
-            }
+            }            
         }
         else if (overFlag) enterFlag = true;
     }

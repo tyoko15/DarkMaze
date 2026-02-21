@@ -325,8 +325,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   chestObject: {fileID: 8189949347215650480}
   player: {fileID: 0}
+  itemPrefabs:
+  - {fileID: 6296885016248752975, guid: f733c36a08d318f4dbb9606e8b8ed0ec, type: 3}
+  - {fileID: 5508368459340991104, guid: a3a2c65bbe630bc46b1839c331c32ea4, type: 3}
   itemNum: 0
   openedTime: 1
+  animeTime: 1
   hideFlag: 1
 --- !u!65 &2803803401980665760
 BoxCollider:

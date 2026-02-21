@@ -370,7 +370,7 @@ public class StageSelectManager : MonoBehaviour
                         int stageNum = selectNum % 4;
                         stageNameText.GetComponent<TextMeshProUGUI>().text = $"{fieldNum + 1} - {stageNum + 1}";
                     }
-                    else if (selectMoveTimer < selectMoveTime)
+                    else
                     {
                         selectMoveTimer += Time.deltaTime;
                         if (selectVector.y == 1f)
@@ -393,7 +393,7 @@ public class StageSelectManager : MonoBehaviour
                         changeStageFlag = false;
                         changeStageTimer = 0f;
                     }
-                    else if (changeStageTimer < changeStageTime)
+                    else
                     {
                         windowImages[3].SetActive(true);
                         changeStageTimer += Time.deltaTime;

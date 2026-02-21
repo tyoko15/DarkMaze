@@ -13,10 +13,17 @@ public class ChestManger : MonoBehaviour
     [SerializeField] GameObject player;           // プレイヤーへの参照
 
     [Header("アイテム設定")]
+    // 0.Bow&Arrow 1.Rope
+    [SerializeField] GameObject[] itemPrefabs;
+    GameObject itemAnimeObject;
     [SerializeField] int itemNum;                // どのアイテムを解放するか
     bool openFlag;                               // 開いている最中か
     [SerializeField] float openedTime;           // 開き始めてから消滅するまでの時間
     float openedTimer;
+    bool animeFlag;
+    float originY;
+    [SerializeField] float animeTime;
+    float animeTimer;
     [SerializeField] bool hideFlag;              // 最初は隠しておくか
 
     private Camera mainCamera;
@@ -49,7 +56,7 @@ public class ChestManger : MonoBehaviour
                 openedTimer = 0;
                 Destroy(chestObject);
             }
-            else if(openedTimer < openedTime)
+            else
             {
                 openedTimer += Time.deltaTime;
                 // --- 蓋が開くアニメーション処理 ---
@@ -64,6 +71,38 @@ public class ChestManger : MonoBehaviour
                         chestTopObject.transform.eulerAngles = new Vector3(x, originRotation.y, originRotation.z);
                     }
                 }
+            }
+            // 演出
+            ItemAnime();
+        }
+    }
+
+    /// <summary>
+    /// 開いた時アイテムを見せる演出
+    /// </summary>
+    void ItemAnime()
+    {
+        if (animeFlag)
+        {
+            if (animeTimer == 0)
+            {
+                itemAnimeObject = Instantiate(itemPrefabs[itemNum], new Vector3(transform.position.x, transform.position.y + 2f, transform.position.z), Quaternion.identity);
+                itemAnimeObject.transform.parent = transform;
+                itemAnimeObject.transform.eulerAngles = new Vector3(30f, 180f, 0f);
+                originY = transform.position.y;
+            }
+            if (animeTimer > animeTime)
+            {
+                Destroy(itemAnimeObject);
+                animeFlag = false;
+                animeTimer = 0;
+            }
+            else
+            {
+                animeTimer += Time.deltaTime;
+                Vector3 itemPos = transform.position;
+                itemPos.y = Mathf.Lerp(originY, originY + 3.5f, animeTimer / animeTime);
+                itemAnimeObject.transform.position = itemPos;
             }
         }
     }
@@ -83,23 +122,27 @@ public class ChestManger : MonoBehaviour
     private void OnCollisionEnter(Collision collision)
     {
         // 攻撃タグのオブジェクトが当たったら開く
-        if (collision.gameObject.tag == "Attack")
+        if (collision.gameObject.tag == "Attack" && collision.gameObject.name == "Sword")
         {
             if (!openFlag) openFlag = true;
-            player.GetComponent<PlayerController>().canItemFlag[itemNum] = true;            
+            animeFlag = true;
+            player.GetComponent<PlayerController>().canItemFlag[itemNum] = true;
+            collision.gameObject.SetActive(false);
         }
         // プレイヤーが近づいたらUI表示
         if (collision.gameObject == player && canvasFlag) canvas.SetActive(true);
     }
 
-
     private void OnTriggerEnter(Collider other)
     {
-        // トリガー判定の攻撃（弓矢など）でも開く
-        if (other.gameObject.tag == "Attack")
+        // トリガー判定の攻撃（剣だけ）開く
+        if (other.gameObject.tag == "Attack" && other.gameObject.name == "Sword")
         {
             if (!openFlag) openFlag = true;
+            animeFlag = true;
             player.GetComponent<PlayerController>().canItemFlag[itemNum] = true;
+            other.gameObject.SetActive(false);
+
         }
     }
 

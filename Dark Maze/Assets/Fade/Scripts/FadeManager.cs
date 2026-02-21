@@ -11,7 +11,7 @@ public class FadeManager : MonoBehaviour
 {
     [Header("フェイドUIの取得")]
     [SerializeField] GameObject[] fadeObjects;      // スライドさせる複数のフェード用パネル
-    [SerializeField] List<Sprite> fadeBannerSpriteList; // ロード中に表示する画像リスト
+    [SerializeField] public List<Sprite> fadeBannerSpriteList; // ロード中に表示する画像リスト
     [SerializeField] int fadeBannerSpriteNum;      // 現在表示中のバナー番号
     [SerializeField] float fadeObjectWidth;        // フェードオブジェクトの横幅
     public bool fadeFlag;                          // いずれかのフェードが動作中か

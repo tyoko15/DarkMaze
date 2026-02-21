@@ -262,13 +262,16 @@ public class PlayerController : MonoBehaviour
             case 0: // start
             break;
             case 1: // play
-                PlayerControl();         // 移動・砂地判定
-                HPControl();             // HPゲージ更新
-                PlayerLightControl();    // ライトの拡大縮小
-                MaxEffectControl();      // ライト最大時エフェクト
-                PlayerItemUseControl();  // アイテム（弓・縄）使用
-                CameraControl();         // カメラ追従              
-                if (arrowAnimeFlag) ArrowAnime();
+                if (!arrowAnimeFlag)
+                {
+                    PlayerControl();         // 移動・砂地判定
+                    HPControl();             // HPゲージ更新
+                    PlayerLightControl();    // ライトの拡大縮小
+                    MaxEffectControl();      // ライト最大時エフェクト
+                    PlayerItemUseControl();  // アイテム（弓・縄）使用
+                    CameraControl();         // カメラ追従              
+                }
+                else  ArrowAnime();
 
                 // ライト使用中は移動速度が落ちるためアニメ速度を調整
                 if (onLight != 1) animator.speed = 1f;
@@ -356,7 +359,7 @@ public class PlayerController : MonoBehaviour
                 onSandFlag = false;
                 playerObject.transform.position = new Vector3(respawnPositions[playerPosiNum].transform.position.x, respawnPositions[playerPosiNum].transform.position.y + 3f, respawnPositions[playerPosiNum].transform.position.z);
             }
-            else if(sandTimer < sandTime)
+            else
             {
                 // 沈下中：座標を徐々に下げる
                 sandTimer += Time.deltaTime;
@@ -564,7 +567,7 @@ public class PlayerController : MonoBehaviour
         else if (onLight == 2 && lightMaxIntervalTimer < lightMaxIntervalTime)
         {
             if (audioManager.playerSEs[2].isPlaying) audioManager.StopSE(AudioManager.SEName.playerSes, 2); 
-                lightMaxIntervalTimer += Time.deltaTime;
+            lightMaxIntervalTimer += Time.deltaTime;
             float normal = Mathf.InverseLerp(lightMaxIntervalTime, 0f, lightMaxIntervalTimer);
             lightMaxIntervalTimerGauge.fillAmount = normal;
         }
@@ -642,7 +645,7 @@ public class PlayerController : MonoBehaviour
         {
             Destroy(overEffect);
         }
-        else if (overEffectTimer < overEffectTime)
+        else
         {
             overEffectTimer += Time.deltaTime;
         }
@@ -661,7 +664,7 @@ public class PlayerController : MonoBehaviour
                 Destroy(maxEffect);
                 onMaxEffectFlag = false;
             }
-            else if (maxEffectTimer < maxEffectTime)
+            else
             {
                 maxEffectTimer += Time.deltaTime;
                 // 時間経過に合わせてエフェクトを等比的に拡大（1.0 -> 17.25）
@@ -690,7 +693,7 @@ public class PlayerController : MonoBehaviour
                         itemSlots[i].GetComponent<RectTransform>().anchoredPosition = new Vector2(i * -175f - 350f, itemSlots[i].GetComponent<RectTransform>().anchoredPosition.y);
                         startSelectFlag = true;
                     }
-                    else if (itemTimer[i] < itemTime)
+                    else
                     {
                         itemTimer[i] += Time.deltaTime;
                         float x = Mathf.Lerp(-125f, i * -175f -350f, itemTimer[i] / itemTime);
@@ -718,7 +721,7 @@ public class PlayerController : MonoBehaviour
                         endSelectFlag = true;
                         itemSlots[i].GetComponent<RectTransform>().sizeDelta = new Vector2(150f, 150f);
                     }
-                    else if (itemTimer[i] < itemTime)
+                    else
                     {
                         itemTimer[i] += Time.deltaTime;
                         float x = Mathf.Lerp(i * -175f - 350f, -125f, itemTimer[i] / itemTime);
@@ -742,7 +745,7 @@ public class PlayerController : MonoBehaviour
                 itemIntervalTimer = 0f;
                 itemIntervalFlag = false;
             }
-            else if (itemIntervalTimer < itemIntervalTime)
+            else
             {
                 itemIntervalTimer += Time.deltaTime;
                 float v = Mathf.Lerp(1f, 0f, itemIntervalTimer / itemIntervalTime);
@@ -803,7 +806,7 @@ public class PlayerController : MonoBehaviour
                 // 射線上の障害物検知（SphereCastで厚みのある判定）
                 Ray ray = new Ray(new Vector3(playerObject.transform.position.x, playerObject.transform.position.y + 1f, playerObject.transform.position.z), playerObject.transform.forward);
                 RaycastHit hit;
-                if (Physics.SphereCast(ray.origin, 0.2f, ray.direction, out hit, 30f))
+                if (Physics.SphereCast(ray.origin, 0.05f, ray.direction, out hit, 30f))
                 {
 
                     if (!hit.collider.isTrigger)
@@ -1031,7 +1034,7 @@ public class PlayerController : MonoBehaviour
                         ropeMoveFlag = false;
                         itemIntervalFlag = true;
                     }
-                    else if (ropeMoveTimer < ropeMoveTime)
+                    else
                     {
                         ropeObject.transform.position = new Vector3(rangeRopeTargetObject.transform.position.x, rangeRopeTargetObject.transform.position.y + 1, rangeRopeTargetObject.transform.position.z);
                         float x = Mathf.Lerp(originPlayerObjectPosition.x, rangeRopeTargetPosition.x, ropeMoveTimer / ropeMoveTime);
@@ -1186,7 +1189,7 @@ public class PlayerController : MonoBehaviour
             // 矢の座標から上に10f、手前に2fオフセットした位置にカメラを固定
             Vector3 position = new Vector3(arrowObject.transform.position.x, arrowObject.transform.position.y + 10f, arrowObject.transform.position.z - 2f);
             mainCamera.transform.position = position;
-            if (arrowObject.GetComponent<ArrowManager>().hitFlag) arrowObject.GetComponent<ArrowManager>().lostTime = 1f;
+            if (arrowObject.GetComponent<ArrowManager>().hitFlag) arrowObject.GetComponent<ArrowManager>().lostTime = 0.1f;
         }
     }
 

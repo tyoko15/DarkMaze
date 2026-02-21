@@ -222,6 +222,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemNum: 1
   itemObject: {fileID: 5075483317640923747}
+  boxCollider: {fileID: 1982188176009452399}
+  intervalFlag: 0
+  intervalTime: 0.5
   rotateTime: 2
 --- !u!65 &1982188176009452399
 BoxCollider:
