@@ -162,7 +162,7 @@ public class GeneralStageManager : MonoBehaviour
     {
         string[] controllers = new string[1];
         controllers = Input.GetJoystickNames();
-        if (controllers[0] != "")
+        if (controllers.Length != 0)
         {
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
