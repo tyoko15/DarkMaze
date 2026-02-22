@@ -160,14 +160,15 @@ public class GeneralStageManager : MonoBehaviour
 
     void GetController()
     {
-        var controllers = Input.GetJoystickNames();
-        if (controllers != null)
+        string[] controllers = new string[1];
+        controllers = Input.GetJoystickNames();
+        if (controllers[0] != "")
         {
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
             controllerFlag = true;
         }
-        else if (controllers == null)
+        else
         {
             controllerFlag = false;
             Cursor.visible = true;
@@ -195,6 +196,7 @@ public class GeneralStageManager : MonoBehaviour
     {
         GetUIandPlayer();　// UIとプレイヤーの参照を取得
         GetController();   // コントローラーの有無
+        GuideTextControl();
         // フェードマネージャーの生成と取得
         GameObject fade = GameObject.Find("FadeManager");
         if (fade == null)
@@ -1565,24 +1567,39 @@ public class GeneralStageManager : MonoBehaviour
         clearTexts = new GameObject[2];
         //clearTexts[0] = clearUI.transform.GetChild(2).gameObject;
         //clearTexts[1] = clearUI.transform.GetChild(3).gameObject;
-        guideTexts = new TextMeshProUGUI[10];
-        for (int i = 0; i < 2; i++) guideTexts[i] = playUI.transform.GetChild(3).GetChild(0).GetChild(i).GetComponent<TextMeshProUGUI>();
-        for (int i = 0; i < 2; i++) guideTexts[i + 2] = playUI.transform.GetChild(3).GetChild(1).GetChild(i).GetComponent<TextMeshProUGUI>();
-        for (int i = 0; i < 3; i++) guideTexts[i + 4] = playUI.transform.GetChild(3).GetChild(2).GetChild(i).GetComponent<TextMeshProUGUI>();
-        for (int i = 0; i < 2; i++) guideTexts[i + 7] = playUI.transform.GetChild(3).GetChild(3).GetChild(i).GetComponent<TextMeshProUGUI>();
-        guideTexts[9] = playUI.transform.GetChild(3).GetChild(4).GetChild(0).GetComponent<TextMeshProUGUI>();
+        guideTexts = new TextMeshProUGUI[13];
+        for (int i = 0; i < 3; i++) guideTexts[i] = playUI.transform.GetChild(3).GetChild(0).GetChild(i).GetComponent<TextMeshProUGUI>();
+        for (int i = 0; i < 2; i++) guideTexts[i + 3] = playUI.transform.GetChild(3).GetChild(1).GetChild(i).GetComponent<TextMeshProUGUI>();
+        for (int i = 0; i < 5; i++) guideTexts[i + 5] = playUI.transform.GetChild(3).GetChild(2).GetChild(i).GetComponent<TextMeshProUGUI>();
+        for (int i = 0; i < 2; i++) guideTexts[i + 10] = playUI.transform.GetChild(3).GetChild(3).GetChild(i).GetComponent<TextMeshProUGUI>();
+        guideTexts[12] = playUI.transform.GetChild(3).GetChild(4).GetChild(0).GetComponent<TextMeshProUGUI>();
     }
 
     void GuideTextControl()
     {
         if (controllerFlag)
         {
-            guideTexts[0].text = $"";
-
+            guideTexts[1].text = $"固定 : Dpad 左";
+            guideTexts[2].text = $"削除 : Dpad 右";
+            guideTexts[4].text = $"攻撃 : R2";
+            guideTexts[6].text = $"使用 : L1";
+            guideTexts[7].text = $"選択 : Dpad 上";
+            guideTexts[8].text = $"+";
+            guideTexts[9].text = $"L1 or R1";
+            guideTexts[11].text = $"開く : メニュー";
+            guideTexts[12].text = $"拡大 : L2";
         }
         else
         {
-            guideTexts[0].text = $"";
+            guideTexts[1].text = $"固定 : G";
+            guideTexts[2].text = $"削除 : H";
+            guideTexts[4].text = $"攻撃 : 右クリック";
+            guideTexts[6].text = $"使用 : 左Shift";
+            guideTexts[7].text = $"選択 : E";
+            guideTexts[8].text = $"+";
+            guideTexts[9].text = $"A or D";
+            guideTexts[11].text = $"開く : P";
+            guideTexts[12].text = $"拡大 : Space";
         }
     }
 
