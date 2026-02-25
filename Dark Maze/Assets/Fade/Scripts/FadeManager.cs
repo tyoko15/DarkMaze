@@ -148,7 +148,6 @@ public class FadeManager : MonoBehaviour
                 ChangeBanner();
             }
         }
-
     }
 
     /// <summary>

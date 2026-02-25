@@ -2892,6 +2892,14 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 123405911046296798, guid: bfbfefa9c4cb8954aa14e64a45895adf, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1176116688506038606, guid: bfbfefa9c4cb8954aa14e64a45895adf, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1198879115774966587, guid: bfbfefa9c4cb8954aa14e64a45895adf, type: 3}
       propertyPath: m_LocalPosition.x
       value: 2
@@ -2899,6 +2907,26 @@ PrefabInstance:
     - target: {fileID: 1198879115774966587, guid: bfbfefa9c4cb8954aa14e64a45895adf, type: 3}
       propertyPath: m_LocalPosition.z
       value: -6
+      objectReference: {fileID: 0}
+    - target: {fileID: 3020772197043958043, guid: bfbfefa9c4cb8954aa14e64a45895adf, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3020772197043958043, guid: bfbfefa9c4cb8954aa14e64a45895adf, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3020772197043958043, guid: bfbfefa9c4cb8954aa14e64a45895adf, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3020772197043958043, guid: bfbfefa9c4cb8954aa14e64a45895adf, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3020772197043958043, guid: bfbfefa9c4cb8954aa14e64a45895adf, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 4194969713706561882, guid: bfbfefa9c4cb8954aa14e64a45895adf, type: 3}
       propertyPath: m_LocalPosition.x
@@ -2991,6 +3019,10 @@ PrefabInstance:
     - target: {fileID: 8417402990248013690, guid: bfbfefa9c4cb8954aa14e64a45895adf, type: 3}
       propertyPath: m_Name
       value: Stage1-1Object
+      objectReference: {fileID: 0}
+    - target: {fileID: 9069040638677169239, guid: bfbfefa9c4cb8954aa14e64a45895adf, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
@@ -3496,7 +3528,7 @@ MonoBehaviour:
   m_Center: {x: 0, y: 2, z: 0}
   m_LayerMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 65
   m_UseGeometry: 1
   m_DefaultArea: 0
   m_GenerateLinks: 0
@@ -3504,10 +3536,10 @@ MonoBehaviour:
   m_IgnoreNavMeshObstacle: 1
   m_OverrideTileSize: 0
   m_TileSize: 256
-  m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_OverrideVoxelSize: 1
+  m_VoxelSize: 0.033333335
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 7d22c69654416f5478f8b07921819878, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 355a98543989f364fbf9eec134d5f474, type: 2}
   m_BuildHeightMesh: 0
 --- !u!114 &1834682758 stripped
 MonoBehaviour:

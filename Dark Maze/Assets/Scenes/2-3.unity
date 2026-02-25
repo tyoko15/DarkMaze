@@ -797,7 +797,7 @@ MonoBehaviour:
   m_Center: {x: 0, y: 2, z: 0}
   m_LayerMask:
     serializedVersion: 2
-    m_Bits: 64
+    m_Bits: 449
   m_UseGeometry: 1
   m_DefaultArea: 0
   m_GenerateLinks: 0
@@ -806,9 +806,9 @@ MonoBehaviour:
   m_OverrideTileSize: 0
   m_TileSize: 256
   m_OverrideVoxelSize: 0
-  m_VoxelSize: 0.16666667
+  m_VoxelSize: 0.033333335
   m_MinRegionArea: 2
-  m_NavMeshData: {fileID: 23800000, guid: 34f691f0bcc912b41b719a512b172c5b, type: 2}
+  m_NavMeshData: {fileID: 23800000, guid: 36f62fb0da35e7546a2e1186f6703825, type: 2}
   m_BuildHeightMesh: 0
 --- !u!1 &261225320
 GameObject:
@@ -2738,7 +2738,7 @@ Transform:
   m_GameObject: {fileID: 965800386}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0.01, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -4681,6 +4681,22 @@ PrefabInstance:
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 1865823754873041892, guid: 94089e7558ab0f143a1f1cdfb0596ff9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 1865823754873041892, guid: 94089e7558ab0f143a1f1cdfb0596ff9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1865823754873041892, guid: 94089e7558ab0f143a1f1cdfb0596ff9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1865823754873041892, guid: 94089e7558ab0f143a1f1cdfb0596ff9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2116453554768352116, guid: 94089e7558ab0f143a1f1cdfb0596ff9, type: 3}
       propertyPath: m_LocalPosition.x
       value: 4
@@ -4852,6 +4868,22 @@ PrefabInstance:
     - target: {fileID: 6292009590928135344, guid: 94089e7558ab0f143a1f1cdfb0596ff9, type: 3}
       propertyPath: m_LocalPosition.z
       value: -4
+      objectReference: {fileID: 0}
+    - target: {fileID: 6829973477400078793, guid: 94089e7558ab0f143a1f1cdfb0596ff9, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6829973477400078793, guid: 94089e7558ab0f143a1f1cdfb0596ff9, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6829973477400078793, guid: 94089e7558ab0f143a1f1cdfb0596ff9, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6829973477400078793, guid: 94089e7558ab0f143a1f1cdfb0596ff9, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8160245701411922793, guid: 94089e7558ab0f143a1f1cdfb0596ff9, type: 3}
       propertyPath: m_LocalPosition.x
@@ -5428,8 +5460,11 @@ MonoBehaviour:
   - {fileID: 1450197473}
   - {fileID: 1450197472}
   - {fileID: 1450197471}
+  infoButtons: []
+  infoBanners: []
   overTexts: []
   clearTexts: []
+  guideTexts: []
   menuFlag: 0
   overFlag: 0
   clearFlag: 0
@@ -5437,6 +5472,7 @@ MonoBehaviour:
   menuSelectNum: 0
   overSelectNum: 0
   inputIntervalTime: 0.2
+  displayGuideTextTime: 60
   clearAnimeTime: 3
 --- !u!114 &1734810218
 MonoBehaviour:

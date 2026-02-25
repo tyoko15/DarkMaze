@@ -72,7 +72,7 @@ public class Enemy1 : MonoBehaviour
             case GameStatus.menu:
             case GameStatus.over:
             case GameStatus.clear:
-                agent.isStopped = true;
+                if (agent.enabled) agent.isStopped = true;
                 animator.speed = 0f; // アニメーション一時停止
                 break;
         }        
@@ -202,7 +202,6 @@ public class Enemy1 : MonoBehaviour
             enemyHP = -1;
             agent.enabled = false;
             dieFlag = true;
-
         }
         else if (enemyHP > 0)
         {
@@ -240,9 +239,13 @@ public class Enemy1 : MonoBehaviour
             // プレイヤーへのダメージ判定
             if (collision.gameObject.tag == "Player" && isAttackFlag)
             {
-                collision.gameObject.GetComponent<PlayerController>().damageFlag = true;
-                collision.gameObject.GetComponent<PlayerController>().damageAmount = enemyDamage;
-                Vector3 knockback = (collision.gameObject.transform.position - transform.position).normalized;
+                if (collision.gameObject.GetComponent<PlayerController>().playerHP > 0)
+                {
+                    collision.gameObject.GetComponent<PlayerController>().damageFlag = true;
+                    collision.gameObject.GetComponent<PlayerController>().damageAmount = enemyDamage;
+                    Vector3 knockback = (collision.gameObject.transform.position - transform.position).normalized;
+                    rb.AddForce(knockback * knockbackPower * Time.deltaTime, ForceMode.Impulse);
+                }
             }
             // 矢が当たった
             else if (collision.gameObject.tag == "Arrow" && !isDamageFlag)
@@ -259,9 +262,13 @@ public class Enemy1 : MonoBehaviour
             PlayerController playerController = collision.gameObject.GetComponent<PlayerController>();
             if (!playerController.damageFlag)
             {
-                playerController.damageAmount = enemyDamage;
-                playerController.damageFlag = true;
-                Vector3 knockback = (collision.gameObject.transform.position - transform.position).normalized;
+                if (collision.gameObject.GetComponent<PlayerController>().playerHP > 0)
+                {
+                    playerController.damageAmount = enemyDamage;
+                    playerController.damageFlag = true;
+                    Vector3 knockback = (collision.gameObject.transform.position - transform.position).normalized;
+                    rb.AddForce(knockback * knockbackPower * Time.deltaTime, ForceMode.Impulse);
+                }
             }
         }
     }

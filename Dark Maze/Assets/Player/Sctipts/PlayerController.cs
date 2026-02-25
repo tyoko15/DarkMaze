@@ -280,6 +280,7 @@ public class PlayerController : MonoBehaviour
             case 2: // stop
                 audioManager.PausePlayerSE();
                 animator.speed = 0f;
+                rb.linearVelocity = Vector3.zero;
                 break;
             case 3: // menu
                 audioManager.PausePlayerSE();
@@ -381,14 +382,26 @@ public class PlayerController : MonoBehaviour
                     if (onLight == 1) playerPosition += new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime) * 0.1f;
                     else playerPosition += new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime);
                     playerObject.transform.position = playerPosition;
+
+                    //Vector3 playerPosition;
+                    //if (onLight == 1) playerPosition = new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime) * 0.1f;
+                    //else playerPosition = new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime);
+                    //rb.MovePosition(rb.position + playerPosition);
                 }
             }
             else
             {
                 Vector3 playerPosition = playerObject.transform.position;
-                if (onLight == 1) playerPosition += new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime) * 0.1f;                
+                if (onLight == 1) playerPosition += new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime) * 0.1f;
                 else playerPosition += new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime);
                 playerObject.transform.position = playerPosition;
+
+                //Vector3 playerPosition;
+                //if (onLight == 1) playerPosition = new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime) * 0.1f;
+                //else playerPosition = new Vector3(playerHorizontal * playerSpeed * Time.deltaTime, 0, playerVertical * playerSpeed * Time.deltaTime);
+                //rb.MovePosition(rb.position + playerPosition);
+                ////rb.linearVelocity += playerPosition;
+
                 // Animation
                 if (playerHorizontal != 0f || playerVertical != 0f)
                 {
@@ -555,7 +568,7 @@ public class PlayerController : MonoBehaviour
         float propotrion = Mathf.InverseLerp(30f, 180f, playerLightRange);
         
         // ステート：最大拡大後のインターバル終了
-        if (onLight == 2 && lightMaxIntervalTimer > lightMaxIntervalTime)
+        if (onLight == 2 && lightMaxIntervalTimer >= lightMaxIntervalTime)
         {
             onLight = 0;
             lightRangeMinRange = playerLightRange;
@@ -638,16 +651,17 @@ public class PlayerController : MonoBehaviour
         {
             animator.SetTrigger("Dead");
             onOverEffectFlag = true;
-        }
-
-        // 演出用エフェクトの生存期間をタイマーで管理
-        if (overEffectTimer > overEffectTime)
-        {
-            Destroy(overEffect);
+            overEffect = Instantiate(overEffectOrigin, playerObject.transform.position, Quaternion.identity);
+            overEffect.transform.parent = playerObject.transform;
         }
         else
         {
-            overEffectTimer += Time.deltaTime;
+            // 演出用エフェクトの生存期間をタイマーで管理
+            if (overEffectTimer > overEffectTime)
+            {
+                Destroy(overEffect);
+            }
+            else overEffectTimer += Time.deltaTime;
         }
     }
 
@@ -1198,7 +1212,7 @@ public class PlayerController : MonoBehaviour
     /// </summary>
     private void OnCollisionStay(Collision collision)
     {
-        if(collision.gameObject.tag == "Wall")
+        if(collision.gameObject.tag == "Wall" || collision.gameObject.tag == "Button" || collision.gameObject.tag == "Box" || collision.gameObject.tag == "Wood")
         {
             // プレイヤーと壁の相対距離を計算
             float x = playerObject.transform.position.x - collision.gameObject.transform.position.x;

@@ -65,18 +65,28 @@ public class GameManagerStage2to1 : GeneralStageManager
     public void Gimmick1()
     {
         // エリア進入時に門を閉じる
-        if (enterArea[2].enterAreaFlag) Gate(gateObjects[0], lightObjects[0], cameraPointObjects[0], false, 2, 0, true, ref enterArea[2].enterAreaFlag);
+        if (enterArea[2].enterEnemyAreaFlag) Gate(gateObjects[0], lightObjects[0], cameraPointObjects[0], false, 1.25f, 0, true, ref enterArea[2].enterEnemyAreaFlag);
 
         // 敵が全滅したら、門を開けて「地形回転スイッチ」を出現させる
         if (enemys[0].transform.childCount == 0 && defeatGateFlag[0])
         {
-            ActiveLight(areaLightObjects[0], 2, 0, false, ref defeatGateFlag[0]);
+            ActiveLight(areaLightObjects[0], 1, 0, false, ref defeatGateFlag[0]);
             Gate(gateObjects[0], lightObjects[1], null, true, 2, 0, false, ref defeatGateFlag[0]);
             ActiveObject(buttonObjects[0], lightObjects[2], cameraPointObjects[1], 2, 1, true, ref defeatGateFlag[0]);
         }
 
         // 出現したスイッチを押すと、エリア[2]が90度回転
         if (buttonObjects[0].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[2], null, cameraPointObjects[2],  1, 90, 2, 0, true, ref buttonObjects[0].GetComponent<ButtonManager>().buttonFlag);
+
+        // 正解の道になった時
+        if (buttonObjects[0].GetComponent<ButtonManager>().buttonFlag && !correctJudgeFlag[0]) correctJudgeFlag[0] = true;
+        if (areas[2].transform.eulerAngles.y == 90f && !correctFlag[0] && correctJudgeFlag[0])
+        {
+            AudioManager.Instance.PlaySE(AudioManager.SEName.gimmickSes, 7);
+            correctFlag[0] = true;
+        }
+        else if (areas[2].transform.eulerAngles.y != 90f) correctFlag[0] = false;
+        if (!buttonObjects[0].GetComponent<ButtonManager>().buttonFlag && correctJudgeFlag[0]) correctJudgeFlag[0] = false;
     }
 
     /// <summary>
@@ -92,8 +102,28 @@ public class GameManagerStage2to1 : GeneralStageManager
         // ※ refで渡されたbuttonFlagが演出終了でfalseになる仕組みを利用したリセット処理
         if (!buttonObjects[2].GetComponent<ButtonManager>().buttonFlag && buttonObjects[3].activeSelf && buttonObjects[3].GetComponent<MeshRenderer>().materials[1].color.a == 1f) buttonObjects[1].GetComponent<ButtonManager>().buttonFlag = false;
 
+        // ギミック正解になった時
+        if ((buttonObjects[1].GetComponent<ButtonManager>().buttonFlag && buttonObjects[2].GetComponent<ButtonManager>().buttonFlag) && !correctJudgeFlag[1]) correctJudgeFlag[1] = true;
+        if ((buttonObjects[1].GetComponent<ButtonManager>().buttonFlag && buttonObjects[2].GetComponent<ButtonManager>().buttonFlag) && !correctFlag[1] && correctJudgeFlag[1])
+        {
+            AudioManager.Instance.PlaySE(AudioManager.SEName.gimmickSes, 8);
+            correctFlag[1] = true;
+        }
+        else if (!buttonObjects[1].GetComponent<ButtonManager>().buttonFlag && !buttonObjects[2].GetComponent<ButtonManager>().buttonFlag) correctFlag[1] = false;
+        if (!buttonObjects[3].GetComponent<ButtonManager>().buttonFlag && correctJudgeFlag[1]) correctJudgeFlag[1] = false;
+
         // 3. 出現したボタン[3]を押すとエリア[3]が回転
         if (buttonObjects[3].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[3], lightObjects[4], cameraPointObjects[4], 1, 90, 2, 1, true, ref buttonObjects[3].GetComponent<ButtonManager>().buttonFlag);
+
+        // 正解の道になった時
+        if (buttonObjects[3].GetComponent<ButtonManager>().buttonFlag && !correctJudgeFlag[2]) correctJudgeFlag[2] = true;
+        if (areas[3].transform.eulerAngles.y == 90f && !correctFlag[2] && correctJudgeFlag[2])
+        {
+            AudioManager.Instance.PlaySE(AudioManager.SEName.gimmickSes, 7);
+            correctFlag[2] = true;
+        }
+        else if (areas[3].transform.eulerAngles.y != 90f) correctFlag[2] = false;
+        if (!buttonObjects[3].GetComponent<ButtonManager>().buttonFlag && correctJudgeFlag[2]) correctJudgeFlag[2] = false;
     }
 
     /// <summary>
@@ -101,12 +131,13 @@ public class GameManagerStage2to1 : GeneralStageManager
     /// </summary>
     public void Gimmick3()
     {
-        if (enterArea[1].enterAreaFlag) Gate(gateObjects[1], lightObjects[5], cameraPointObjects[5], false, 2, 1, true, ref enterArea[1].enterAreaFlag);
+        if (enterArea[1].enterEnemyAreaFlag) Gate(gateObjects[1], lightObjects[5], cameraPointObjects[5], false, 1.25f, 1, true, ref enterArea[1].enterEnemyAreaFlag);
         if (enemys[1].transform.childCount == 0 && defeatGateFlag[1])
         {
-            ActiveLight(areaLightObjects[1], 2, 1, false, ref defeatGateFlag[1]);
-            Gate(gateObjects[1], null, null, true, 2, 1, false, ref defeatGateFlag[1]);
-            Gate(gateObjects[2], lightObjects[6], cameraPointObjects[6], true, 2, 2, true, ref defeatGateFlag[1]);
+            ActiveLight(areaLightObjects[1], 1, 1, false, ref defeatGateFlag[1]);
+            Gate(gateObjects[1], null, null, true, 1.25f, 1, false, ref defeatGateFlag[1]);
+            Gate(gateObjects[3], null, null, false, 1.25f, 3, false, ref defeatGateFlag[1]);
+            Gate(gateObjects[2], lightObjects[6], cameraPointObjects[6], true, 1.25f, 2, true, ref defeatGateFlag[1]);
         }
     }
 }

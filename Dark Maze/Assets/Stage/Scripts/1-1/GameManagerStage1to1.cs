@@ -69,6 +69,16 @@ public class GameManagerStage1to1 : GeneralStageManager
     {
         // ボタンが押されたら AreaRotation を実行
         if (buttonObjects[0].GetComponent<ButtonManager>().buttonFlag) AreaRotation(areas[1], lightObjects[0], cameraPointObjects[0], -1, 90, 2, 0, true, ref buttonObjects[0].GetComponent<ButtonManager>().buttonFlag);
+        
+        // 正解の道になった時
+        if (buttonObjects[0].GetComponent<ButtonManager>().buttonFlag && !correctJudgeFlag[0]) correctJudgeFlag[0] = true;
+        if ((areas[1].transform.eulerAngles.y == 0f || areas[1].transform.eulerAngles.y == 270f) && !correctFlag[0] && correctJudgeFlag[0])
+        {
+            AudioManager.Instance.PlaySE(AudioManager.SEName.gimmickSes, 7);
+            correctFlag[0] = true;
+        }
+        else if (areas[1].transform.eulerAngles.y != 0f && areas[1].transform.eulerAngles.y != 270f) correctFlag[0] = false;
+        if (!buttonObjects[0].GetComponent<ButtonManager>().buttonFlag && correctJudgeFlag[0]) correctJudgeFlag[0] = false;
     }
 
     /// <summary>
@@ -77,14 +87,14 @@ public class GameManagerStage1to1 : GeneralStageManager
     public void Gimmick2()
     {
         // エリア進入時に門を閉める演出
-        if (enterArea[3].enterAreaFlag) Gate(gateObjects[0], lightObjects[1], cameraPointObjects[1], false, 2, 0, true, ref enterArea[3].enterAreaFlag);
+        if (enterArea[3].enterEnemyAreaFlag) Gate(gateObjects[0], lightObjects[1], cameraPointObjects[1], false, 1.25f, 0, true, ref enterArea[3].enterEnemyAreaFlag);
         
         // そのエリアの敵が全滅
         if (enemys[0].transform.childCount == 0 && defeatGateFlag[0])
         {
-            ActiveLight(areaLightObjects[0], 1.5f, 0, false, ref defeatGateFlag[0]); // 明かりを灯す
-            Gate(gateObjects[0], null, null, true, 2, 0, false, ref defeatGateFlag[0]); // 前の門を開ける
-            Gate(gateObjects[1], lightObjects[2], cameraPointObjects[2], true, 2, 1, true, ref defeatGateFlag[0]); // 次の門を開ける
+            ActiveLight(areaLightObjects[0], 1, 0, false, ref defeatGateFlag[0]); // 明かりを灯す
+            Gate(gateObjects[0], null, null, true, 1.25f, 0, false, ref defeatGateFlag[0]); // 前の門を開ける
+            Gate(gateObjects[1], lightObjects[2], cameraPointObjects[2], true, 1.25f, 1, true, ref defeatGateFlag[0]); // 次の門を開ける
         }
     }
 
@@ -94,18 +104,28 @@ public class GameManagerStage1to1 : GeneralStageManager
     public void Gimmick3()
     {
         // 進入判定
-        if (enterArea[2].enterAreaFlag) Gate(gateObjects[1], lightObjects[3], cameraPointObjects[3], false, 2, 1, true, ref enterArea[2].enterAreaFlag);
+        if (enterArea[2].enterEnemyAreaFlag) Gate(gateObjects[1], lightObjects[3], cameraPointObjects[3], false, 1.25f, 1, true, ref enterArea[2].enterEnemyAreaFlag);
         
         // 敵全滅判定
         if (enemys[1].transform.childCount == 0 && defeatGateFlag[1])
         {
-            ActiveLight(areaLightObjects[1], 1.5f, 1, false, ref defeatGateFlag[1]);
+            ActiveLight(areaLightObjects[1], 1, 1, false, ref defeatGateFlag[1]);
             Gate(gateObjects[1], lightObjects[3], null, true, 2, 1, false, ref defeatGateFlag[1]);
             // 敵を倒したご褒美として、新しいスイッチ(buttonObjects[1])を出現させる
             ActiveObject(buttonObjects[1],lightObjects[4], cameraPointObjects[4], 2, 0 ,true, ref defeatGateFlag[1]);
         }
 
         // 出現したスイッチを押すと、最終のゲートが開く
-        if (buttonObjects[1].GetComponent<ButtonManager>().buttonFlag) Gate(gateObjects[2],lightObjects[5], cameraPointObjects[5], true, 2, 2, true, ref buttonObjects[1].GetComponent<ButtonManager>().buttonFlag);
+        if (buttonObjects[1].GetComponent<ButtonManager>().buttonFlag) Gate(gateObjects[2],lightObjects[5], cameraPointObjects[5], true, 1.25f, 2, true, ref buttonObjects[1].GetComponent<ButtonManager>().buttonFlag);
+        
+        // ギミック正解の演出
+        if (buttonObjects[1].GetComponent<ButtonManager>().buttonFlag && !correctJudgeFlag[1]) correctJudgeFlag[1] = true;
+        if (!correctFlag[1] && correctJudgeFlag[1])
+        {
+            AudioManager.Instance.PlayOneShotSE(AudioManager.SEName.gimmickSes, 8);
+            correctFlag[1] = true;
+        }
+        else if (correctFlag[1] && !correctJudgeFlag[1]) correctFlag[1] = false;
+        if (!buttonObjects[1].GetComponent<ButtonManager>().buttonFlag && correctJudgeFlag[1]) correctJudgeFlag[1] = false;
     }
 }

@@ -66,6 +66,8 @@ public class GeneralStageManager : MonoBehaviour
     public float originDegree;                             // 回転開始前の角度
     [SerializeField] float[] rotationTimer;                // 各エリアの回転にかかっている時間
     [SerializeField] bool rotationFlag;                    // 回転中フラグ
+    protected bool[] correctJudgeFlag = new bool[4];
+    protected bool[] correctFlag = new bool[4];
 
     // 門の開閉ギミック
     [SerializeField] float[] openTimer;
@@ -160,9 +162,8 @@ public class GeneralStageManager : MonoBehaviour
 
     void GetController()
     {
-        string[] controllers = new string[1];
-        controllers = Input.GetJoystickNames();
-        if (controllers.Length != 0)
+        string[] controllers = Input.GetJoystickNames(); 
+        if (controllers.Length != 0 && controllers[0] != "")
         {
             Cursor.visible = false;
             Cursor.lockState = CursorLockMode.Locked;
@@ -237,6 +238,7 @@ public class GeneralStageManager : MonoBehaviour
         }
         GetUIandPlayer();
         StartCoroutine(GetAudio()); // BGM再生開始
+        for (int i = 0; i < correctFlag.Length; i++) correctFlag[i] = true;
     }
 
     /// <summary>
@@ -259,7 +261,7 @@ public class GeneralStageManager : MonoBehaviour
         {
             // プレイヤーをスタート地点に微調整して配置
             player.transform.position = new Vector3(startObject.transform.position.x, startObject.transform.position.y + 0.25f, startObject.transform.position.z);
-            if (startTimer > startTime)
+            if (startTimer >= startTime)
             {
                 // 演出時間終了、ゲームプレイ開始
                 startTimer = 0;
@@ -319,7 +321,7 @@ public class GeneralStageManager : MonoBehaviour
         else if (!fadeFlag && !clearAnimeFlag)
         {
             // クリア後の待機時間計測
-            if (clearAnimeTimer > clearAnimeTime)
+            if (clearAnimeTimer >= clearAnimeTime)
             {
                 clearAnimeTimer = 0f;
                 clearAnimeFlag = true;
@@ -844,7 +846,6 @@ public class GeneralStageManager : MonoBehaviour
                     cameraWorkEndFlag[i] = false;
                     cameraTimer[i] = 0f;
                     if(end) flag = false; // ギミック終了フラグ
-                    Debug.Log($"end{flag}");
                 }
                 else if (cameraWorkEndFlag[i] && cameraTimer[i] < 0.5f)
                 {
@@ -1567,42 +1568,54 @@ public class GeneralStageManager : MonoBehaviour
         clearTexts = new GameObject[2];
         //clearTexts[0] = clearUI.transform.GetChild(2).gameObject;
         //clearTexts[1] = clearUI.transform.GetChild(3).gameObject;
-        guideTexts = new TextMeshProUGUI[13];
+        guideTexts = new TextMeshProUGUI[16];
         for (int i = 0; i < 3; i++) guideTexts[i] = playUI.transform.GetChild(3).GetChild(0).GetChild(i).GetComponent<TextMeshProUGUI>();
         for (int i = 0; i < 2; i++) guideTexts[i + 3] = playUI.transform.GetChild(3).GetChild(1).GetChild(i).GetComponent<TextMeshProUGUI>();
-        for (int i = 0; i < 5; i++) guideTexts[i + 5] = playUI.transform.GetChild(3).GetChild(2).GetChild(i).GetComponent<TextMeshProUGUI>();
-        for (int i = 0; i < 2; i++) guideTexts[i + 10] = playUI.transform.GetChild(3).GetChild(3).GetChild(i).GetComponent<TextMeshProUGUI>();
-        guideTexts[12] = playUI.transform.GetChild(3).GetChild(4).GetChild(0).GetComponent<TextMeshProUGUI>();
+        for (int i = 0; i < 2; i++) guideTexts[i + 5] = playUI.transform.GetChild(3).GetChild(2).GetChild(i).GetComponent<TextMeshProUGUI>();
+        for (int i = 0; i < 5; i++) guideTexts[i + 7] = playUI.transform.GetChild(3).GetChild(3).GetChild(i).GetComponent<TextMeshProUGUI>();
+        for (int i = 0; i < 2; i++) guideTexts[i + 12] = playUI.transform.GetChild(3).GetChild(4).GetChild(i).GetComponent<TextMeshProUGUI>();
+        guideTexts[14] = playUI.transform.GetChild(3).GetChild(5).GetChild(0).GetComponent<TextMeshProUGUI>();
+        guideTexts[15] = playUI.transform.GetChild(3).GetChild(6).GetChild(0).GetComponent<TextMeshProUGUI>();
     }
 
+    /// <summary>
+    /// コントローラーの有無でガイドテキストの切り替え
+    /// </summary>
     void GuideTextControl()
     {
         if (controllerFlag)
         {
             guideTexts[1].text = $"固定 : Dpad 左";
             guideTexts[2].text = $"削除 : Dpad 右";
-            guideTexts[4].text = $"攻撃 : R2";
-            guideTexts[6].text = $"使用 : L1";
-            guideTexts[7].text = $"選択 : Dpad 上";
-            guideTexts[8].text = $"+";
-            guideTexts[9].text = $"L1 or R1";
-            guideTexts[11].text = $"開く : メニュー";
-            guideTexts[12].text = $"拡大 : L2";
+            guideTexts[4].text = $"移動 : 左スティック";
+            guideTexts[6].text = $"攻撃 : R2";
+            guideTexts[8].text = $"使用 : L1";
+            guideTexts[9].text = $"選択 : Dpad 上";
+            guideTexts[10].text = $"+";
+            guideTexts[11].text = $"L1 or R1";
+            guideTexts[13].text = $"開く : メニュー";
+            guideTexts[14].text = $"拡大 : L2";
+            guideTexts[15].text = $"ヒント開始 : Dpad 下";
         }
         else
         {
             guideTexts[1].text = $"固定 : G";
             guideTexts[2].text = $"削除 : H";
-            guideTexts[4].text = $"攻撃 : 右クリック";
-            guideTexts[6].text = $"使用 : 左Shift";
-            guideTexts[7].text = $"選択 : E";
-            guideTexts[8].text = $"+";
-            guideTexts[9].text = $"A or D";
-            guideTexts[11].text = $"開く : P";
-            guideTexts[12].text = $"拡大 : Space";
+            guideTexts[4].text = $"移動 : WASD";
+            guideTexts[6].text = $"攻撃 : 右クリック";
+            guideTexts[8].text = $"使用 : 左Shift";
+            guideTexts[9].text = $"選択 :     E";
+            guideTexts[10].text = $"+";
+            guideTexts[11].text = $"A or D";
+            guideTexts[13].text = $"開く : P";
+            guideTexts[14].text = $"拡大 : Space";
+            guideTexts[15].text = $"ヒント開始 : R";
         }
     }
 
+    /// <summary>
+    /// ガイドテキストを表示
+    /// </summary>
     protected void DisplayGuideTexts()
     {
         if (guideFixedFlag)
@@ -1653,7 +1666,12 @@ public class GeneralStageManager : MonoBehaviour
                 }
             }
         }
-    } 
+    }
+
+    protected void DisplayHint()
+    {
+
+    }
 
     /// <summary>
     /// メニュー画面の開閉アニメーションと選択項目のロジック制御
@@ -1966,7 +1984,7 @@ public class GeneralStageManager : MonoBehaviour
         else if (value.isPressed && menuFlag && status == GameStatus.menu)
         {
             // メニューを閉じて再開
-            menuSelectNum = 2;
+            menuSelectNum = 3;
             enterFlag = true;
             audioManager.ResumeAll();
         }
@@ -1989,11 +2007,14 @@ public class GeneralStageManager : MonoBehaviour
         else if (overFlag) enterFlag = true;
     }
 
+    // ガイド固定ボタン
     public void OnGuideFixedButton(InputValue value)
     {
         guideFixedFlag = (!guideFixedFlag) ? true : false;
         guideDeleteFlag = false;
     }
+    
+    // ガイド削除ボタン
     public void OnGuideDeleteButton(InputValue value)
     {
         guideDeleteFlag = (!guideDeleteFlag) ? true : false;

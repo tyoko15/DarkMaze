@@ -10,9 +10,28 @@ public class EnterArea : MonoBehaviour
 
     [Header("状態フラグ")]
     public bool enterAreaFlag;             // エリア内にプレイヤーがいるか
+    public bool enterEnemyAreaFlag;             // 敵がいるエリア内にプレイヤーがいるか
     [SerializeField] bool enemyAreaFlag;   // 敵が出現するなどの特殊なエリアか
 
     int count; // 初回進入判定用のカウンター
+
+    public bool excessFlag;                       // ヒント用のフラグ
+    [SerializeField] float excessTime;     // ヒントを出すまでの時間
+    float excessTimer;
+
+    void Update()
+    {
+        // エリア内に制限時間内滞在するとヒントを提示
+        if (!excessFlag)
+        {
+            if (excessTimer > excessTime)
+            {
+                excessTimer = 0;
+                excessFlag = true;
+            }
+            else excessTimer += Time.deltaTime;
+        }
+    }
 
     /// <summary>
     /// トリガー（エリア判定）に何かが接触した時の処理
@@ -21,9 +40,9 @@ public class EnterArea : MonoBehaviour
     {
         // --- 1. 敵エリアへの初回進入チェック ---
         // 敵エリア設定がON、かつ未進入（count=0）で、入ってきたのがPlayerの場合
-        if (enemyAreaFlag && count == 0 && !enterAreaFlag && other.gameObject.name == "Player")
+        if (enemyAreaFlag && count == 0 && !enterEnemyAreaFlag && other.gameObject.name == "Player")
         {
-            enterAreaFlag = true;
+            enterEnemyAreaFlag = true;
             count = 1; // 一度だけ実行されるように制限
             // ここに「ドアを閉める」「敵を出す」などのトリガーを繋げることが可能
         }
@@ -31,6 +50,18 @@ public class EnterArea : MonoBehaviour
         // --- 2. 親子関係の変更（プラットフォーム対応） ---
         // プレイヤーがこのエリアに入ったら、プレイヤーをエリアの子オブジェクトにする
         // これにより、エリア（床）が動いた時にプレイヤーも一緒に移動するようになる
-        if (other.gameObject.name == "Player") other.gameObject.transform.parent = area.transform;
+        if (other.gameObject.name == "Player")
+        {
+            enterAreaFlag = true;
+            other.gameObject.transform.parent = area.transform;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.gameObject.name == "Player")
+        {
+            enterAreaFlag = false;
+        }
     }
 }

@@ -86,7 +86,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 6874719554564088393}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: Confusion
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -127,7 +127,7 @@ GameObject:
   - component: {fileID: 3589552197340950191}
   - component: {fileID: 4024691491458551994}
   - component: {fileID: 1646934135689185637}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: pSphere6
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -213,7 +213,7 @@ GameObject:
   - component: {fileID: 6860990387803817303}
   - component: {fileID: 8116618101540815544}
   - component: {fileID: 7066749196455224876}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: pSphere5
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -374,7 +374,7 @@ GameObject:
   - component: {fileID: 6381830447809658795}
   - component: {fileID: 4623130855538181283}
   - component: {fileID: 8150054288960314965}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: pCylinder1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -460,7 +460,7 @@ GameObject:
   - component: {fileID: 2412060269390051259}
   - component: {fileID: 7076066505603138957}
   - component: {fileID: 1918948489578390422}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: pCylinder4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -546,7 +546,7 @@ GameObject:
   - component: {fileID: 6704688374242795800}
   - component: {fileID: 9071619907463796332}
   - component: {fileID: 7643750680797430193}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: pCylinder3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -749,7 +749,7 @@ GameObject:
   - component: {fileID: 4013452463907204311}
   - component: {fileID: 796942684920522741}
   - component: {fileID: 8086610807438181116}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: pCylinder2
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -949,7 +949,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gameManager: {fileID: 0}
   hpUIManager: {fileID: 8435162431860864396}
-  enemyStatus: 0
   agent: {fileID: 3722345354225376576}
   player: {fileID: 0}
   wanderPoints:
@@ -958,22 +957,22 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 0}
   wanderPointNum: 0
-  animator: {fileID: 9112821788846073959}
+  wanderingSpeed: 1
   trackingRange: 4
   trackingSpeed: 1.5
-  wanderingSpeed: 1
   moveFlag: 0
   stanFlag: 0
-  confusionObject: {fileID: 925399068797845778}
-  stanTime: 3
-  maxEnemyHP: 3
-  enemyDamage: 10
-  knockbackPower: 50
   isDamageFlag: 0
   isAttackFlag: 0
+  maxEnemyHP: 3
+  enemyDamage: 10
+  knockbackPower: 250
+  stanTime: 3
   isDamageTime: 0.5
+  animator: {fileID: 9112821788846073959}
+  confusionObject: {fileID: 925399068797845778}
   dieEffect: {fileID: 7226888052703040409, guid: 7ec363c8df426644ea85f8d6d570561c, type: 3}
-  damageEffect: {fileID: 4021103657954561961, guid: 5c755f9bc5253ea418e919994537dcc7, type: 3}
+  damageEffect: {fileID: 4021103657954561961, guid: adfdbe6827b9e404585d7b79eebb4d7a, type: 3}
 --- !u!54 &3354349886950343879
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1010,7 +1009,7 @@ NavMeshAgent:
   m_GameObject: {fileID: 7508215649130946902}
   m_Enabled: 1
   m_AgentTypeID: 0
-  m_Radius: 0.5
+  m_Radius: 0.1
   m_Speed: 3.5
   m_Acceleration: 8
   avoidancePriority: 50
@@ -1034,7 +1033,7 @@ GameObject:
   - component: {fileID: 7047262481588122370}
   - component: {fileID: 2296931840408105513}
   - component: {fileID: 2222314927985380975}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: pSphere4
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1120,7 +1119,7 @@ GameObject:
   - component: {fileID: 8666300995150030880}
   - component: {fileID: 5696441298328032663}
   - component: {fileID: 6205966591235454409}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: pSphere3
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -1243,9 +1242,33 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -7880797276382684329, guid: 150baaaac7a74d8498ea28893f5f41a8, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: -7622835247332062573, guid: 150baaaac7a74d8498ea28893f5f41a8, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: -1698231897371940140, guid: 150baaaac7a74d8498ea28893f5f41a8, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 635547659545568360, guid: 150baaaac7a74d8498ea28893f5f41a8, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
     - target: {fileID: 919132149155446097, guid: 150baaaac7a74d8498ea28893f5f41a8, type: 3}
       propertyPath: m_Name
       value: Slime_Model
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 150baaaac7a74d8498ea28893f5f41a8, type: 3}
+      propertyPath: m_Layer
+      value: 9
+      objectReference: {fileID: 0}
+    - target: {fileID: 7864216199227704987, guid: 150baaaac7a74d8498ea28893f5f41a8, type: 3}
+      propertyPath: m_Layer
+      value: 9
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

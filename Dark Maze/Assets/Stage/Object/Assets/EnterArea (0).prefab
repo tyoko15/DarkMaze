@@ -48,6 +48,7 @@ MonoBehaviour:
   area: {fileID: 0}
   enterAreaFlag: 0
   enemyAreaFlag: 0
+  excessTime: 30
 --- !u!65 &8852090457030569833
 BoxCollider:
   m_ObjectHideFlags: 0
