@@ -1,8 +1,5 @@
-using System;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.InputSystem;
-using UnityEngine.UIElements;
 
 public enum StageObjectType
 {
@@ -20,14 +17,14 @@ public enum StageObjectType
 }
 
 
-struct StageObject
+struct oldStageObject
 {
     public StageObjectType stageObjectType;
     public Color color;
 }
 
 
-[CustomEditor(typeof(Test))]
+//[CustomEditor(typeof(Test))]
 public class MyEditor : Editor
 {
     bool flag;
@@ -41,8 +38,8 @@ public class MyEditor : Editor
     bool fold;
     Vector2 scroll;
 
-    StageObject[,] stageObject1 = new StageObject[14, 14];
-    StageObject[,] stageObject2 = new StageObject[14, 14];
+    oldStageObject[,] stageObject1 = new oldStageObject[14, 14];
+    oldStageObject[,] stageObject2 = new oldStageObject[14, 14];
 
     Color GetColor(StageObjectType type)
     {
@@ -153,7 +150,7 @@ public class MyEditor : Editor
         }
     }
 
-    void StageObjectList(StageObject[,] stageObject)
+    void StageObjectList(oldStageObject[,] stageObject)
     {
         for (int y = 0; y < stageObject.GetLength(1); y++)
         {

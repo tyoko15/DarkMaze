@@ -1,7 +1,8 @@
 using UnityEditor;
 using UnityEngine;
 
-public class TestEditor
+
+public class TestEditor : Editor
 {
     [MenuItem("Tools/ƒeƒXƒg")]
     static void Test()

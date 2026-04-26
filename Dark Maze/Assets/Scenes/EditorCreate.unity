@@ -347,7 +347,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1789846291}
-  - component: {fileID: 1789846290}
+  - component: {fileID: 1789846292}
   m_Layer: 0
   m_Name: CreateStage
   m_TagString: Untagged
@@ -355,18 +355,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &1789846290
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1789846289}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 00b09d2da7f341c448bea49a0b59d135, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::Test
 --- !u!4 &1789846291
 Transform:
   m_ObjectHideFlags: 0
@@ -382,6 +370,810 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1789846292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1789846289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 28a28d1775876434ca83c0a9527986db, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::CreateStage
+  fieldNumber: 0
+  stageNumber: 0
+  width: 14
+  height: 14
+  buttonSize: 50
+  fontSize: 10
+  stageLowGrids:
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  stageHighGrids:
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 0
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
+  - type: 9
+    degree: 0
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
