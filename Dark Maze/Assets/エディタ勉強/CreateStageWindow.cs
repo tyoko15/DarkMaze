@@ -2,16 +2,29 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-
-//[CustomEditor(typeof(CreateStage))]
-public class CreateStageEditor : Editor
+public class CreateStageWindow : EditorWindow
 {
-    public override void OnInspectorGUI()
-    {
-        CreateStage script = (CreateStage)target;
 
-        // ベーススクリプトの変数表示
-        DrawDefaultInspector();
+    CreateStage script;
+    Vector2 scroll;
+
+    [MenuItem("MyTools/CreateStageWindow")]
+    public static void Open()
+    {
+        GetWindow<CreateStageWindow>();
+    }
+
+    // Windowの構成
+    void OnGUI()
+    {
+        
+        script = (CreateStage)EditorGUILayout.ObjectField(
+            "ステージ",
+            script,
+            typeof(CreateStage),
+            true
+        );
+        scroll = EditorGUILayout.BeginScrollView(scroll);
 
         /* ========== ステージマスの実装 ========== */
         GUILayout.Box("", GUILayout.ExpandWidth(true), GUILayout.Height(5));
@@ -34,6 +47,11 @@ public class CreateStageEditor : Editor
         GUILayout.Box("", GUILayout.ExpandWidth(true), GUILayout.Height(5));
         EditorGUI.indentLevel--;
 
+        /* ========== ギミックオブジェクトの内容実装 ========== */
+
+        SetGimmickObjectFanction(script.stageLowGrids);
+        SetGimmickObjectFanction(script.stageHighGrids);
+
         /* ========== ステージを生成するボタンの実装 ========== */
 
         EditorGUILayout.BeginHorizontal();
@@ -52,15 +70,15 @@ public class CreateStageEditor : Editor
         EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.Space();
+        EditorGUILayout.EndScrollView();
     }
+
     /// <summary>
     /// ステージ構成のボタン
     /// </summary>
     /// <param name="grids"></param>
     void StageGridsButton(List<StageObject> grids)
     {
-        CreateStage script = (CreateStage)target;
-
         for (int y = 0; y < script.height; y++)
         {
             EditorGUILayout.BeginHorizontal();
@@ -114,6 +132,22 @@ public class CreateStageEditor : Editor
         }
     }
 
+    void SetGimmickObjectFanction(List<StageObject> grids)
+    {
+        for (int y = 0; y < script.height; y++)
+        {
+            for(int x = 0; x < script.width; x++)
+            {
+                int indexX = x;
+                int indexY = y;
+                if (grids[indexX + indexY * script.width].type == ObjectType.Button)
+                {
+
+                }
+            }
+        }
+    }
+
     #region 変換関数群
     // ObjectTypeからマスのTextカラーを取得
     Color GetTextColor(ObjectType type)
@@ -153,7 +187,7 @@ public class CreateStageEditor : Editor
             default: return MakeTex(Color.white);
         }
     }
-    
+
     // ColorからTexture2Dを作成
     Texture2D MakeTex(Color col)
     {
@@ -171,23 +205,14 @@ public class CreateStageEditor : Editor
             case 90: return "→";
             case 180: return "↓";
             case 270: return "←";
-            default : return "↑";
+            default: return "↑";
         }
     }
 
     #endregion
 
-
-    #region ステージ生成関連
-    void GenerateStage()
-    {
-        // 
-    }
-    #endregion
-
     void DisplayGrids()
     {
-        CreateStage script = (CreateStage)target;
         for (int y = 0; y < script.height; y++)
         {
             for (int x = 0; x < script.width; x++)
@@ -198,5 +223,4 @@ public class CreateStageEditor : Editor
             }
         }
     }
-
 }

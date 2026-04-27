@@ -24,6 +24,8 @@ public enum Degree
     Deg270 = 270
 }
 
+
+
 [System.Serializable]
 public class StageObject
 {
@@ -71,6 +73,15 @@ public class CreateStage : MonoBehaviour
                     stageHighGrids[indexX + indexY * width].type = ObjectType.Wall;
                 }
             }
+        }
+    }
+
+    public void GetGimmickFanction_Argument(GimmickFanction fanc)
+    {
+        switch (fanc)
+        {
+            case GimmickFanction.AreaRotation: break;
+
         }
     }
 }

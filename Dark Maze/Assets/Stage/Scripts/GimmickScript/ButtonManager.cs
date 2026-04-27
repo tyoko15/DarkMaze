@@ -4,7 +4,7 @@ using UnityEngine;
 /// スイッチ・ボタンギミックを管理するクラス
 /// 攻撃や重み（Box）によってフラグを切り替える
 /// </summary>
-public class ButtonManager : MonoBehaviour
+public class ButtonManager : GeneralStageManager
 {
     [Header("状態管理フラグ")]
     [SerializeField] public bool buttonFlag;   // 現在スイッチがONかどうか
@@ -33,6 +33,9 @@ public class ButtonManager : MonoBehaviour
     private Camera mainCamera;
     private GameObject canvas;                // プレイヤーが近づいた時のガイドUI
     bool canvasFlag;
+
+    // 発動ギミック
+    public GimmickFanction gimmickFanction;
 
     private void Start()
     {
@@ -120,6 +123,12 @@ public class ButtonManager : MonoBehaviour
                 intervalFlag = false;
             }
             else intervalTimer += Time.deltaTime;
+        }
+
+        // ギミック発動
+        if (buttonFlag)
+        {
+
         }
     }
 
