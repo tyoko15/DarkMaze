@@ -5,16 +5,6 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
-public enum GimmickFanction
-{
-    AreaRotation,
-    SenceGate,
-    Gate,
-    LimitActiveObject,
-    ActiveObject,
-    ActiveLight,
-}
-
 
 /// <summary>
 /// 全ステージの基盤となる親クラス。
