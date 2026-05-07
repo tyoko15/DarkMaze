@@ -30,7 +30,7 @@ public class CreateStageWindow : EditorWindow
     // Windowの構成
     void OnGUI()
     {
-        if (script == null) 
+        if (script == null)
         {
             script = FindObjectOfType<CreateStage>();
             if (script == null) EditorGUILayout.LabelField("CreateStageスクリプトが見つかりません。");
@@ -99,7 +99,7 @@ public class CreateStageWindow : EditorWindow
 
             EditorGUILayout.Space();
             EditorGUILayout.EndScrollView();
-        }        
+        }
     }
 
     /// <summary>
@@ -119,11 +119,12 @@ public class CreateStageWindow : EditorWindow
                 int indexY = y;
 
                 GUIStyle style = new GUIStyle(GUI.skin.button);
-                style.normal.textColor = CastObjectTypeToColor(grids[indexX + indexY * script.width].type);
+                style.normal.textColor = CastObjectTypeToTextColor(grids[indexX + indexY * script.width].type);
                 style.fontSize = script.fontSize;
                 style.fontStyle = FontStyle.Bold;
                 style.wordWrap = true;
-                style.normal.background = CastObjectTypeToTexture2D(grids[indexX + indexY * script.width].type);
+                //style.normal.background = CastObjectTypeToTexture2D(grids[indexX + indexY * script.width].type);
+                GUI.backgroundColor = CastObjectTypeToColor(grids[indexX + indexY * script.width].type);
 
                 // ステージのボタン
                 string name = grids[indexX + indexY * script.width].type.ToString();
@@ -141,11 +142,11 @@ public class CreateStageWindow : EditorWindow
                             //Debug.Log($"[{indexX}, {indexY}] : 変更前内容{grids[indexX + indexY * script.width].type} => 変更後内容{localType}");
                             ObjectType before = grids[indexX + indexY * script.width].type;
                             ObjectType after = localType;
-                            
+
                             grids[indexX + indexY * script.width].type = localType;
                             bool flag = (grids == script.stageLowGrids) ? false : true;
                             if (before != ObjectType.Button && after == ObjectType.Button) script.IncreaseGimmickFanctionList(grids[indexX + indexY * script.width], flag, localType, new Vector2(indexX, indexY));
-                            else if (before == ObjectType.Button && after != ObjectType.Button) script.DecreaseGimmickFanctionList(grids[indexX + indexY * script.width],flag,  new Vector2(indexX, indexY));
+                            else if (before == ObjectType.Button && after != ObjectType.Button) script.DecreaseGimmickFanctionList(grids[indexX + indexY * script.width], flag, new Vector2(indexX, indexY));
 
                             EditorUtility.SetDirty(script);
                         });
@@ -168,10 +169,16 @@ public class CreateStageWindow : EditorWindow
             GUILayout.FlexibleSpace();
             EditorGUILayout.EndHorizontal();
         }
+        GUI.backgroundColor = Color.white;
     }
-    
+
     void GimmickGridControl()
     {
+        if (script.gimmickArgument.gimmickGridList.Count == 0) return;
+        GUIStyle gs = SetHeadingText(UIType.Label, Heading.Heading1);
+        EditorGUILayout.LabelField("ギミック関数設定", gs);
+
+
         for (int i = 0; i < script.gimmickArgument.gimmickGridList.Count; i++)
         {
             GimmickObjectFanction(i, script.gimmickArgument.gimmickGridList[i]);
@@ -256,13 +263,13 @@ public class CreateStageWindow : EditorWindow
     }
 
     #region 変換関数群
-    
+
     /// <summary>
     /// ObjectTypeからテキストカラーを決定
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
-    Color CastObjectTypeToColor(ObjectType type)
+    Color CastObjectTypeToTextColor(ObjectType type)
     {
         switch (type)
         {
@@ -280,7 +287,27 @@ public class CreateStageWindow : EditorWindow
             default: return Color.black;
         }
     }
-    
+
+    Color CastObjectTypeToColor(ObjectType type)
+    {
+        switch (type)
+        {
+            case ObjectType.None: return Color.snow;
+            case ObjectType.Barrel: return Color.brown;
+            case ObjectType.Box: return Color.sandyBrown;
+            case ObjectType.Button: return Color.blue;
+            case ObjectType.Chest: return Color.goldenRod;
+            case ObjectType.Gate: return Color.gray;
+            case ObjectType.Goal: return Color.green;
+            case ObjectType.GroundButton: return Color.blueViolet;
+            case ObjectType.Slope: return Color.gray8;
+            case ObjectType.Start: return Color.yellow;
+            case ObjectType.Wall: return Color.black;
+            case ObjectType.Wood: return Color.saddleBrown;
+            default: return Color.white;
+        }
+    }
+
     /// <summary>
     /// ObjectTypeからマスのBackGroundカラーを決定
     /// </summary>
@@ -314,6 +341,7 @@ public class CreateStageWindow : EditorWindow
     Texture2D MakeColorTexture(Color col)
     {
         Texture2D tex = new Texture2D(1, 1);
+        tex.hideFlags = HideFlags.HideAndDontSave;
         tex.SetPixel(0, 0, col);
         tex.Apply();
         return tex;
@@ -363,7 +391,7 @@ public class CreateStageWindow : EditorWindow
         GameObject outerFrame = null;
         if (script.fieldNumber == 1)
         {
-            InstantiateStageObject(16, Vector3.zero, (obj) =>
+            InstantiateStageObject(16, Vector3.zero, 0f, (obj) =>
             {
                 outerFrame = obj;
                 outerFrame.name = "OuterFrame";
@@ -372,7 +400,7 @@ public class CreateStageWindow : EditorWindow
         }
         else if (script.fieldNumber == 2)
         {
-            InstantiateStageObject(17, Vector3.zero, (obj) =>
+            InstantiateStageObject(17, Vector3.zero, 0f, (obj) =>
             {
                 outerFrame = obj;
                 outerFrame.name = "OuterFrame";
@@ -380,7 +408,7 @@ public class CreateStageWindow : EditorWindow
             });
         }
 
-        
+
         /* AreaObjectを生成 */
         for (int i = 0; i < script.area.Length; i++)
         {
@@ -417,7 +445,7 @@ public class CreateStageWindow : EditorWindow
             {
                 posi = new Vector3(13f - (w * 2f), 0f, -13f + (h * 2f));
 
-                InstantiateStageObject(floorNumber, posi, (obj) =>
+                InstantiateStageObject(floorNumber, posi, 0f, (obj) =>
                 {
                     obj.name = "Floor";
                     obj.transform.parent = script.floor[0].transform;
@@ -426,32 +454,32 @@ public class CreateStageWindow : EditorWindow
                 // 高さ1マス目のオブジェクトの生成
                 ObjectType type = script.stageLowGrids[h * script.width + w].type;
                 int degree = script.stageLowGrids[h * script.width + w].degree;
-                if (type != ObjectType.None) 
+                if (type != ObjectType.None)
                 {
-                    InstantiateStageObject(script.CastObjectTypeToNumber(type), posi, (obj) =>
+                    InstantiateStageObject(script.CastObjectTypeToNumber(type), posi, degree, (obj) =>
                     {
                         //obj.name = type.ToString();
                         if ("Wall" != script.stageLowGrids[h * script.width + w].type.ToString()) Debug.Log($"Type:{script.stageLowGrids[h * script.width + w].type} - Name:{script.stageLowGrids[h * script.width + w].type.ToString()}");
-                        obj.transform.eulerAngles = new Vector3(0f, degree, 0f);
+                        //obj.transform.eulerAngles = new Vector3(0f, degree, 0f);
                         switch (type)
                         {
                             case ObjectType.Wall: obj.transform.parent = script.wall[0].transform; break;
                             default: obj.transform.parent = script.heightArea[0].transform; break;
                         }
-                    });                    
+                    });
                 }
 
                 posi = new Vector3(13f - (w * 2f), 2f, -13f + (h * 2f));
 
                 // 高さ2マス目のオブジェクトの生成
                 type = script.stageHighGrids[h * script.width + w].type;
-                degree = script.stageHighGrids[h *script.width + w].degree;
+                degree = script.stageHighGrids[h * script.width + w].degree;
                 if (type != ObjectType.None)
                 {
-                    InstantiateStageObject(script.CastObjectTypeToNumber(type), posi, (obj) =>
+                    InstantiateStageObject(script.CastObjectTypeToNumber(type), posi, degree, (obj) =>
                     {
                         //obj.name = type.ToString();
-                        obj.transform.eulerAngles = new Vector3(0f, degree, 0f);
+                        //obj.transform.eulerAngles = new Vector3(0f, degree, 0f);
                         switch (type)
                         {
                             case ObjectType.Wall: obj.transform.parent = script.wall[1].transform; break;
@@ -468,7 +496,7 @@ public class CreateStageWindow : EditorWindow
         script.wall[2].transform.parent = script.heightArea[2].transform;
         script.wall[3] = new GameObject("Wall");
         script.wall[3].transform.parent = script.heightArea[3].transform;
-         
+
         // Area (1)の生成
         for (int h = 0; h < script.height / 2; h++)
         {
@@ -476,7 +504,7 @@ public class CreateStageWindow : EditorWindow
             {
                 posi = new Vector3(-1f - (w * 2), 0f, -13f + (h * 2));
 
-                InstantiateStageObject(floorNumber, posi, (obj) =>
+                InstantiateStageObject(floorNumber, posi, 0f, (obj) =>
                 {
                     obj.name = "Floor";
                     obj.transform.parent = script.floor[1].transform;
@@ -487,10 +515,10 @@ public class CreateStageWindow : EditorWindow
                 int degree = script.stageLowGrids[h * script.width + (w + script.height / 2)].degree;
                 if (type != ObjectType.None)
                 {
-                    InstantiateStageObject(script.CastObjectTypeToNumber(type), posi, (obj) =>
+                    InstantiateStageObject(script.CastObjectTypeToNumber(type), posi, degree, (obj) =>
                     {
                         //obj.name = type.ToString();
-                        obj.transform.eulerAngles = new Vector3(0f, degree, 0f);
+                        //obj.transform.eulerAngles = new Vector3(0f, degree, 0f);
                         switch (type)
                         {
                             case ObjectType.Wall: obj.transform.parent = script.wall[2].transform; break;
@@ -506,10 +534,10 @@ public class CreateStageWindow : EditorWindow
                 degree = script.stageHighGrids[h * script.width + (w + script.height / 2)].degree;
                 if (type != ObjectType.None)
                 {
-                    InstantiateStageObject(script.CastObjectTypeToNumber(type), posi, (obj) =>
+                    InstantiateStageObject(script.CastObjectTypeToNumber(type), posi, degree, (obj) =>
                     {
                         //obj.name = type.ToString();
-                        obj.transform.eulerAngles = new Vector3(0f, degree, 0f);
+                        //obj.transform.eulerAngles = new Vector3(0f, degree, 0f);
                         switch (type)
                         {
                             case ObjectType.Wall: obj.transform.parent = script.wall[3].transform; break;
@@ -534,7 +562,7 @@ public class CreateStageWindow : EditorWindow
             {
                 posi = new Vector3(13f - (w * 2), 0f, 1f + (h * 2));
 
-                InstantiateStageObject(floorNumber, posi, (obj) =>
+                InstantiateStageObject(floorNumber, posi, 0f, (obj) =>
                 {
                     obj.name = "Floor";
                     obj.transform.parent = script.floor[2].transform;
@@ -545,10 +573,10 @@ public class CreateStageWindow : EditorWindow
                 int degree = script.stageLowGrids[(h + script.height / 2) * script.width + w].degree;
                 if (type != ObjectType.None)
                 {
-                    InstantiateStageObject(script.CastObjectTypeToNumber(type), posi, (obj) =>
+                    InstantiateStageObject(script.CastObjectTypeToNumber(type), posi, degree, (obj) =>
                     {
                         obj.name = type.ToString();
-                        obj.transform.eulerAngles = new Vector3(0f, degree, 0f);
+                        //obj.transform.eulerAngles = new Vector3(0f, degree, 0f);
                         switch (type)
                         {
                             case ObjectType.Wall: obj.transform.parent = script.wall[4].transform; break;
@@ -564,10 +592,10 @@ public class CreateStageWindow : EditorWindow
                 degree = script.stageHighGrids[(h + script.height / 2) * script.width + w].degree;
                 if (type != ObjectType.None)
                 {
-                    InstantiateStageObject(script.CastObjectTypeToNumber(type), posi, (obj) =>
+                    InstantiateStageObject(script.CastObjectTypeToNumber(type), posi, degree, (obj) =>
                     {
                         obj.name = type.ToString();
-                        obj.transform.eulerAngles = new Vector3(0f, degree, 0f);
+                        //obj.transform.eulerAngles = new Vector3(0f, degree, 0f);
                         switch (type)
                         {
                             case ObjectType.Wall: obj.transform.parent = script.wall[5].transform; break;
@@ -592,7 +620,7 @@ public class CreateStageWindow : EditorWindow
             {
                 posi = new Vector3(-1f - (w * 2), 0f, 1f + (h * 2));
 
-                InstantiateStageObject(floorNumber, posi, (obj) =>
+                InstantiateStageObject(floorNumber, posi, 0f, (obj) =>
                 {
                     obj.name = "Floor";
                     obj.transform.parent = script.floor[3].transform;
@@ -603,10 +631,10 @@ public class CreateStageWindow : EditorWindow
                 int degree = script.stageLowGrids[(h + script.height / 2) * script.width + (w + script.width / 2)].degree;
                 if (type != ObjectType.None)
                 {
-                    InstantiateStageObject(script.CastObjectTypeToNumber(type), posi, (obj) =>
+                    InstantiateStageObject(script.CastObjectTypeToNumber(type), posi, degree, (obj) =>
                     {
                         obj.name = type.ToString();
-                        obj.transform.eulerAngles = new Vector3(0f, degree, 0f);
+                        //obj.transform.eulerAngles = new Vector3(0f, degree, 0f);
                         switch (type)
                         {
                             case ObjectType.Wall: obj.transform.parent = script.wall[6].transform; break;
@@ -622,10 +650,10 @@ public class CreateStageWindow : EditorWindow
                 degree = script.stageHighGrids[(h + script.height / 2) * script.width + (w + script.width / 2)].degree;
                 if (type != ObjectType.None)
                 {
-                    InstantiateStageObject(script.CastObjectTypeToNumber(type), posi, (obj) =>
+                    InstantiateStageObject(script.CastObjectTypeToNumber(type), posi, degree, (obj) =>
                     {
                         obj.name = type.ToString();
-                        obj.transform.eulerAngles = new Vector3(0f, degree, 0f);
+                        //obj.transform.eulerAngles = new Vector3(0f, degree, 0f);
                         switch (type)
                         {
                             case ObjectType.Wall: obj.transform.parent = script.wall[7].transform; break;
@@ -637,13 +665,84 @@ public class CreateStageWindow : EditorWindow
         }
     }
 
+
+    enum Heading
+    {
+        Heading1, 
+        Heading2, 
+        Heading3,
+        Heading4
+    }
+    public enum UIType
+    {
+        Label,
+        Button,
+        Toggle,
+        TextField,
+        TextArea,
+        Foldout,
+        Slider,
+        IntField,
+        FloatField,
+        ObjectField,
+        EnumPopup,
+        Popup,
+        Box,
+        HelpBox,
+        ToolbarButton,
+    }
+    GUIStyle GetBaseStyle(UIType type)
+    {
+        return type switch
+        {
+            UIType.Label => new GUIStyle(EditorStyles.label),
+            UIType.Button => new GUIStyle(GUI.skin.button),
+            UIType.Toggle => new GUIStyle(EditorStyles.toggle),
+            UIType.TextField => new GUIStyle(EditorStyles.textField),
+            UIType.TextArea => new GUIStyle(EditorStyles.textArea),
+            UIType.Foldout => new GUIStyle(EditorStyles.foldout),
+            UIType.Box => new GUIStyle(GUI.skin.box),
+            UIType.HelpBox => new GUIStyle(EditorStyles.helpBox),
+            UIType.ToolbarButton => new GUIStyle(EditorStyles.toolbarButton),
+            _ => new GUIStyle(EditorStyles.label)
+        };
+    }
+
+    GUIStyle SetHeadingText(UIType type, Heading heading)
+    {
+        GUIStyle style = GetBaseStyle(type);
+
+
+        switch (heading)
+        {
+            case Heading.Heading1:
+                style.fontSize = 20;
+                style.fontStyle = FontStyle.Bold;
+                break;
+            case Heading.Heading2:
+                style.fontSize = 16;
+                style.fontStyle = FontStyle.Bold;
+                break;
+            case Heading.Heading3:
+                style.fontSize = 14;
+                style.fontStyle = FontStyle.Normal;
+                break;
+            case Heading.Heading4:
+                break;
+            default:
+                break;
+        }
+        return style;
+    }
+
+
     /// <summary>
     /// Addressablesを使用してStageObjectを生成
     /// </summary>
     /// <param name="i">アドレス番号</param>
     /// <param name="position">生成位置</param>
     /// <param name="onComplete">生成オブジェクト</param>
-    void InstantiateStageObject(int i, Vector3 position, System.Action<GameObject> onComplete)
+    void InstantiateStageObject(int i, Vector3 position, float degree, System.Action<GameObject> onComplete)
     {
         Addressables.LoadAssetAsync<GameObject>(script.stageObjectAddress[i]).Completed += (handle) =>
         {
@@ -653,6 +752,7 @@ public class CreateStageWindow : EditorWindow
 
                 GameObject instance = (GameObject)PrefabUtility.InstantiatePrefab(prefab);
                 instance.transform.position = position;
+                instance.transform.eulerAngles = new Vector3(0f, degree, 0f);
 
                 Undo.RegisterCreatedObjectUndo(instance, "CreateStageObject");
                 instance.name = script.stageObjectAddress[i];
