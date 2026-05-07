@@ -286,37 +286,4 @@ public class CreateStage : MonoBehaviour
         }
         return number;
     }
-
-    public string CastObjectTypeToName(ObjectType type)
-    {
-        type.ToString();
-        string name = type.ToString();
-        ////None,
-        ////Barrel,
-        ////Box,
-        ////Button,
-        ////Chest,
-        ////Gate,
-        ////Goal,
-        ////GroundButton,
-        ////Slope,
-        ////Start,
-        ////Wall,
-        ////Wood
-        //switch (type)
-        //{
-        //    case ObjectType.Barrel: return name = "Barrel";
-        //    case ObjectType.Box: return name = "Box";
-        //    case ObjectType.Button: return name = "Barrel";
-        //    case ObjectType.Chest: return name = "Barrel";
-        //    case ObjectType.Gate: return name = "Barrel";
-        //    case ObjectType.Goal: return name = "Barrel";
-        //    case ObjectType.GroundButton: return name = "Barrel";
-        //    case ObjectType.Slope: return name = "Barrel";
-        //    case ObjectType.Start: return name = "Barrel";
-        //    case ObjectType.Wall: return name = "Barrel";
-        //    case ObjectType.Wood: return name = "Barrel";
-        //}
-        return name;
-    }
 }

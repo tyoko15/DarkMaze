@@ -41,23 +41,23 @@ public class CreateStageWindow : EditorWindow
 
             /* ========== ステージマスの実装 ========== */
             GUILayout.Box("", GUILayout.ExpandWidth(true), GUILayout.Height(5));
-            GUIStyle labelStyle = new GUIStyle(EditorStyles.label);
-            labelStyle.fontSize = 20;
-            labelStyle.fontStyle = FontStyle.Bold;
-            labelStyle.alignment = TextAnchor.MiddleCenter;
-            EditorGUILayout.LabelField("ステージ構成", labelStyle);
+            GUIStyle H1Style = SetHeadingText(UIType.Label, Heading.H1);
+            H1Style.alignment = TextAnchor.MiddleCenter;
+            EditorGUILayout.LabelField("----- ステージ構成 -----", H1Style, GUILayout.Height(H1Style.fontSize));
+
+            /* ---------- 高さ1マス目 ---------- */
+
             EditorGUI.indentLevel++;
             EditorGUILayout.Space();
-            labelStyle = new GUIStyle(EditorStyles.foldout);
-            labelStyle.fontSize = 15;
-            labelStyle.alignment = TextAnchor.MiddleLeft;
-            SGfolds[0] = EditorGUILayout.Foldout(SGfolds[0], "高さ1マス目", labelStyle);
-            //EditorGUILayout.LabelField("高さ1マス目", labelStyle);
+            GUIStyle H2Style = SetHeadingText(UIType.Foldout, Heading.H2);
+            SGfolds[0] = EditorGUILayout.Foldout(SGfolds[0], "高さ1マス目", H2Style);
             EditorGUILayout.Space();
             if (SGfolds[0]) StageGridsButton(script.stageLowGrids);
+
+            /* ---------- 高さ2マス目 ---------- */
+
             EditorGUILayout.Space();
-            SGfolds[1] = EditorGUILayout.Foldout(SGfolds[1], "高さ2マス目", labelStyle);
-            //EditorGUILayout.LabelField("高さ2マス目", labelStyle);
+            SGfolds[1] = EditorGUILayout.Foldout(SGfolds[1], "高さ2マス目", H2Style);
             EditorGUILayout.Space();
             if (SGfolds[1]) StageGridsButton(script.stageHighGrids);
             GUILayout.Box("", GUILayout.ExpandWidth(true), GUILayout.Height(5));
@@ -69,27 +69,31 @@ public class CreateStageWindow : EditorWindow
 
             /* ========== ステージを生成するボタンの実装 ========== */
 
+            GUIStyle H1Style3 = SetHeadingText(UIType.Label, Heading.H1);
+            H1Style3.alignment = TextAnchor.MiddleCenter;
+            EditorGUILayout.LabelField("----- ステージクリエイト -----", H1Style3, GUILayout.Height(H1Style3.fontSize));
+            EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
             if (script.root == null)
             {
+                // ステージ生成のボタン
                 if (GUILayout.Button("ステージを生成", GUILayout.Width(200), GUILayout.Height(25)))
-                {
-                    // ステージ生成の処理
+                {             
                     StageCreate();
-                    //InstantiateStageObject(0, new Vector3(0, 0, 0));
                 }
                 GUILayout.FlexibleSpace();
             }
             else
             {
+                // ステージ削除のボタン
                 if (GUILayout.Button("ステージを削除", GUILayout.Width(200), GUILayout.Height(25)))
                 {
-                    //script.DistroyStage();
                     Undo.DestroyObjectImmediate(script.root);
                 }
                 GUILayout.FlexibleSpace();
             }
+            // ステージリセットのボタン
             if (GUILayout.Button("ステージリセット", GUILayout.Width(200), GUILayout.Height(25)))
             {
                 script.InitStageGrids();
@@ -175,9 +179,10 @@ public class CreateStageWindow : EditorWindow
     void GimmickGridControl()
     {
         if (script.gimmickArgument.gimmickGridList.Count == 0) return;
-        GUIStyle gs = SetHeadingText(UIType.Label, Heading.Heading1);
-        EditorGUILayout.LabelField("ギミック関数設定", gs);
-
+        GUIStyle H1Style2 = SetHeadingText(UIType.Label, Heading.H1);
+        H1Style2.alignment = TextAnchor.MiddleCenter;
+        EditorGUILayout.LabelField("----- ギミック構成 -----", H1Style2, GUILayout.Height(H1Style2.fontSize));
+        EditorGUILayout.Space();
 
         for (int i = 0; i < script.gimmickArgument.gimmickGridList.Count; i++)
         {
@@ -668,10 +673,10 @@ public class CreateStageWindow : EditorWindow
 
     enum Heading
     {
-        Heading1, 
-        Heading2, 
-        Heading3,
-        Heading4
+        H1, 
+        H2, 
+        H3,
+        Normal
     }
     public enum UIType
     {
@@ -712,24 +717,24 @@ public class CreateStageWindow : EditorWindow
     {
         GUIStyle style = GetBaseStyle(type);
 
-
         switch (heading)
         {
-            case Heading.Heading1:
+            case Heading.H1:
+                style.fontStyle = FontStyle.Bold;
+                style.fontSize = 30;
+                break;
+            case Heading.H2:
+                style.fontStyle = FontStyle.Bold;
+                style.fontSize = 25;
+                break;
+            case Heading.H3:
+                style.fontStyle = FontStyle.Bold;
                 style.fontSize = 20;
-                style.fontStyle = FontStyle.Bold;
                 break;
-            case Heading.Heading2:
-                style.fontSize = 16;
-                style.fontStyle = FontStyle.Bold;
-                break;
-            case Heading.Heading3:
-                style.fontSize = 14;
-                style.fontStyle = FontStyle.Normal;
-                break;
-            case Heading.Heading4:
-                break;
+            case Heading.Normal:
             default:
+                style.fontStyle = FontStyle.Normal;
+                style.fontSize = 12;
                 break;
         }
         return style;
