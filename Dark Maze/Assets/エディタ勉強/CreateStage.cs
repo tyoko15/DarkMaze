@@ -7,6 +7,7 @@ using UnityEngine;
 public enum ObjectType
 {
     None,
+    ArrowSign,
     Barrel,
     Box,
     Button,
@@ -14,6 +15,7 @@ public enum ObjectType
     Gate,
     Goal,
     GroundButton,
+    RopeSign,
     Slope,
     Start,
     Wall,
@@ -26,9 +28,13 @@ public enum ObjectType
 public enum Degree
 {
     Deg0 = 0,
+    Deg45 = 45,
     Deg90 = 90,
+    Deg135 = 135,
     Deg180 = 180,
-    Deg270 = 270
+    Deg225 = 225,
+    Deg270 = 270,
+    Deg315 = 315
 }
 
 /// <summary>
@@ -136,6 +142,49 @@ public class StageObject
     public int gimmickNumber;
 }
 
+[System.Serializable]
+public class Gimmick
+{
+    public int number;
+    public GimmickObject gimmickObject;
+    
+}
+
+public enum GimmickObject
+{
+    None, 
+    Barrel,
+    Button,
+    Chest,
+    Gate,   
+    GroundButton
+}
+
+
+[System.Serializable]
+public class GimmickArgument
+{
+    public int[] gfNumbers;
+    public List<GimmickGrid> gimmickGridList;
+    public List<GimmickFanction> gfList;
+    public List<ARArgument> arList;
+    public List<SGArgument> sgList;
+    public List<GArgument> gList;
+    public List<LAArgument> laList;
+    public List<AArgument> aList;
+    public List<ALArgument> alList;
+}
+
+public class ArgumentList
+{
+    public ARArgument arArgument;       // AreaRotation
+    public SGArgument sgArgument;       // 
+    public GArgument gArgument;
+    public LAArgument laArgument;
+    public AArgument aArgument;
+    public ALArgument alArgument;
+}
+
 public class CreateStage : MonoBehaviour
 {
     [Header("ステージナンバー")]
@@ -149,21 +198,10 @@ public class CreateStage : MonoBehaviour
     public int fontSize = 10;
     public List<StageObject> stageLowGrids;
     public List<StageObject> stageHighGrids;
+    public List<Gimmick> gimmickObjectList;
 
     /* 本番用 */
-    [System.Serializable]
-    public class GimmickArgument
-    {
-        public int[] gfNumbers;
-        public List<GimmickGrid> gimmickGridList;
-        public List<GimmickFanction> gfList;
-        public List<ARArgument> arList;
-        public List<SGArgument> sgList;
-        public List<GArgument> gList;
-        public List<LAArgument> laList;
-        public List<AArgument> aList;
-        public List<ALArgument> alList;
-    }
+
     [HideInInspector] public GimmickArgument gimmickArgument;
 
     public string[] stageObjectAddress =
@@ -221,7 +259,10 @@ public class CreateStage : MonoBehaviour
 
                 stageLowGrids.Add(new StageObject());
                 stageHighGrids.Add(new StageObject());
-                
+
+                stageLowGrids[indexX + width * indexY].gimmickNumber = -1;
+                stageHighGrids[indexX + width * indexY].gimmickNumber = -1;
+
                 if (x == 0 || x == 6 || x == 7 || x == 13 || y == 0 || y == 6 || y == 7 || y == 13)
                 {
                     stageLowGrids[indexX + indexY * width].type = ObjectType.Wall;
@@ -238,6 +279,10 @@ public class CreateStage : MonoBehaviour
         switch (type)
         {
             case ObjectType.Button:
+                gimmickObjectList.Add(new Gimmick());
+                if (low) stageHighGrids[(int)grid.x + (int)grid.y * width].gimmickNumber = gimmickObjectList.Count - 1;
+                else stageLowGrids[(int)grid.x + (int)grid.y * width].gimmickNumber = gimmickObjectList.Count - 1;
+
                 gimmickArgument.gimmickGridList.Add(new GimmickGrid());
                 if (low) stageHighGrids[(int)grid.x + (int)grid.y * width].gimmickNumber = gimmickArgument.gimmickGridList.Count - 1;
                 else stageLowGrids[(int)grid.x + (int)grid.y * width].gimmickNumber = gimmickArgument.gimmickGridList.Count - 1;
@@ -266,6 +311,7 @@ public class CreateStage : MonoBehaviour
         int number = 0;
         switch (type)
         {
+            case ObjectType.ArrowSign: return number = 1;
             case ObjectType.Barrel: return number = 2;
             case ObjectType.Box: return number = 3;
             case ObjectType.Button: return number = 4;
@@ -273,6 +319,7 @@ public class CreateStage : MonoBehaviour
             case ObjectType.Gate: return number = 10;
             case ObjectType.Goal: return number = 11;
             case ObjectType.GroundButton: return number = 14;
+                case ObjectType.RopeSign: return number = 19;
             case ObjectType.Slope: 
                 if (fieldNumber == 1) return number = 20;
                 else if (fieldNumber == 2) return number = 21;

@@ -1,4 +1,4 @@
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -27,58 +27,58 @@ public class CreateStageWindow : EditorWindow
 
     bool[] SGfolds = new bool[2];
 
-    // Window‚Ì\¬
+    // Windowã®æ§‹æˆ
     void OnGUI()
     {
         if (script == null)
         {
             script = FindObjectOfType<CreateStage>();
-            if (script == null) EditorGUILayout.LabelField("CreateStageƒXƒNƒŠƒvƒg‚ªŒ©‚Â‚©‚è‚Ü‚¹‚ñB");
+            if (script == null) EditorGUILayout.LabelField("CreateStageã‚¹ã‚¯ãƒªãƒ—ãƒˆãŒè¦‹ã¤ã‹ã‚Šã¾ã›ã‚“ã€‚");
         }
         else
         {
             scroll = EditorGUILayout.BeginScrollView(scroll);
 
-            /* ========== ƒXƒe[ƒWƒ}ƒX‚ÌÀ‘• ========== */
+            /* ========== ã‚¹ãƒ†ãƒ¼ã‚¸ãƒã‚¹ã®å®Ÿè£… ========== */
             GUILayout.Box("", GUILayout.ExpandWidth(true), GUILayout.Height(5));
             GUIStyle H1Style = SetHeadingText(UIType.Label, Heading.H1);
             H1Style.alignment = TextAnchor.MiddleCenter;
-            EditorGUILayout.LabelField("----- ƒXƒe[ƒW\¬ -----", H1Style, GUILayout.Height(H1Style.fontSize));
+            EditorGUILayout.LabelField("----- ã‚¹ãƒ†ãƒ¼ã‚¸æ§‹æˆ -----", H1Style, GUILayout.Height(H1Style.fontSize));
 
-            /* ---------- ‚‚³1ƒ}ƒX–Ú ---------- */
+            /* ---------- é«˜ã•1ãƒã‚¹ç›® ---------- */
 
             EditorGUI.indentLevel++;
             EditorGUILayout.Space();
             GUIStyle H2Style = SetHeadingText(UIType.Foldout, Heading.H2);
-            SGfolds[0] = EditorGUILayout.Foldout(SGfolds[0], "‚‚³1ƒ}ƒX–Ú", H2Style);
+            SGfolds[0] = EditorGUILayout.Foldout(SGfolds[0], "é«˜ã•1ãƒã‚¹ç›®", H2Style);
             EditorGUILayout.Space();
             if (SGfolds[0]) StageGridsButton(script.stageLowGrids);
 
-            /* ---------- ‚‚³2ƒ}ƒX–Ú ---------- */
+            /* ---------- é«˜ã•2ãƒã‚¹ç›® ---------- */
 
             EditorGUILayout.Space();
-            SGfolds[1] = EditorGUILayout.Foldout(SGfolds[1], "‚‚³2ƒ}ƒX–Ú", H2Style);
+            SGfolds[1] = EditorGUILayout.Foldout(SGfolds[1], "é«˜ã•2ãƒã‚¹ç›®", H2Style);
             EditorGUILayout.Space();
             if (SGfolds[1]) StageGridsButton(script.stageHighGrids);
             GUILayout.Box("", GUILayout.ExpandWidth(true), GUILayout.Height(5));
             EditorGUI.indentLevel--;
 
-            /* ========== ƒMƒ~ƒbƒNƒIƒuƒWƒFƒNƒg‚Ì“à—eÀ‘• ========== */
+            /* ========== ã‚®ãƒŸãƒƒã‚¯ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®å†…å®¹å®Ÿè£… ========== */
 
             GimmickGridControl();
 
-            /* ========== ƒXƒe[ƒW‚ğ¶¬‚·‚éƒ{ƒ^ƒ“‚ÌÀ‘• ========== */
+            /* ========== ã‚¹ãƒ†ãƒ¼ã‚¸ã‚’ç”Ÿæˆã™ã‚‹ãƒœã‚¿ãƒ³ã®å®Ÿè£… ========== */
 
             GUIStyle H1Style3 = SetHeadingText(UIType.Label, Heading.H1);
             H1Style3.alignment = TextAnchor.MiddleCenter;
-            EditorGUILayout.LabelField("----- ƒXƒe[ƒWƒNƒŠƒGƒCƒg -----", H1Style3, GUILayout.Height(H1Style3.fontSize));
+            EditorGUILayout.LabelField("----- ã‚¹ãƒ†ãƒ¼ã‚¸ã‚¯ãƒªã‚¨ã‚¤ãƒˆ -----", H1Style3, GUILayout.Height(H1Style3.fontSize));
             EditorGUILayout.Space();
             EditorGUILayout.BeginHorizontal();
             GUILayout.FlexibleSpace();
             if (script.root == null)
             {
-                // ƒXƒe[ƒW¶¬‚Ìƒ{ƒ^ƒ“
-                if (GUILayout.Button("ƒXƒe[ƒW‚ğ¶¬", GUILayout.Width(200), GUILayout.Height(25)))
+                // ã‚¹ãƒ†ãƒ¼ã‚¸ç”Ÿæˆã®ãƒœã‚¿ãƒ³
+                if (GUILayout.Button("ã‚¹ãƒ†ãƒ¼ã‚¸ã‚’ç”Ÿæˆ", GUILayout.Width(200), GUILayout.Height(25)))
                 {             
                     StageCreate();
                 }
@@ -86,15 +86,15 @@ public class CreateStageWindow : EditorWindow
             }
             else
             {
-                // ƒXƒe[ƒWíœ‚Ìƒ{ƒ^ƒ“
-                if (GUILayout.Button("ƒXƒe[ƒW‚ğíœ", GUILayout.Width(200), GUILayout.Height(25)))
+                // ã‚¹ãƒ†ãƒ¼ã‚¸å‰Šé™¤ã®ãƒœã‚¿ãƒ³
+                if (GUILayout.Button("ã‚¹ãƒ†ãƒ¼ã‚¸ã‚’å‰Šé™¤", GUILayout.Width(200), GUILayout.Height(25)))
                 {
                     Undo.DestroyObjectImmediate(script.root);
                 }
                 GUILayout.FlexibleSpace();
             }
-            // ƒXƒe[ƒWƒŠƒZƒbƒg‚Ìƒ{ƒ^ƒ“
-            if (GUILayout.Button("ƒXƒe[ƒWƒŠƒZƒbƒg", GUILayout.Width(200), GUILayout.Height(25)))
+            // ã‚¹ãƒ†ãƒ¼ã‚¸ãƒªã‚»ãƒƒãƒˆã®ãƒœã‚¿ãƒ³
+            if (GUILayout.Button("ã‚¹ãƒ†ãƒ¼ã‚¸ãƒªã‚»ãƒƒãƒˆ", GUILayout.Width(200), GUILayout.Height(25)))
             {
                 script.InitStageGrids();
             }
@@ -107,7 +107,7 @@ public class CreateStageWindow : EditorWindow
     }
 
     /// <summary>
-    /// ƒXƒe[ƒW\¬‚Ìƒ{ƒ^ƒ“
+    /// ã‚¹ãƒ†ãƒ¼ã‚¸æ§‹æˆã®ãƒœã‚¿ãƒ³
     /// </summary>
     /// <param name="grids"></param>
     void StageGridsButton(List<StageObject> grids)
@@ -130,7 +130,7 @@ public class CreateStageWindow : EditorWindow
                 //style.normal.background = CastObjectTypeToTexture2D(grids[indexX + indexY * script.width].type);
                 GUI.backgroundColor = CastObjectTypeToColor(grids[indexX + indexY * script.width].type);
 
-                // ƒXƒe[ƒW‚Ìƒ{ƒ^ƒ“
+                // ã‚¹ãƒ†ãƒ¼ã‚¸ã®ãƒœã‚¿ãƒ³
                 string name = grids[indexX + indexY * script.width].type.ToString();
                 if (grids[indexX + indexY * script.width].type == ObjectType.Button) name = $"{script.gimmickArgument.gimmickGridList[grids[indexX + indexY * script.width].gimmickNumber].name}";
                 if (GUILayout.Button($"{name}\n{CastDegreeToArrow(grids[indexX + indexY * script.width].degree)}", style, GUILayout.Width(script.buttonSize), GUILayout.Height(script.buttonSize)))
@@ -140,10 +140,10 @@ public class CreateStageWindow : EditorWindow
                     foreach (ObjectType type in System.Enum.GetValues(typeof(ObjectType)))
                     {
                         ObjectType localType = type;
-                        // Å‰‚Ìƒƒjƒ…[
-                        menu.AddItem(new GUIContent("ƒIƒuƒWƒFƒNƒg‘I‘ğ/" + localType.ToString()), false, () =>
+                        // æœ€åˆã®ãƒ¡ãƒ‹ãƒ¥ãƒ¼
+                        menu.AddItem(new GUIContent("ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆé¸æŠ/" + localType.ToString()), false, () =>
                         {
-                            //Debug.Log($"[{indexX}, {indexY}] : •ÏX‘O“à—e{grids[indexX + indexY * script.width].type} => •ÏXŒã“à—e{localType}");
+                            //Debug.Log($"[{indexX}, {indexY}] : å¤‰æ›´å‰å†…å®¹{grids[indexX + indexY * script.width].type} => å¤‰æ›´å¾Œå†…å®¹{localType}");
                             ObjectType before = grids[indexX + indexY * script.width].type;
                             ObjectType after = localType;
 
@@ -158,9 +158,9 @@ public class CreateStageWindow : EditorWindow
 
                     foreach (Degree degree in System.Enum.GetValues(typeof(Degree)))
                     {
-                        menu.AddItem(new GUIContent("•ûŒü‘I‘ğ/" + degree.ToString()), false, () =>
+                        menu.AddItem(new GUIContent("æ–¹å‘é¸æŠ/" + degree.ToString()), false, () =>
                         {
-                            //Debug.Log($"[{indexX}, {indexY}] : •ÏX‘O“à—e{grids[indexX + indexY * script.width].degree} => •ÏXŒã“à—e{degree}");
+                            //Debug.Log($"[{indexX}, {indexY}] : å¤‰æ›´å‰å†…å®¹{grids[indexX + indexY * script.width].degree} => å¤‰æ›´å¾Œå†…å®¹{degree}");
                             grids[indexX + indexY * script.width].degree = (int)degree;
                             EditorUtility.SetDirty(script);
                         });
@@ -181,7 +181,7 @@ public class CreateStageWindow : EditorWindow
         if (script.gimmickArgument.gimmickGridList.Count == 0) return;
         GUIStyle H1Style2 = SetHeadingText(UIType.Label, Heading.H1);
         H1Style2.alignment = TextAnchor.MiddleCenter;
-        EditorGUILayout.LabelField("----- ƒMƒ~ƒbƒN\¬ -----", H1Style2, GUILayout.Height(H1Style2.fontSize));
+        EditorGUILayout.LabelField("----- ã‚®ãƒŸãƒƒã‚¯æ§‹æˆ -----", H1Style2, GUILayout.Height(H1Style2.fontSize));
         EditorGUILayout.Space();
 
         for (int i = 0; i < script.gimmickArgument.gimmickGridList.Count; i++)
@@ -195,9 +195,9 @@ public class CreateStageWindow : EditorWindow
     {
         GimmickFanction gimmickFanction = gimmickGrid.gimmickFanction;
         EditorGUILayout.LabelField($"{gimmickGrid.name}");
-        script.gimmickArgument.gimmickGridList[i].gimmickFanction = (GimmickFanction)EditorGUILayout.EnumPopup("”­“®ŠÖ”", script.gimmickArgument.gimmickGridList[i].gimmickFanction);
+        script.gimmickArgument.gimmickGridList[i].gimmickFanction = (GimmickFanction)EditorGUILayout.EnumPopup("ç™ºå‹•é–¢æ•°", script.gimmickArgument.gimmickGridList[i].gimmickFanction);
         EditorGUI.indentLevel++;
-        if (gimmickFanction != GimmickFanction.None) GFfold = EditorGUILayout.Foldout(GFfold, "ˆø”İ’è");
+        if (gimmickFanction != GimmickFanction.None) GFfold = EditorGUILayout.Foldout(GFfold, "å¼•æ•°è¨­å®š");
         if (GFfold)
         {
 
@@ -206,49 +206,49 @@ public class CreateStageWindow : EditorWindow
             //    case GimmickFanction.None:
             //        break;
             //    case GimmickFanction.AreaRotation:
-            //        script.testAr.area = (GameObject)EditorGUILayout.ObjectField("ƒGƒŠƒAƒIƒuƒWƒFƒNƒg", script.testAr.area, typeof(GameObject), true);
-            //        script.testAr.light = (GameObject)EditorGUILayout.ObjectField("ƒ‰ƒCƒgƒIƒuƒWƒFƒNƒg", script.testAr.light, typeof(GameObject), true);
-            //        script.testAr.cameraPoint = (GameObject)EditorGUILayout.ObjectField("ƒJƒƒ‰ƒ|ƒCƒ“ƒgƒIƒuƒWƒFƒNƒg", script.testAr.cameraPoint, typeof(GameObject), true);
-            //        script.testAr.direction = EditorGUILayout.IntField("‰ñ“]•ûŒü", script.testAr.direction);
-            //        script.testAr.degree = EditorGUILayout.IntField("‰ñ“]“x", script.testAr.degree);
-            //        script.testAr.time = EditorGUILayout.FloatField("ƒ^ƒCƒ€", script.testAr.time);
-            //        script.testAr.end = EditorGUILayout.Toggle("ƒ^ƒCƒ€", script.testAr.end);
-            //        script.testAr.flag = EditorGUILayout.Toggle("I—¹ƒtƒ‰ƒO", script.testAr.flag);
+            //        script.testAr.area = (GameObject)EditorGUILayout.ObjectField("ã‚¨ãƒªã‚¢ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ", script.testAr.area, typeof(GameObject), true);
+            //        script.testAr.light = (GameObject)EditorGUILayout.ObjectField("ãƒ©ã‚¤ãƒˆã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ", script.testAr.light, typeof(GameObject), true);
+            //        script.testAr.cameraPoint = (GameObject)EditorGUILayout.ObjectField("ã‚«ãƒ¡ãƒ©ãƒã‚¤ãƒ³ãƒˆã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ", script.testAr.cameraPoint, typeof(GameObject), true);
+            //        script.testAr.direction = EditorGUILayout.IntField("å›è»¢æ–¹å‘", script.testAr.direction);
+            //        script.testAr.degree = EditorGUILayout.IntField("å›è»¢åº¦", script.testAr.degree);
+            //        script.testAr.time = EditorGUILayout.FloatField("ã‚¿ã‚¤ãƒ ", script.testAr.time);
+            //        script.testAr.end = EditorGUILayout.Toggle("ã‚¿ã‚¤ãƒ ", script.testAr.end);
+            //        script.testAr.flag = EditorGUILayout.Toggle("çµ‚äº†ãƒ•ãƒ©ã‚°", script.testAr.flag);
             //        break;
             //    case GimmickFanction.SenceGate:
-            //        script.testSg.gate = (GameObject)EditorGUILayout.ObjectField("ƒQ[ƒgƒIƒuƒWƒFƒNƒg", script.testSg.gate, typeof(GameObject), true);
-            //        script.testSg.light = (GameObject)EditorGUILayout.ObjectField("ƒ‰ƒCƒgƒIƒuƒWƒFƒNƒg", script.testSg.light, typeof(GameObject), true);
-            //        script.testSg.cameraPoint = (GameObject)EditorGUILayout.ObjectField("ƒJƒƒ‰ƒ|ƒCƒ“ƒgƒIƒuƒWƒFƒNƒg", script.testSg.cameraPoint, typeof(GameObject), true);
-            //        script.testSg.open = EditorGUILayout.Toggle("ŠJ•Âƒtƒ‰ƒO", script.testSg.open);
-            //        script.testSg.complete = EditorGUILayout.Toggle("ŠJ•Âƒtƒ‰ƒO", script.testSg.complete);
-            //        script.testSg.time = EditorGUILayout.FloatField("ƒ^ƒCƒ€", script.testSg.time);
-            //        script.testSg.i = EditorGUILayout.IntField("”Ô†", script.testSg.i);
+            //        script.testSg.gate = (GameObject)EditorGUILayout.ObjectField("ã‚²ãƒ¼ãƒˆã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ", script.testSg.gate, typeof(GameObject), true);
+            //        script.testSg.light = (GameObject)EditorGUILayout.ObjectField("ãƒ©ã‚¤ãƒˆã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ", script.testSg.light, typeof(GameObject), true);
+            //        script.testSg.cameraPoint = (GameObject)EditorGUILayout.ObjectField("ã‚«ãƒ¡ãƒ©ãƒã‚¤ãƒ³ãƒˆã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ", script.testSg.cameraPoint, typeof(GameObject), true);
+            //        script.testSg.open = EditorGUILayout.Toggle("é–‹é–‰ãƒ•ãƒ©ã‚°", script.testSg.open);
+            //        script.testSg.complete = EditorGUILayout.Toggle("é–‹é–‰ãƒ•ãƒ©ã‚°", script.testSg.complete);
+            //        script.testSg.time = EditorGUILayout.FloatField("ã‚¿ã‚¤ãƒ ", script.testSg.time);
+            //        script.testSg.i = EditorGUILayout.IntField("ç•ªå·", script.testSg.i);
             //        break;
             //    case GimmickFanction.Gate:
-            //        script.testG.gate = (GameObject)EditorGUILayout.ObjectField("ƒQ[ƒgƒIƒuƒWƒFƒNƒg", script.testG.gate, typeof(GameObject), true);
-            //        script.testG.light = (GameObject)EditorGUILayout.ObjectField("ƒ‰ƒCƒgƒIƒuƒWƒFƒNƒg", script.testG.light, typeof(GameObject), true);
-            //        script.testG.cameraPoint = (GameObject)EditorGUILayout.ObjectField("ƒJƒƒ‰ƒ|ƒCƒ“ƒgƒIƒuƒWƒFƒNƒg", script.testG.cameraPoint, typeof(GameObject), true);
-            //        script.testG.open = EditorGUILayout.Toggle("ŠJ•Âƒtƒ‰ƒO", script.testG.open);
-            //        script.testG.time = EditorGUILayout.FloatField("ƒ^ƒCƒ€", script.testG.time);
-            //        script.testG.i = EditorGUILayout.IntField("”Ô†", script.testG.i);
-            //        script.testG.end = EditorGUILayout.Toggle("I—¹ƒtƒ‰ƒO", script.testG.end);
-            //        script.testG.flag = EditorGUILayout.Toggle("ƒtƒ‰ƒO", script.testG.flag);
+            //        script.testG.gate = (GameObject)EditorGUILayout.ObjectField("ã‚²ãƒ¼ãƒˆã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ", script.testG.gate, typeof(GameObject), true);
+            //        script.testG.light = (GameObject)EditorGUILayout.ObjectField("ãƒ©ã‚¤ãƒˆã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ", script.testG.light, typeof(GameObject), true);
+            //        script.testG.cameraPoint = (GameObject)EditorGUILayout.ObjectField("ã‚«ãƒ¡ãƒ©ãƒã‚¤ãƒ³ãƒˆã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ", script.testG.cameraPoint, typeof(GameObject), true);
+            //        script.testG.open = EditorGUILayout.Toggle("é–‹é–‰ãƒ•ãƒ©ã‚°", script.testG.open);
+            //        script.testG.time = EditorGUILayout.FloatField("ã‚¿ã‚¤ãƒ ", script.testG.time);
+            //        script.testG.i = EditorGUILayout.IntField("ç•ªå·", script.testG.i);
+            //        script.testG.end = EditorGUILayout.Toggle("çµ‚äº†ãƒ•ãƒ©ã‚°", script.testG.end);
+            //        script.testG.flag = EditorGUILayout.Toggle("ãƒ•ãƒ©ã‚°", script.testG.flag);
             //        break;
             //    case GimmickFanction.LimitActiveObject:
-            //        script.testLa.activeOb = (GameObject)EditorGUILayout.ObjectField("oŒ»ƒIƒuƒWƒFƒNƒg", script.testLa.activeOb, typeof(GameObject), true);
-            //        script.testLa.light = (GameObject)EditorGUILayout.ObjectField("ƒ‰ƒCƒgƒIƒuƒWƒFƒNƒg", script.testLa.light, typeof(GameObject), true);
-            //        script.testLa.i = EditorGUILayout.IntField("”Ô†", script.testLa.i);
-            //        script.testLa.end = EditorGUILayout.Toggle("I—¹ƒtƒ‰ƒO", script.testLa.end);
-            //        script.testLa.flag = EditorGUILayout.Toggle("ƒtƒ‰ƒO", script.testLa.flag);
+            //        script.testLa.activeOb = (GameObject)EditorGUILayout.ObjectField("å‡ºç¾ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ", script.testLa.activeOb, typeof(GameObject), true);
+            //        script.testLa.light = (GameObject)EditorGUILayout.ObjectField("ãƒ©ã‚¤ãƒˆã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ", script.testLa.light, typeof(GameObject), true);
+            //        script.testLa.i = EditorGUILayout.IntField("ç•ªå·", script.testLa.i);
+            //        script.testLa.end = EditorGUILayout.Toggle("çµ‚äº†ãƒ•ãƒ©ã‚°", script.testLa.end);
+            //        script.testLa.flag = EditorGUILayout.Toggle("ãƒ•ãƒ©ã‚°", script.testLa.flag);
             //        break;
             //    case GimmickFanction.ActiveObject:
-            //        script.testA.activeOb = (GameObject)EditorGUILayout.ObjectField("oŒ»ƒIƒuƒWƒFƒNƒg", script.testA.activeOb, typeof(GameObject), true);
-            //        script.testA.light = (GameObject)EditorGUILayout.ObjectField("ƒ‰ƒCƒgƒIƒuƒWƒFƒNƒg", script.testA.light, typeof(GameObject), true);
-            //        script.testA.cameraPoint = (GameObject)EditorGUILayout.ObjectField("ƒJƒƒ‰ƒIƒuƒWƒFƒNƒg", script.testA.cameraPoint, typeof(GameObject), true);
-            //        script.testA.time = EditorGUILayout.FloatField("”Ô†", script.testA.time);
-            //        script.testA.i = EditorGUILayout.IntField("”Ô†", script.testA.i);
-            //        script.testA.end = EditorGUILayout.Toggle("I—¹ƒtƒ‰ƒO", script.testA.end);
-            //        script.testA.flag = EditorGUILayout.Toggle("ƒtƒ‰ƒO", script.testA.flag);
+            //        script.testA.activeOb = (GameObject)EditorGUILayout.ObjectField("å‡ºç¾ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ", script.testA.activeOb, typeof(GameObject), true);
+            //        script.testA.light = (GameObject)EditorGUILayout.ObjectField("ãƒ©ã‚¤ãƒˆã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ", script.testA.light, typeof(GameObject), true);
+            //        script.testA.cameraPoint = (GameObject)EditorGUILayout.ObjectField("ã‚«ãƒ¡ãƒ©ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ", script.testA.cameraPoint, typeof(GameObject), true);
+            //        script.testA.time = EditorGUILayout.FloatField("ç•ªå·", script.testA.time);
+            //        script.testA.i = EditorGUILayout.IntField("ç•ªå·", script.testA.i);
+            //        script.testA.end = EditorGUILayout.Toggle("çµ‚äº†ãƒ•ãƒ©ã‚°", script.testA.end);
+            //        script.testA.flag = EditorGUILayout.Toggle("ãƒ•ãƒ©ã‚°", script.testA.flag);
             //        break;
             //    case GimmickFanction.ActiveLight:
             //        //public GameObject lightOb;
@@ -256,21 +256,21 @@ public class CreateStageWindow : EditorWindow
             //        //public int i;
             //        //public bool end;
             //        //public bool flag;
-            //        script.testAl.lightOb = (GameObject)EditorGUILayout.ObjectField("ƒ‰ƒCƒgƒIƒuƒWƒFƒNƒg", script.testAl.lightOb, typeof(GameObject), true);
-            //        script.testAl.time = EditorGUILayout.FloatField("”Ô†", script.testAl.time);
-            //        script.testAl.i = EditorGUILayout.IntField("”Ô†", script.testAl.i);
-            //        script.testAl.end = EditorGUILayout.Toggle("I—¹ƒtƒ‰ƒO", script.testAl.end);
-            //        script.testAl.flag = EditorGUILayout.Toggle("ƒtƒ‰ƒO", script.testAl.flag);
+            //        script.testAl.lightOb = (GameObject)EditorGUILayout.ObjectField("ãƒ©ã‚¤ãƒˆã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ", script.testAl.lightOb, typeof(GameObject), true);
+            //        script.testAl.time = EditorGUILayout.FloatField("ç•ªå·", script.testAl.time);
+            //        script.testAl.i = EditorGUILayout.IntField("ç•ªå·", script.testAl.i);
+            //        script.testAl.end = EditorGUILayout.Toggle("çµ‚äº†ãƒ•ãƒ©ã‚°", script.testAl.end);
+            //        script.testAl.flag = EditorGUILayout.Toggle("ãƒ•ãƒ©ã‚°", script.testAl.flag);
             //        break;
             //}
         }
         EditorGUI.indentLevel--;
     }
 
-    #region •ÏŠ·ŠÖ”ŒQ
+    #region å¤‰æ›é–¢æ•°ç¾¤
 
     /// <summary>
-    /// ObjectType‚©‚çƒeƒLƒXƒgƒJƒ‰[‚ğŒˆ’è
+    /// ObjectTypeã‹ã‚‰ãƒ†ã‚­ã‚¹ãƒˆã‚«ãƒ©ãƒ¼ã‚’æ±ºå®š
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
@@ -279,12 +279,14 @@ public class CreateStageWindow : EditorWindow
         switch (type)
         {
             case ObjectType.None: return Color.black;
+            case ObjectType.ArrowSign: return Color.white;
             case ObjectType.Barrel: return Color.white;
             case ObjectType.Button: return Color.white;
             case ObjectType.Chest: return Color.black;
             case ObjectType.Gate: return Color.white;
             case ObjectType.Goal: return Color.black;
             case ObjectType.GroundButton: return Color.white;
+            case ObjectType.RopeSign: return Color.white;
             case ObjectType.Slope: return Color.black;
             case ObjectType.Start: return Color.black;
             case ObjectType.Wall: return Color.white;
@@ -298,6 +300,7 @@ public class CreateStageWindow : EditorWindow
         switch (type)
         {
             case ObjectType.None: return Color.snow;
+            case ObjectType.ArrowSign: return Color.pink;
             case ObjectType.Barrel: return Color.brown;
             case ObjectType.Box: return Color.sandyBrown;
             case ObjectType.Button: return Color.blue;
@@ -305,6 +308,7 @@ public class CreateStageWindow : EditorWindow
             case ObjectType.Gate: return Color.gray;
             case ObjectType.Goal: return Color.green;
             case ObjectType.GroundButton: return Color.blueViolet;
+            case ObjectType.RopeSign: return Color.greenYellow;
             case ObjectType.Slope: return Color.gray8;
             case ObjectType.Start: return Color.yellow;
             case ObjectType.Wall: return Color.black;
@@ -314,7 +318,7 @@ public class CreateStageWindow : EditorWindow
     }
 
     /// <summary>
-    /// ObjectType‚©‚çƒ}ƒX‚ÌBackGroundƒJƒ‰[‚ğŒˆ’è
+    /// ObjectTypeã‹ã‚‰ãƒã‚¹ã®BackGroundã‚«ãƒ©ãƒ¼ã‚’æ±ºå®š
     /// </summary>
     /// <param name="type"></param>
     /// <returns></returns>
@@ -323,6 +327,7 @@ public class CreateStageWindow : EditorWindow
         switch (type)
         {
             case ObjectType.None: return MakeColorTexture(Color.white);
+            case ObjectType.ArrowSign: return MakeColorTexture(Color.pink);
             case ObjectType.Barrel: return MakeColorTexture(Color.brown);
             case ObjectType.Box: return MakeColorTexture(Color.sandyBrown);
             case ObjectType.Button: return MakeColorTexture(Color.blue);
@@ -330,6 +335,7 @@ public class CreateStageWindow : EditorWindow
             case ObjectType.Gate: return MakeColorTexture(Color.gray);
             case ObjectType.Goal: return MakeColorTexture(Color.green);
             case ObjectType.GroundButton: return MakeColorTexture(Color.blueViolet);
+            case ObjectType.RopeSign: return MakeColorTexture(Color.greenYellow);
             case ObjectType.Slope: return MakeColorTexture(Color.gray8);
             case ObjectType.Start: return MakeColorTexture(Color.yellow);
             case ObjectType.Wall: return MakeColorTexture(Color.black);
@@ -339,9 +345,9 @@ public class CreateStageWindow : EditorWindow
     }
 
     /// <summary>
-    /// Color‚©‚çTexture2D‚ğŒˆ’è
+    /// Colorã‹ã‚‰Texture2Dã‚’æ±ºå®š
     /// </summary>
-    /// <param name="col">ì¬‚·‚éF</param>
+    /// <param name="col">ä½œæˆã™ã‚‹è‰²</param>
     /// <returns></returns>
     Texture2D MakeColorTexture(Color col)
     {
@@ -353,7 +359,7 @@ public class CreateStageWindow : EditorWindow
     }
 
     /// <summary>
-    /// Degree‚©‚ç–îˆó‚ÖŒˆ’è
+    /// Degreeã‹ã‚‰çŸ¢å°ã¸æ±ºå®š
     /// </summary>
     /// <param name="degree"></param>
     /// <returns></returns>
@@ -361,15 +367,19 @@ public class CreateStageWindow : EditorWindow
     {
         switch (degree)
         {
-            case 0: return "ª";
-            case 90: return "¨";
-            case 180: return "«";
-            case 270: return "©";
-            default: return "ª";
+            case 0: return "â†‘";
+            case 45: return "â†—";
+            case 90: return "â†’";
+            case 135: return "â†˜";
+            case 180: return "â†“";
+            case 225: return "â†™";
+            case 270: return "â†";
+            case 315: return "â†–";
+            default: return "â†‘";
         }
     }
 
-    #endregion •ÏŠ·ŠÖ”ŒQ
+    #endregion å¤‰æ›é–¢æ•°ç¾¤
 
     void DisplayGrids()
     {
@@ -385,14 +395,14 @@ public class CreateStageWindow : EditorWindow
     }
 
     /// <summary>
-    /// Scene“à‚ÉStageObject‚ğ¶¬‚·‚éŠÖ”
+    /// Sceneå†…ã«StageObjectã‚’ç”Ÿæˆã™ã‚‹é–¢æ•°
     /// </summary>
     void StageCreate()
     {
-        /* ‹ó‚ÌGameObject‚ğ¶¬ */
+        /* ç©ºã®GameObjectã‚’ç”Ÿæˆ */
         script.root = new GameObject($"Stage{script.fieldNumber}-{script.stageNumber}Object");
 
-        /* OuterFrame‚ğ¶¬ */
+        /* OuterFrameã‚’ç”Ÿæˆ */
         GameObject outerFrame = null;
         if (script.fieldNumber == 1)
         {
@@ -414,7 +424,7 @@ public class CreateStageWindow : EditorWindow
         }
 
 
-        /* AreaObject‚ğ¶¬ */
+        /* AreaObjectã‚’ç”Ÿæˆ */
         for (int i = 0; i < script.area.Length; i++)
         {
             script.area[i] = new GameObject($"Area ({i})");
@@ -430,7 +440,7 @@ public class CreateStageWindow : EditorWindow
         script.area[2].transform.position = new Vector3(7f, 0f, 7f);
         script.area[3].transform.position = new Vector3(-7f, 0f, 7f);
 
-        // °‚Ì¶¬
+        // åºŠã®ç”Ÿæˆ
         int floorNumber = 0;
         if (script.fieldNumber == 1) floorNumber = 8;
         else if (script.fieldNumber == 1) floorNumber = 9;
@@ -442,7 +452,7 @@ public class CreateStageWindow : EditorWindow
         script.wall[1] = new GameObject("Wall");
         script.wall[1].transform.parent = script.heightArea[1].transform;
 
-        // Area (0)‚Ì¶¬
+        // Area (0)ã®ç”Ÿæˆ
         Vector3 posi;
         for (int h = 0; h < script.height / 2; h++)
         {
@@ -456,7 +466,7 @@ public class CreateStageWindow : EditorWindow
                     obj.transform.parent = script.floor[0].transform;
                 });
 
-                // ‚‚³1ƒ}ƒX–Ú‚ÌƒIƒuƒWƒFƒNƒg‚Ì¶¬
+                // é«˜ã•1ãƒã‚¹ç›®ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç”Ÿæˆ
                 ObjectType type = script.stageLowGrids[h * script.width + w].type;
                 int degree = script.stageLowGrids[h * script.width + w].degree;
                 if (type != ObjectType.None)
@@ -476,7 +486,7 @@ public class CreateStageWindow : EditorWindow
 
                 posi = new Vector3(13f - (w * 2f), 2f, -13f + (h * 2f));
 
-                // ‚‚³2ƒ}ƒX–Ú‚ÌƒIƒuƒWƒFƒNƒg‚Ì¶¬
+                // é«˜ã•2ãƒã‚¹ç›®ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç”Ÿæˆ
                 type = script.stageHighGrids[h * script.width + w].type;
                 degree = script.stageHighGrids[h * script.width + w].degree;
                 if (type != ObjectType.None)
@@ -502,7 +512,7 @@ public class CreateStageWindow : EditorWindow
         script.wall[3] = new GameObject("Wall");
         script.wall[3].transform.parent = script.heightArea[3].transform;
 
-        // Area (1)‚Ì¶¬
+        // Area (1)ã®ç”Ÿæˆ
         for (int h = 0; h < script.height / 2; h++)
         {
             for (int w = 0; w < script.width / 2; w++)
@@ -515,7 +525,7 @@ public class CreateStageWindow : EditorWindow
                     obj.transform.parent = script.floor[1].transform;
                 });
 
-                // ‚‚³1ƒ}ƒX–Ú‚ÌƒIƒuƒWƒFƒNƒg‚Ì¶¬
+                // é«˜ã•1ãƒã‚¹ç›®ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç”Ÿæˆ
                 ObjectType type = script.stageLowGrids[h * script.width + (w + script.height / 2)].type;
                 int degree = script.stageLowGrids[h * script.width + (w + script.height / 2)].degree;
                 if (type != ObjectType.None)
@@ -534,7 +544,7 @@ public class CreateStageWindow : EditorWindow
 
                 posi = new Vector3(-1f - (w * 2), 2f, -13f + (h * 2));
 
-                // ‚‚³2ƒ}ƒX–Ú‚ÌƒIƒuƒWƒFƒNƒg‚Ì¶¬
+                // é«˜ã•2ãƒã‚¹ç›®ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç”Ÿæˆ
                 type = script.stageHighGrids[h * script.width + (w + script.height / 2)].type;
                 degree = script.stageHighGrids[h * script.width + (w + script.height / 2)].degree;
                 if (type != ObjectType.None)
@@ -560,7 +570,7 @@ public class CreateStageWindow : EditorWindow
         script.wall[5] = new GameObject("Wall");
         script.wall[5].transform.parent = script.heightArea[5].transform;
 
-        // Area (2)‚Ì¶¬
+        // Area (2)ã®ç”Ÿæˆ
         for (int h = 0; h < script.height / 2; h++)
         {
             for (int w = 0; w < script.width / 2; w++)
@@ -573,7 +583,7 @@ public class CreateStageWindow : EditorWindow
                     obj.transform.parent = script.floor[2].transform;
                 });
 
-                // ‚‚³1ƒ}ƒX–Ú‚ÌƒIƒuƒWƒFƒNƒg‚Ì¶¬
+                // é«˜ã•1ãƒã‚¹ç›®ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç”Ÿæˆ
                 ObjectType type = script.stageLowGrids[(h + script.height / 2) * script.width + w].type;
                 int degree = script.stageLowGrids[(h + script.height / 2) * script.width + w].degree;
                 if (type != ObjectType.None)
@@ -592,7 +602,7 @@ public class CreateStageWindow : EditorWindow
 
                 posi = new Vector3(13f - (w * 2), 2f, 1f + (h * 2));
 
-                // ‚‚³2ƒ}ƒX–Ú‚ÌƒIƒuƒWƒFƒNƒg‚Ì¶¬
+                // é«˜ã•2ãƒã‚¹ç›®ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç”Ÿæˆ
                 type = script.stageHighGrids[(h + script.height / 2) * script.width + w].type;
                 degree = script.stageHighGrids[(h + script.height / 2) * script.width + w].degree;
                 if (type != ObjectType.None)
@@ -618,7 +628,7 @@ public class CreateStageWindow : EditorWindow
         script.wall[7] = new GameObject("Wall");
         script.wall[7].transform.parent = script.heightArea[7].transform;
 
-        // Area (3)‚Ì¶¬
+        // Area (3)ã®ç”Ÿæˆ
         for (int h = 0; h < script.height / 2; h++)
         {
             for (int w = 0; w < script.width / 2; w++)
@@ -631,7 +641,7 @@ public class CreateStageWindow : EditorWindow
                     obj.transform.parent = script.floor[3].transform;
                 });
 
-                // ‚‚³1ƒ}ƒX–Ú‚ÌƒIƒuƒWƒFƒNƒg‚Ì¶¬
+                // é«˜ã•1ãƒã‚¹ç›®ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç”Ÿæˆ
                 ObjectType type = script.stageLowGrids[(h + script.height / 2) * script.width + (w + script.width / 2)].type;
                 int degree = script.stageLowGrids[(h + script.height / 2) * script.width + (w + script.width / 2)].degree;
                 if (type != ObjectType.None)
@@ -650,7 +660,7 @@ public class CreateStageWindow : EditorWindow
 
                 posi = new Vector3(-1f - (w * 2), 2f, 1f + (h * 2));
 
-                // ‚‚³2ƒ}ƒX–Ú‚ÌƒIƒuƒWƒFƒNƒg‚Ì¶¬
+                // é«˜ã•2ãƒã‚¹ç›®ã®ã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆã®ç”Ÿæˆ
                 type = script.stageHighGrids[(h + script.height / 2) * script.width + (w + script.width / 2)].type;
                 degree = script.stageHighGrids[(h + script.height / 2) * script.width + (w + script.width / 2)].degree;
                 if (type != ObjectType.None)
@@ -742,11 +752,11 @@ public class CreateStageWindow : EditorWindow
 
 
     /// <summary>
-    /// Addressables‚ğg—p‚µ‚ÄStageObject‚ğ¶¬
+    /// Addressablesã‚’ä½¿ç”¨ã—ã¦StageObjectã‚’ç”Ÿæˆ
     /// </summary>
-    /// <param name="i">ƒAƒhƒŒƒX”Ô†</param>
-    /// <param name="position">¶¬ˆÊ’u</param>
-    /// <param name="onComplete">¶¬ƒIƒuƒWƒFƒNƒg</param>
+    /// <param name="i">ã‚¢ãƒ‰ãƒ¬ã‚¹ç•ªå·</param>
+    /// <param name="position">ç”Ÿæˆä½ç½®</param>
+    /// <param name="onComplete">ç”Ÿæˆã‚ªãƒ–ã‚¸ã‚§ã‚¯ãƒˆ</param>
     void InstantiateStageObject(int i, Vector3 position, float degree, System.Action<GameObject> onComplete)
     {
         Addressables.LoadAssetAsync<GameObject>(script.stageObjectAddress[i]).Completed += (handle) =>
