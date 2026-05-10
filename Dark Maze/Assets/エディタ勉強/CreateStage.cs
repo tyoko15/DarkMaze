@@ -245,7 +245,9 @@ public class CreateStage : MonoBehaviour
         InitStageGrids();
     }
  
-
+    /// <summary>
+    /// î•ñ‚Ì‰Šú‰»
+    /// </summary>
     public void InitStageGrids()
     {
         stageLowGrids.Clear();
