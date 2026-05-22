@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using Cysharp.Threading.Tasks;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
@@ -200,7 +201,7 @@ public class CreateStageWindow : EditorWindow
         if (gimmickFanction != GimmickFanction.None) GFfold = EditorGUILayout.Foldout(GFfold, "引数設定");
         if (GFfold)
         {
-
+            gimmickArguments[0]
             //switch (gimmickFanction)
             //{
             //    case GimmickFanction.None:
@@ -251,11 +252,6 @@ public class CreateStageWindow : EditorWindow
             //        script.testA.flag = EditorGUILayout.Toggle("フラグ", script.testA.flag);
             //        break;
             //    case GimmickFanction.ActiveLight:
-            //        //public GameObject lightOb;
-            //        //public float time;
-            //        //public int i;
-            //        //public bool end;
-            //        //public bool flag;
             //        script.testAl.lightOb = (GameObject)EditorGUILayout.ObjectField("ライトオブジェクト", script.testAl.lightOb, typeof(GameObject), true);
             //        script.testAl.time = EditorGUILayout.FloatField("番号", script.testAl.time);
             //        script.testAl.i = EditorGUILayout.IntField("番号", script.testAl.i);
@@ -482,6 +478,7 @@ public class CreateStageWindow : EditorWindow
                             default: obj.transform.parent = script.heightArea[0].transform; break;
                         }
                     });
+                    //GameObject obj = await InstantiateStageObjectAsync(script.CastObjectTypeToNumber(type), posi, degree);
                 }
 
                 posi = new Vector3(13f - (w * 2f), 2f, -13f + (h * 2f));

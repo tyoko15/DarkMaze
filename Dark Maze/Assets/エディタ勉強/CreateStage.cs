@@ -125,6 +125,39 @@ public class ALArgument
 
 #endregion ギミック関数の引数クラス群
 
+
+# region ギミックオブジェクトの初期状態
+
+public class InitBarrel
+{
+    // 中身の内容
+    public int itemIndex;
+}
+
+public class InitButton
+{
+    public bool activeFlag;
+    public ArgumentClass argumentClass;
+    public bool somethingFlag;
+}
+
+public class InitGate
+{
+    public bool openFlag;
+}
+
+public class InitGoalObject
+{
+    public bool activeFlag;
+}
+
+public class InitGroundButton
+{
+    public ArgumentClass argumentClass;
+}
+
+# endregion
+
 [HideInInspector, System.Serializable]
 public class GimmickGrid
 {
@@ -147,7 +180,6 @@ public class Gimmick
 {
     public int number;
     public GimmickObject gimmickObject;
-    
 }
 
 public enum GimmickObject
@@ -175,14 +207,16 @@ public class GimmickArgument
     public List<ALArgument> alList;
 }
 
-public class ArgumentList
+[System.Serializable]
+public class ArgumentClass
 {
-    public ARArgument arArgument;       // AreaRotation
-    public SGArgument sgArgument;       // 
-    public GArgument gArgument;
-    public LAArgument laArgument;
-    public AArgument aArgument;
-    public ALArgument alArgument;
+    [SerializeReference] Vector2 position;                   // ステージの位置
+    [SerializeReference] public ARArgument arArgument;       // AreaRotation
+    [SerializeReference] public SGArgument sgArgument;       // SceneGate
+    [SerializeReference] public GArgument gArgument;         // Gate
+    [SerializeReference] public LAArgument laArgument;       // LimmitActiveObject
+    [SerializeReference] public AArgument aArgument;         // Active
+    [SerializeReference] public ALArgument alArgument;       // ActiveLight
 }
 
 public class CreateStage : MonoBehaviour
@@ -202,6 +236,7 @@ public class CreateStage : MonoBehaviour
 
     /* 本番用 */
 
+    [HideInInspector] public ArgumentClass[] gimmickArguments;
     [HideInInspector] public GimmickArgument gimmickArgument;
 
     public string[] stageObjectAddress =
@@ -281,6 +316,16 @@ public class CreateStage : MonoBehaviour
         switch (type)
         {
             case ObjectType.Button:
+
+                break;
+        }
+
+
+
+
+        switch (type)
+        {
+            case ObjectType.Button:
                 gimmickObjectList.Add(new Gimmick());
                 if (low) stageHighGrids[(int)grid.x + (int)grid.y * width].gimmickNumber = gimmickObjectList.Count - 1;
                 else stageLowGrids[(int)grid.x + (int)grid.y * width].gimmickNumber = gimmickObjectList.Count - 1;
@@ -299,8 +344,8 @@ public class CreateStage : MonoBehaviour
     public void DecreaseGimmickFanctionList(StageObject stageGrid, bool low, Vector2 grid)
     {
         gimmickArgument.gimmickGridList.RemoveAt(stageGrid.gimmickNumber);
-        if (low) stageLowGrids[(int)grid.x + (int)grid.y * width].gimmickNumber = 0;
-        else stageHighGrids[(int)grid.x + (int)grid.y * width].gimmickNumber = 0;
+        if (low) stageLowGrids[(int)grid.x + (int)grid.y * width].gimmickNumber = -1;
+        else stageHighGrids[(int)grid.x + (int)grid.y * width].gimmickNumber = -1;
     }
 
     public void DistroyStage()
