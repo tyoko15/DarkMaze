@@ -2,20 +2,20 @@ using UnityEngine;
 
 public class ButtonEditor : GeneralStageManager
 {
-    GimmickFanction gimmickFanction;
+    //GimmickFanction gimmickFanction;
 
-    GimmickArgument gimmickArgument;
+    //GimmickArgument gimmickArgument;
 
     void Start()
     {
-        switch (gimmickFanction)
-        {
-            case GimmickFanction.AreaRotation:
-                //gimmickArgument.arList.;
+        //switch (gimmickFanction)
+        //{
+        //    case GimmickFanction.AreaRotation:
+        //        //gimmickArgument.arList.;
 
-                //AreaRotation();
-                break;
-        }
+        //        //AreaRotation();
+        //        break;
+        //}
 
     }
 

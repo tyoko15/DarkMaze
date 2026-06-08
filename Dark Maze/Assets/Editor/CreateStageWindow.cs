@@ -201,7 +201,7 @@ public class CreateStageWindow : EditorWindow
         if (gimmickFanction != GimmickFanction.None) GFfold = EditorGUILayout.Foldout(GFfold, "引数設定");
         if (GFfold)
         {
-            gimmickArguments[0]
+            //gimmickArguments[0]
             //switch (gimmickFanction)
             //{
             //    case GimmickFanction.None:

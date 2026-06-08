@@ -879,7 +879,7 @@ public class TitleButtonManager : MonoBehaviour
             if (!decisionFlag)
             {
                 // 入力受付状態
-
+                if (inputIntervalFlag) return;
                 // カーソルが端に到達した場合は入力方向をリセット
                 if ((inputDirectionNum == 1 || inputDirectionNum == 2) && titleManager.inputTextVector.y == -1)
                 {
@@ -895,26 +895,30 @@ public class TitleButtonManager : MonoBehaviour
                 {
                     titleManager.inputTextVector.x++;
                     if (titleManager.inputTextVector.x > 13) titleManager.inputTextVector.x = 13;
+                    inputIntervalFlag = true;
                 }
                 // 左入力
                 else if (inputDirectionNum == 2)
                 {
                     titleManager.inputTextVector.x--;
                     if (titleManager.inputTextVector.x < -1) titleManager.inputTextVector.x = -1;
+                    inputIntervalFlag = true;
                 }
                 // 上入力
                 if (inputDirectionNum == 3)
                 {
                     titleManager.inputTextVector.y++;
                     if (titleManager.inputTextVector.y > 4) titleManager.inputTextVector.y = 4;
+                    inputIntervalFlag = true;
                 }
                 // 下入力
                 else if (inputDirectionNum == 4)
                 {
                     titleManager.inputTextVector.y--;
                     if (titleManager.inputTextVector.y < -1) titleManager.inputTextVector.y = -1;
+                    inputIntervalFlag = true;
                 }
-                inputDirectionNum = 0;
+                //inputDirectionNum = 0;
             }
         }
     }

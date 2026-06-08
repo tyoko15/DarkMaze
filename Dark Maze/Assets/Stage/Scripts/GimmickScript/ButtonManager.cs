@@ -35,7 +35,7 @@ public class ButtonManager : GeneralStageManager
     bool canvasFlag;
 
     // ”­“®ƒMƒ~ƒbƒN
-    public GimmickFanction gimmickFanction;
+    //public GimmickFanction gimmickFanction;
 
     private void Start()
     {
