@@ -299,8 +299,8 @@ public class TitleManager : MonoBehaviour
     /// </summary>
     void SelectInputTextControl()
     {
-        if (inputProgressNum != 0) return;
-
+        if (progressNum != 2) return;
+        Debug.Log("ここ");
         // カーソル表示制御（通常文字 / Delete / 戻る / 決定）
         // ※ UI座標はレイアウトに依存
         if (inputTextVector.y != -1 && inputTextVector.x > -1 && inputTextVector.x < 13)

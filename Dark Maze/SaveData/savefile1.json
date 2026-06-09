@@ -1,5 +1,5 @@
 {
-    "playerName": "aaaaaaaaa",
-    "clearStageNum": 100,
-    "selectStageNum": 100
+    "playerName": "play",
+    "clearStageNum": 0,
+    "selectStageNum": 0
 }

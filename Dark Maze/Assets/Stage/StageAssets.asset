@@ -1,0 +1,153 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
+  m_Name: StageAssets
+  m_EditorClassIdentifier: Unity.Addressables.Editor::UnityEditor.AddressableAssets.Settings.AddressableAssetGroup
+  m_GroupName: StageAssets
+  m_GUID: 17e082389d2535740b7b37075ca40190
+  m_SerializeEntries:
+  - m_GUID: 040f9182a3f3e3946a75611e34a9be76
+    m_Address: ArrowSign
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0c1760c9bec0733478e6be1edf98c0f7
+    m_Address: EnterArea
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 0e1b1a9ee0959c1448bcb2382eca5341
+    m_Address: CameraPoint
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 121aceb6bd749ca4ebe8cd7c72b2e09c
+    m_Address: Ground_2 (Rotate)
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 16125de269e0d734bad958989b29cc85
+    m_Address: OuterFrame_2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 2d50fb5523c9ffa4c91bec75829a2ecd
+    m_Address: Button
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 345cbd113d6e04f479fe8b43ad645f5e
+    m_Address: Slope_2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4443a843334ce7348bc5153a3318bc09
+    m_Address: Chest
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 4646b21670e1eaa4b90b8e9d1b28aecd
+    m_Address: StartObject
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 5919e0f6edf2fc048b6e2d32fe99dfd2
+    m_Address: GoalObject
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 6c032150790140c4ab52791e49eb5397
+    m_Address: Wall_2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 81a258b7cb452f348847f5dbe331650d
+    m_Address: Box
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: 9194263e18c57c8479db64247bdd473a
+    m_Address: Wood
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a27fb536acae8634fb53a9e0f8456088
+    m_Address: Barrel
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: a6977d19ae6cc4c4dbc9e67a72ab1b34
+    m_Address: GroundButton
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aab13d544bb082342880271cc46d107e
+    m_Address: Slope_1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: aab5c023e37a2264181c2d2c92110ab7
+    m_Address: RespawnPoint
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: ad291f35256256f4f869b6b551b8148d
+    m_Address: RopeSign
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c3c79b3bf35431446a1e7301573434e6
+    m_Address: OuterFrame_1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c5e2c1104f465374f90039ba0d3b3809
+    m_Address: Floor_2
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: c96eb0e3e83ca9447a6b22ee9c1a9476
+    m_Address: Gate
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: cfe441f8f1738474396b20a99184d3c4
+    m_Address: Wall_1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: dbab930b79503684491c6e31c8eba18e
+    m_Address: AreaLight
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: e3ae636e541888b42a57545203580468
+    m_Address: Floor_1
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: efb489548e4ac394fa73a7f2bf9910aa
+    m_Address: LightObject
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  - m_GUID: f1e9fe4e4aba7714da55807d5c1c58f5
+    m_Address: Ground_1 (Rotate)
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+    FlaggedDuringContentUpdateRestriction: 0
+  m_ReadOnly: 0
+  m_Settings: {fileID: 11400000, guid: a3de9b160bf72b94aafe32db68e1b1ab, type: 2}
+  m_SchemaSet:
+    m_Schemas:
+    - {fileID: 11400000, guid: 2bcd8f9ee3ff29f449d958ed74451724, type: 2}
+    - {fileID: 11400000, guid: 627ec8d9640e4474cbf944a1090dd7c3, type: 2}

@@ -1,0 +1,383 @@
+using System.Collections.Generic;
+using UnityEngine;
+
+/// <summary>
+/// ステージオブジェクトの種類
+/// </summary>
+public enum ObjectType
+{
+    None,
+    ArrowSign,
+    Barrel,
+    Box,
+    Button,
+    Chest,
+    Gate,
+    Goal,
+    GroundButton,
+    RopeSign,
+    Slope,
+    Start,
+    Wall,
+    Wood
+}
+
+/// <summary>
+/// ステージオブジェクトの向き
+/// </summary>
+public enum Degree
+{
+    Deg0 = 0,
+    Deg45 = 45,
+    Deg90 = 90,
+    Deg135 = 135,
+    Deg180 = 180,
+    Deg225 = 225,
+    Deg270 = 270,
+    Deg315 = 315
+}
+
+/// <summary>
+/// ギミック関数
+/// </summary>　
+public enum GimmickFanction
+{
+    None,
+    AreaRotation,
+    SenceGate,
+    Gate,
+    LimitActiveObject,
+    ActiveObject,
+    ActiveLight
+}
+
+#region ギミック関数の引数クラス群
+
+[HideInInspector, System.Serializable]
+public class ARArgument
+{
+    public GameObject area;
+    public GameObject light;
+    public GameObject cameraPoint;
+    public int direction;
+    public int degree;
+    public float time;
+    public bool end;
+    public bool flag;
+}
+
+[HideInInspector, System.Serializable]
+public class SGArgument
+{
+    public GameObject gate;
+    public GameObject light;
+    public GameObject cameraPoint;
+    public bool open;
+    public bool complete;
+    public float time;
+    public int i;
+}
+
+[HideInInspector, System.Serializable]
+public class GArgument
+{
+    public GameObject gate;
+    public GameObject light;
+    public GameObject cameraPoint;
+    public bool open;
+    public float time;
+    public int i;
+    public bool end;
+    public bool flag;
+}
+
+[HideInInspector, System.Serializable]
+public class LAArgument
+{
+    public GameObject activeOb;
+    public GameObject light;
+    public int i;
+    public bool end;
+    public bool flag;  
+}
+
+[HideInInspector, System.Serializable]
+public class AArgument
+{
+    public GameObject activeOb;
+    public GameObject light;
+    public GameObject cameraPoint;
+    public float time;
+    public int i;
+    public bool end;
+    public bool flag;
+}
+
+[HideInInspector, System.Serializable]
+public class ALArgument
+{
+    public GameObject lightOb;
+    public float time;
+    public int i;
+    public bool end;
+    public bool flag;
+}
+
+#endregion ギミック関数の引数クラス群
+
+
+# region ギミックオブジェクトの初期状態
+
+public class InitBarrel
+{
+    // 中身の内容
+    public int itemIndex;
+}
+
+public class InitButton
+{
+    public bool activeFlag;
+    public ArgumentClass argumentClass;
+    public bool somethingFlag;
+}
+
+public class InitGate
+{
+    public bool openFlag;
+}
+
+public class InitGoalObject
+{
+    public bool activeFlag;
+}
+
+public class InitGroundButton
+{
+    public ArgumentClass argumentClass;
+}
+
+# endregion
+
+[HideInInspector, System.Serializable]
+public class GimmickGrid
+{
+    public string name;
+    public Vector2 position;
+    public GimmickFanction gimmickFanction;
+}
+
+[HideInInspector, System.Serializable]
+public class StageObject
+{
+    [Header("ステージマスの情報")]
+    public ObjectType type;
+    public int degree;
+    public int gimmickNumber;
+}
+
+[System.Serializable]
+public class Gimmick
+{
+    public int number;
+    public GimmickObject gimmickObject;
+}
+
+public enum GimmickObject
+{
+    None, 
+    Barrel,
+    Button,
+    Chest,
+    Gate,   
+    GroundButton
+}
+
+
+[System.Serializable]
+public class GimmickArgument
+{
+    public int[] gfNumbers;
+    public List<GimmickGrid> gimmickGridList;
+    public List<GimmickFanction> gfList;
+    public List<ARArgument> arList;
+    public List<SGArgument> sgList;
+    public List<GArgument> gList;
+    public List<LAArgument> laList;
+    public List<AArgument> aList;
+    public List<ALArgument> alList;
+}
+
+[System.Serializable]
+public class ArgumentClass
+{
+    [SerializeReference] Vector2 position;                   // ステージの位置
+    [SerializeReference] public ARArgument arArgument;       // AreaRotation
+    [SerializeReference] public SGArgument sgArgument;       // SceneGate
+    [SerializeReference] public GArgument gArgument;         // Gate
+    [SerializeReference] public LAArgument laArgument;       // LimmitActiveObject
+    [SerializeReference] public AArgument aArgument;         // Active
+    [SerializeReference] public ALArgument alArgument;       // ActiveLight
+}
+
+public class CreateStage : MonoBehaviour
+{
+    [Header("ステージナンバー")]
+    public int fieldNumber = 1;
+    public int stageNumber = 1;
+    [Header("ステージのマス数")]
+    public int width = 14;
+    public int height = 14;
+    [Header("マスボタンのサイズ")]
+    public int buttonSize = 50;
+    public int fontSize = 10;
+    public List<StageObject> stageLowGrids;
+    public List<StageObject> stageHighGrids;
+    public List<Gimmick> gimmickObjectList;
+
+    /* 本番用 */
+
+    [HideInInspector] public ArgumentClass[] gimmickArguments;
+    [HideInInspector] public GimmickArgument gimmickArgument;
+
+    public string[] stageObjectAddress =
+    {
+        "AreaLight",            // 0
+        "ArrowSign",            // 1
+        "Barrel",               // 2
+        "Box",                  // 3
+        "Button",               // 4
+        "CameraPosint",         // 5
+        "Chest",                // 6
+        "EnterArea",            // 7
+        "Floor_1",              // 8
+        "Floor_2",              // 9
+        "Gate",                 // 10
+        "GoalObject",           // 11
+        "Ground_1 (Rotate)",    // 12
+        "Ground_2 (Rotate)",    // 13
+        "GroundButton",         // 14
+        "LightObject",          // 15
+        "OuterFrame_1",         // 16
+        "OuterFrame_2",         // 17
+        "RespawnPoint",         // 18
+        "RopeSign",             // 19
+        "Slope_1",              // 20
+        "Slope_2",              // 21
+        "StartObject",          // 22
+        "Wall_1",               // 23
+        "Wall_2",               // 24
+        "Wood"                  // 25
+    };
+    
+    public GameObject root;
+    [HideInInspector] public GameObject[] area = new GameObject[4];
+    [HideInInspector] public GameObject[] heightArea = new GameObject[4 * 2];
+    [HideInInspector] public GameObject[] floor = new GameObject[4];
+    [HideInInspector] public GameObject[] wall = new GameObject[4 * 2];
+
+    private void Reset()
+    {
+        InitStageGrids();
+    }
+ 
+    /// <summary>
+    /// 情報の初期化
+    /// </summary>
+    public void InitStageGrids()
+    {
+        stageLowGrids.Clear();
+        stageHighGrids.Clear();
+        for (int y = 0; y < height; y++)
+        {
+            for (int x = 0; x < width; x++)
+            {
+                int indexX = x;
+                int indexY = y;
+
+                stageLowGrids.Add(new StageObject());
+                stageHighGrids.Add(new StageObject());
+
+                stageLowGrids[indexX + width * indexY].gimmickNumber = -1;
+                stageHighGrids[indexX + width * indexY].gimmickNumber = -1;
+
+                if (x == 0 || x == 6 || x == 7 || x == 13 || y == 0 || y == 6 || y == 7 || y == 13)
+                {
+                    stageLowGrids[indexX + indexY * width].type = ObjectType.Wall;
+                    stageHighGrids[indexX + indexY * width].type = ObjectType.Wall;
+                }
+            }
+        }
+        gimmickArgument.gimmickGridList.Clear();
+        Destroy(root);
+    }
+
+    public void IncreaseGimmickFanctionList(StageObject stageGrid, bool low, ObjectType type, Vector2 grid)
+    {
+        switch (type)
+        {
+            case ObjectType.Button:
+
+                break;
+        }
+
+
+
+
+        switch (type)
+        {
+            case ObjectType.Button:
+                gimmickObjectList.Add(new Gimmick());
+                if (low) stageHighGrids[(int)grid.x + (int)grid.y * width].gimmickNumber = gimmickObjectList.Count - 1;
+                else stageLowGrids[(int)grid.x + (int)grid.y * width].gimmickNumber = gimmickObjectList.Count - 1;
+
+                gimmickArgument.gimmickGridList.Add(new GimmickGrid());
+                if (low) stageHighGrids[(int)grid.x + (int)grid.y * width].gimmickNumber = gimmickArgument.gimmickGridList.Count - 1;
+                else stageLowGrids[(int)grid.x + (int)grid.y * width].gimmickNumber = gimmickArgument.gimmickGridList.Count - 1;
+                gimmickArgument.gimmickGridList[gimmickArgument.gimmickGridList.Count - 1].name = $"B{gimmickArgument.gimmickGridList.Count - 1}";
+                gimmickArgument.gimmickGridList[gimmickArgument.gimmickGridList.Count - 1].position = grid;
+                break;
+            default:
+                break;
+        }
+    }
+
+    public void DecreaseGimmickFanctionList(StageObject stageGrid, bool low, Vector2 grid)
+    {
+        gimmickArgument.gimmickGridList.RemoveAt(stageGrid.gimmickNumber);
+        if (low) stageLowGrids[(int)grid.x + (int)grid.y * width].gimmickNumber = -1;
+        else stageHighGrids[(int)grid.x + (int)grid.y * width].gimmickNumber = -1;
+    }
+
+    public void DistroyStage()
+    {
+        Destroy(root);
+    }
+
+    public int CastObjectTypeToNumber(ObjectType type)
+    {
+        int number = 0;
+        switch (type)
+        {
+            case ObjectType.ArrowSign: return number = 1;
+            case ObjectType.Barrel: return number = 2;
+            case ObjectType.Box: return number = 3;
+            case ObjectType.Button: return number = 4;
+            case ObjectType.Chest: return number = 6;
+            case ObjectType.Gate: return number = 10;
+            case ObjectType.Goal: return number = 11;
+            case ObjectType.GroundButton: return number = 14;
+                case ObjectType.RopeSign: return number = 19;
+            case ObjectType.Slope: 
+                if (fieldNumber == 1) return number = 20;
+                else if (fieldNumber == 2) return number = 21;
+                break;
+            case ObjectType.Start: return number = 22;
+            case ObjectType.Wall:
+                if (fieldNumber == 1) return number = 23;
+                else if (fieldNumber == 2) return number = 24;
+                break;
+            case ObjectType.Wood: return number = 25;            
+        }
+        return number;
+    }
+}

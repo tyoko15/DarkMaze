@@ -6,12 +6,14 @@ using UnityEngine.InputSystem;
 using UnityEngine.SceneManagement;
 using System.Collections;
 
+
 /// <summary>
 /// 全ステージの基盤となる親クラス。
 /// ギミックの基本動作、UI管理、ステート制御（開始・停止・クリア等）を共通化する。
 /// </summary>
 public class GeneralStageManager : MonoBehaviour
 {
+    #region
     [Header("システム・マネージャー参照")]
     [SerializeField] public int stageNum;               // ステージ番号 (1-1なら11など)
     [SerializeField] public GameObject fadeManagerObject;
@@ -138,7 +140,8 @@ public class GeneralStageManager : MonoBehaviour
     bool clearAnimeFlag;
     [SerializeField] public float clearAnimeTime = 2.5f;   // クリア時の演出時間
     float clearAnimeTimer;
-
+    #endregion
+    #region
     void Start()
     {
         rotationTimer = new float[areas.Length];
@@ -371,7 +374,10 @@ public class GeneralStageManager : MonoBehaviour
     {
         overUI.SetActive(true);
     }
+    #endregion
+    
 
+    
     /// <summary>
     /// 地形回転ギミックのコアロジック
     /// カメラ演出、回転アニメーション、NavMeshの再構築を連続して行う

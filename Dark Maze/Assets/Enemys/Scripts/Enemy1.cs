@@ -200,7 +200,7 @@ public class Enemy1 : MonoBehaviour
             effect.transform.parent = transform;
             effect.transform.eulerAngles = new Vector3(-90, 0, 0);
             enemyHP = -1;
-            agent.enabled = false;
+            agent.isStopped = false;
             dieFlag = true;
         }
         else if (enemyHP > 0)

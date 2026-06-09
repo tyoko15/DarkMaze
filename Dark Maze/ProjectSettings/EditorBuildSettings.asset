@@ -47,5 +47,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Clear.unity
     guid: 7dc3d1d4351bd094ea9908cf5f05f065
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: c23ca49cc3274a74d99a3754d03c47a1, type: 2}
   m_UseUCBPForAssetBundles: 0
