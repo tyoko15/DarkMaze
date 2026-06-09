@@ -1158,10 +1158,6 @@ public class TitleButtonManager : MonoBehaviour
         }
     }
 
-    public void OnMove(InputAction.CallbackContext context)
-    {
-        Debug.Log("a");
-    }
 
     /// <summary>
     /// Œˆ’èiEnterj“ü—Íˆ—
