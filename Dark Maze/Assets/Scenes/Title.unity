@@ -16098,7 +16098,7 @@ MonoBehaviour:
   - {fileID: 1367689642}
   fadeInDecisionUITime: 0.2
   fadeOutDecisionUITime: 0.2
-  inputIntervalTime: 0.1
+  inputIntervalTime: 0.2
   infoBannerImage: {fileID: 769442373}
   infoNumberText: {fileID: 1037497284}
   selectNum: 0
